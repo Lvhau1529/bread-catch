@@ -1,0 +1,139 @@
+/**
+ * Trò "láo" của từng vật phẩm rơi (TROLL MODE).
+ * Thông số ở config/troll.ts > TROLL_ITEMS.
+ */
+import Phaser from 'phaser';
+import { THEME } from '@/game/config/gameConfig';
+import { ITEMS } from '@/game/config/items';
+import { TROLL_ITEMS, type ItemTrickId } from '@/game/config/troll';
+import type FallingItem from '@/game/objects/FallingItem';
+import type { ItemTrick, ItemTrickState, TrollContext } from '@/game/systems/troll/types';
+
+const { colors } = THEME;
+/** Giữ vật phẩm cách mép màn hình ít nhất ngần này (px) */
+export const EDGE = 18;
+
+/** Đã rơi qua `ratio` chiều cao màn hình và chưa kích hoạt */
+const passed = (item: FallingItem, state: ItemTrickState, ctx: TrollContext, ratio: number) =>
+  !state.triggered && item.y >= ctx.scene.scale.height * ratio;
+
+export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
+  /** Né rổ khi rơi tới gần */
+  dodge: {
+    update: (item, state, { basket, scene, effects }, delta) => {
+      const config = TROLL_ITEMS.dodge;
+      if (state.triggered) {
+        state.dashRemaining -= delta;
+        if (state.dashRemaining <= 0) item.body.velocity.x = 0;
+        return;
+      }
+
+      const closeY = item.y > basket.rimY - config.triggerDistanceY;
+      const aboveBasket = Math.abs(item.x - basket.x) < basket.displayWidth / 2;
+      if (!closeY || !aboveBasket) return;
+
+      // Né về phía xa rổ; sát mép thì né ngược lại
+      let direction = item.x >= basket.x ? 1 : -1;
+      const room = direction > 0 ? scene.scale.width - item.x : item.x;
+      if (room < 70) direction = -direction;
+
+      state.triggered = true;
+      state.dashRemaining = config.dashMs;
+      item.body.velocity.x = direction * config.dashSpeed;
+      effects.popup(item.x, item.y - 20, config.label, colors.pink);
+    },
+  },
+
+  /** x = x0 + A·sin(ωt)  =>  vx = A·ω·cos(ωt) */
+  zigzag: {
+    assign: (item, { scene }) => {
+      const margin = TROLL_ITEMS.zigzag.amplitude + EDGE;
+      item.x = Phaser.Math.Clamp(item.x, margin, scene.scale.width - margin);
+    },
+    update: (item, state) => {
+      const { amplitude, frequency } = TROLL_ITEMS.zigzag;
+      item.body.velocity.x = amplitude * frequency * Math.cos((frequency * state.elapsed) / 1000);
+    },
+  },
+
+  /** Đột ngột tăng tốc */
+  sprint: {
+    update: (item, state, ctx) => {
+      if (!passed(item, state, ctx, TROLL_ITEMS.sprint.triggerRatio)) return;
+      state.triggered = true;
+      item.body.velocity.y *= TROLL_ITEMS.sprint.multiplier;
+    },
+  },
+
+  /** Đồ ngon hoá bánh cháy giữa đường */
+  bait: {
+    update: (item, state, ctx) => {
+      if (!passed(item, state, ctx, TROLL_ITEMS.bait.triggerRatio)) return;
+      state.triggered = true;
+      const { into, label } = TROLL_ITEMS.bait;
+      item.transformInto(into, ITEMS[into]);
+      ctx.effects.catchBurst(item.x, item.y);
+      ctx.effects.popup(item.x, item.y - 20, label, colors.red);
+    },
+  },
+
+  /** Đồ xấu bám theo rổ */
+  homing: {
+    update: (item, _state, { basket }) => {
+      const { maxSpeed } = TROLL_ITEMS.homing;
+      item.body.velocity.x = Phaser.Math.Clamp((basket.x - item.x) * 2, -maxSpeed, maxSpeed);
+    },
+  },
+
+  /** Biến mất rồi hiện ra chỗ khác, xa rổ */
+  teleport: {
+    update: (item, state, ctx) => {
+      if (!passed(item, state, ctx, TROLL_ITEMS.teleport.triggerRatio)) return;
+      state.triggered = true;
+
+      const { minDistance, label } = TROLL_ITEMS.teleport;
+      const { basket, effects, scene } = ctx;
+      let x = item.x;
+      for (let tries = 0; tries < 8; tries += 1) {
+        x = Phaser.Math.Between(EDGE * 2, scene.scale.width - EDGE * 2);
+        if (Math.abs(x - basket.x) >= minDistance) break;
+      }
+      effects.catchBurst(item.x, item.y);
+      effects.popup(item.x, item.y - 20, label, colors.pink);
+      item.x = x;
+      scene.tweens.add({ targets: item, alpha: { from: 0, to: 1 }, duration: 200 });
+    },
+  },
+
+  /** Chạm miệng rổ thì nảy ra ngoài (một lần) */
+  bounce: {
+    interceptCatch: (item, state, { effects }) => {
+      // Đang bay lên sau cú nảy thì chưa cho hứng; rơi xuống lại mới được
+      if (state.triggered) return item.body.velocity.y < 0;
+      state.triggered = true;
+
+      const { launchSpeed, sideSpeed, gravity, label } = TROLL_ITEMS.bounce;
+      item.body.setAllowGravity(true).setGravityY(gravity);
+      item.body.setVelocity(Phaser.Math.Between(-sideSpeed, sideSpeed), -launchSpeed);
+      effects.popup(item.x, item.y - 20, label, colors.gold);
+      return true;
+    },
+  },
+
+  /** Mờ gần như vô hình (vẫn hứng được) */
+  ghost: {
+    update: (item, state, ctx) => {
+      if (!passed(item, state, ctx, TROLL_ITEMS.ghost.triggerRatio)) return;
+      state.triggered = true;
+      const { alpha, fadeMs } = TROLL_ITEMS.ghost;
+      ctx.scene.tweens.add({ targets: item, alpha, duration: fadeMs });
+    },
+  },
+
+  /** Đồ xấu giả dạng bánh mì ngon, hứng rồi mới lộ */
+  disguise: {
+    assign: (item) => item.disguiseAs(TROLL_ITEMS.disguise.texture),
+    onCaught: (item, { effects }) =>
+      effects.popup(item.x, item.y - 44, TROLL_ITEMS.disguise.label, colors.red),
+  },
+};

@@ -1,0 +1,669 @@
+/* =========================================================================
+   "Tiệm Bánh Mơ Ước" — game làm bánh giả (TROLL MODE)
+   Mobile-first, prefix fb- để không đụng style khác.
+   ========================================================================= */
+
+.fake-bakery {
+  --fb-ink: #5a2a12;
+  --fb-ink-soft: #8a5a3c;
+  --fb-pink: #ff5d8f;
+  --fb-orange: #ff8a3d;
+  --fb-cream: #fff8ec;
+  --fb-card: #ffffff;
+  --fb-gold: #ffc93c;
+  --fb-shadow: 0 8px 24px rgb(160 60 60 / 18%);
+
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  background:
+    radial-gradient(circle at 15% 10%, #ffd6e4 0 18%, transparent 40%),
+    radial-gradient(circle at 90% 30%, #ffe9c2 0 15%, transparent 38%),
+    linear-gradient(180deg, #ffe3ec 0%, #fff4dc 55%, #ffe8cc 100%);
+  color: var(--fb-ink);
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.fake-bakery.is-leaving {
+  opacity: 0;
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+.fb-shell {
+  max-width: 440px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  animation: fb-enter 0.35s ease-out;
+}
+
+/* Căn giữa theo chiều dọc để máy dài không bị hụt phía dưới */
+.fb-screen {
+  display: flex;
+  min-height: calc(100dvh - 40px);
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.fb-center {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.pixel {
+  image-rendering: pixelated;
+}
+
+/* ---------- Typography ---------- */
+.fb-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.fb-subtitle {
+  margin: 0;
+  color: var(--fb-ink-soft);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.fb-step {
+  margin: 0;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--fb-pink);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-tagline {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.fb-credit {
+  margin: 4px 0 0;
+  color: var(--fb-ink-soft);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.fb-fineprint {
+  margin: 0;
+  color: var(--fb-ink-soft);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---------- Hero ---------- */
+.fb-hero {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 28px;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transform: scale(1.05);
+  animation: fb-pan 12s ease-in-out infinite alternate;
+}
+
+.fb-hero__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgb(90 42 18 / 75%) 100%);
+}
+
+.fb-float {
+  position: absolute;
+  width: 46px;
+  filter: drop-shadow(0 4px 4px rgb(0 0 0 / 25%));
+  animation: fb-bob 2.4s ease-in-out infinite;
+}
+
+.fb-float--a {
+  top: 14px;
+  left: 14px;
+  width: 60px;
+}
+.fb-float--b {
+  top: 18px;
+  right: 22px;
+  animation-delay: -0.6s;
+}
+.fb-float--c {
+  top: 86px;
+  right: 60px;
+  width: 34px;
+  animation-delay: -1.2s;
+}
+.fb-float--d {
+  top: 92px;
+  left: 44px;
+  width: 64px;
+  animation-delay: -1.8s;
+}
+
+.fb-logo {
+  position: absolute;
+  right: 0;
+  bottom: 14px;
+  left: 0;
+  text-align: center;
+}
+
+.fb-logo__badge {
+  display: inline-block;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--fb-pink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  animation: fb-pulse 1.2s ease-in-out infinite;
+}
+
+.fb-logo__title {
+  margin: 2px 0 0;
+  color: #fff;
+  font-size: clamp(32px, 10vw, 42px);
+  font-weight: 800;
+  line-height: 1;
+  text-shadow:
+    0 3px 0 #c2345f,
+    0 6px 0 #5a2a12,
+    0 10px 18px rgb(0 0 0 / 35%);
+}
+
+.fb-logo__subtitle {
+  margin: 6px 0 0;
+  color: var(--fb-gold);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 6px;
+}
+
+/* ---------- Stats & features ---------- */
+.fb-stats,
+.fb-features {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fb-stats {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fb-stats__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  border-radius: 18px;
+  background: var(--fb-card);
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-stats__item strong {
+  color: var(--fb-pink);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.fb-stats__item span {
+  color: var(--fb-ink-soft);
+  font-size: 12px;
+}
+
+.fb-features {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.fb-features__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 75%);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.fb-features__item:last-child:nth-child(odd) {
+  grid-column: 1 / -1; /* Ép phần tử trải dài từ vạch chia cột đầu đến vạch cuối */
+  display: flex;
+  justify-content: center;
+}
+
+.fb-features__icon {
+  font-size: 22px;
+}
+
+/* ---------- Call to action ---------- */
+.fb-cta {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffa24d 0%, var(--fb-orange) 45%, var(--fb-pink) 100%);
+  box-shadow:
+    0 6px 0 #c2345f,
+    0 12px 20px rgb(194 52 95 / 35%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 20%);
+  cursor: pointer;
+  animation: fb-pulse 1.4s ease-in-out infinite;
+}
+
+/* Vệt sáng lướt qua nút */
+.fb-cta::after {
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 55%), transparent);
+  content: '';
+  animation: fb-shine 2.2s ease-in-out infinite;
+}
+
+.fb-cta:active {
+  box-shadow: 0 2px 0 #c2345f;
+  transform: translateY(4px);
+  animation: none;
+}
+
+.fb-cta--small {
+  width: auto;
+  min-width: 200px;
+  font-size: 20px;
+}
+
+/* ---------- Recipes ---------- */
+.fb-recipes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.fb-recipe {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 18px 8px 12px;
+  border: 3px solid transparent;
+  border-radius: 22px;
+  background: var(--fb-card);
+  box-shadow: var(--fb-shadow);
+  color: var(--fb-ink);
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.fb-recipe:hover,
+.fb-recipe:focus-visible {
+  border-color: var(--fb-pink);
+  transform: translateY(-3px);
+}
+
+.fb-recipe:active {
+  transform: scale(0.96);
+}
+
+.fb-recipe__tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #ffe3ec;
+  color: var(--fb-pink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.fb-recipe__image {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  animation: fb-bob 2.6s ease-in-out infinite;
+}
+
+.fb-recipe__name {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.fb-recipe__meta {
+  color: var(--fb-gold);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- Knead ---------- */
+.fb-dough {
+  display: grid;
+  place-items: center;
+  width: 190px;
+  height: 170px;
+  margin: 10px 0;
+  border: 0;
+  border-radius: 50% 50% 46% 46%;
+  background: radial-gradient(circle at 35% 30%, #fffdf6 0%, #fbe7c2 45%, #eac48a 100%);
+  box-shadow:
+    inset -10px -14px 0 rgb(200 150 90 / 35%),
+    0 16px 26px rgb(160 90 40 / 30%);
+  cursor: pointer;
+}
+
+.fb-dough.is-squish {
+  animation: fb-squish 0.25s ease-out;
+}
+
+.fb-dough.is-done {
+  background: radial-gradient(circle at 35% 30%, #fffdf6 0%, #ffe6b3 45%, #f0b862 100%);
+}
+
+.fb-dough__face {
+  font-size: 44px;
+}
+
+.fb-cheer {
+  min-height: 32px;
+  margin: 0;
+  color: var(--fb-pink);
+  font-size: 24px;
+  font-weight: 800;
+  animation: fb-pop 0.3s ease-out;
+}
+
+.fb-cheer.is-static {
+  animation: none;
+}
+
+.fb-progress {
+  overflow: hidden;
+  width: 100%;
+  max-width: 300px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: #f3dcc4;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: repeating-linear-gradient(-45deg, var(--fb-pink) 0 10px, #ff8fb1 10px 20px);
+  transition: width 0.15s ease-out;
+}
+
+.fb-progress--cold .fb-progress__fill {
+  background: repeating-linear-gradient(-45deg, #6cb4ff 0 10px, #a9d4ff 10px 20px);
+}
+
+.fb-progress--hot .fb-progress__fill {
+  background: repeating-linear-gradient(-45deg, var(--fb-orange) 0 10px, var(--fb-gold) 10px 20px);
+}
+
+/* ---------- Oven ---------- */
+.fb-oven {
+  position: relative;
+  width: 230px;
+  padding: 18px 18px 14px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #c9774a, #8e4526);
+  box-shadow:
+    inset 0 -8px 0 rgb(0 0 0 / 20%),
+    0 16px 26px rgb(90 42 18 / 35%);
+}
+
+/* Lò "nguội" khi thanh nướng tụt */
+.fb-oven.is-cold .fb-oven__window {
+  filter: grayscale(0.7) brightness(0.8);
+  animation: none;
+}
+
+.fb-oven.is-open {
+  animation: fb-shake 0.4s ease-in-out 2;
+}
+
+.fb-oven__window {
+  display: grid;
+  place-items: center;
+  height: 130px;
+  overflow: visible;
+  border: 6px solid #5a2a12;
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 70%, #ffe08a 0%, #ff9d3d 45%, #c2410c 100%);
+  animation: fb-glow 1s ease-in-out infinite alternate;
+}
+
+.fb-oven__bread {
+  width: 90px;
+  animation: fb-bob 1.6s ease-in-out infinite;
+}
+
+.fb-oven__bread.is-flying {
+  animation: fb-fly-away 1.1s cubic-bezier(0.5, -0.4, 0.8, 0.6) forwards;
+}
+
+.fb-oven__knobs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.fb-oven__knobs span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff4dc;
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 25%);
+}
+
+.fb-percent {
+  margin: 4px 0 -6px;
+  color: var(--fb-ink);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Nút chạy trốn ---------- */
+.fb-runaway-slot {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  justify-content: center;
+}
+
+.fb-runaway.is-jumped {
+  z-index: 30;
+  animation:
+    fb-pop 0.22s ease-out,
+    fb-pulse 1.4s 0.22s ease-in-out infinite;
+}
+
+/* ---------- Reveal ---------- */
+.fb-reveal__basket {
+  width: 110px;
+  margin-top: 8px;
+  animation: fb-bob 1.8s ease-in-out infinite;
+}
+
+.fb-reveal__game {
+  margin: 0 0 6px;
+  color: var(--fb-gold);
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 34px;
+  font-weight: 700;
+  text-shadow:
+    -3px 0 0 #3b1a0b,
+    3px 0 0 #3b1a0b,
+    0 -3px 0 #3b1a0b,
+    0 3px 0 #3b1a0b;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes fb-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fb-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}
+
+@keyframes fb-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes fb-shine {
+  0% {
+    left: -60%;
+  }
+  60%,
+  100% {
+    left: 130%;
+  }
+}
+
+@keyframes fb-pan {
+  from {
+    transform: scale(1.05) translateX(-2%);
+  }
+  to {
+    transform: scale(1.12) translateX(2%);
+  }
+}
+
+@keyframes fb-squish {
+  0% {
+    transform: scale(1.12, 0.82);
+  }
+  60% {
+    transform: scale(0.94, 1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fb-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fb-glow {
+  from {
+    filter: brightness(0.95);
+  }
+  to {
+    filter: brightness(1.15);
+  }
+}
+
+@keyframes fb-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(8px) rotate(2deg);
+  }
+}
+
+@keyframes fb-fly-away {
+  0% {
+    transform: translateY(0) rotate(0) scale(1);
+  }
+  100% {
+    transform: translateY(-120vh) rotate(720deg) scale(1.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fake-bakery *,
+  .fake-bakery *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
