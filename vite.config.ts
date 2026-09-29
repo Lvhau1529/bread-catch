@@ -53,6 +53,9 @@ export default defineConfig({
   ],
   build: {
     target: 'es2022',
+    // Bundle JS/CSS/font (tên có hash) để riêng ở /static — cache vĩnh viễn được (xem vercel.json).
+    // /assets giữ cho ảnh / âm thanh của game (tên cố định, sinh bởi tools/).
+    assetsDir: 'static',
     chunkSizeWarningLimit: 1600, // Phaser ~1.2MB
     rollupOptions: {
       output: {

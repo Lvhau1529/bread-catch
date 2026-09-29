@@ -4,16 +4,19 @@
   "private": true,
   "type": "module",
   "description": "Bread Catcher — cozy pixel-art catching game built with Phaser 3",
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
     "dev": "vite --host",
-    "build": "npm run typecheck && vite build",
+    "build": "pnpm run typecheck && vite build",
     "preview": "vite preview --host",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "assets:sprites": "python tools/build_sprites.py",
     "assets:audio": "python tools/build_audio.py",
-    "assets": "npm run assets:sprites && npm run assets:audio"
+    "assets": "pnpm run assets:sprites && pnpm run assets:audio"
   },
   "dependencies": {
     "@fontsource/baloo-2": "^5.3.0",
