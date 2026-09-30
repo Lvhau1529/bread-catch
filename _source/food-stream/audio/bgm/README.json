@@ -1,0 +1,33 @@
+{
+  "project": "Phonics Food Stream",
+  "style": "original cheerful pixel/chiptune",
+  "sample_rate": 32000,
+  "tracks": [
+    {
+      "file": "01_main_menu_loop.wav",
+      "duration_seconds": 17.14,
+      "usage": "Main menu / mode select"
+    },
+    {
+      "file": "02_gameplay_loop.wav",
+      "duration_seconds": 22.5,
+      "usage": "Core phonics gameplay"
+    },
+    {
+      "file": "03_classroom_battle_loop.wav",
+      "duration_seconds": 19.73,
+      "usage": "Classroom team battle"
+    },
+    {
+      "file": "04_reward_room_loop.wav",
+      "duration_seconds": 18.46,
+      "usage": "Rewards / unlock / collection"
+    },
+    {
+      "file": "05_level_complete_jingle.wav",
+      "duration_seconds": 6.4,
+      "usage": "Level complete / result"
+    }
+  ],
+  "looping": "01-04 are short BGM loops; 05 is a one-shot result jingle."
+}

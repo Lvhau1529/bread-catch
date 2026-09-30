@@ -17,7 +17,8 @@ import { addStageBackground } from '@/games/bread-catcher/game/objects/StageBack
 import { showConfirm } from '@/games/bread-catcher/game/scenes/overlay';
 import IconButton from '@/games/bread-catcher/game/ui/IconButton';
 import TextButton from '@/games/bread-catcher/game/ui/TextButton';
-import { addText, fitText } from '@/games/bread-catcher/game/ui/text';
+import { addText } from '@/games/bread-catcher/game/ui/text';
+import { fitText } from '@/platform/phaser/text';
 import {
   appStore,
   currentTeam,

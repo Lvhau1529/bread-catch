@@ -1,0 +1,72 @@
+{
+  "project": "Phonics Food Stream",
+  "version": "0.1.0-plan",
+  "sourceSheets": [
+    {
+      "file": "assets/source-sheets/asset-board-01.png",
+      "role": "master/reference sprite and UI board",
+      "productionReady": false
+    },
+    {
+      "file": "assets/source-sheets/asset-board-02.png",
+      "role": "master/reference sprite and UI board",
+      "productionReady": false
+    },
+    {
+      "file": "assets/source-sheets/asset-board-03.png",
+      "role": "master/reference sprite and UI board",
+      "productionReady": false
+    },
+    {
+      "file": "assets/source-sheets/asset-board-04.png",
+      "role": "master/reference sprite and UI board",
+      "productionReady": false
+    },
+    {
+      "file": "assets/source-sheets/asset-board-initial.png",
+      "role": "master/reference sprite and UI board",
+      "productionReady": false
+    }
+  ],
+  "bgm": [
+    {
+      "key": "bgm.mainMenu",
+      "file": "assets/audio/bgm/01_main_menu_loop.wav",
+      "loop": true
+    },
+    {
+      "key": "bgm.gameplay",
+      "file": "assets/audio/bgm/02_gameplay_loop.wav",
+      "loop": true
+    },
+    {
+      "key": "bgm.classroom",
+      "file": "assets/audio/bgm/03_classroom_battle_loop.wav",
+      "loop": true
+    },
+    {
+      "key": "bgm.reward",
+      "file": "assets/audio/bgm/04_reward_room_loop.wav",
+      "loop": true
+    },
+    {
+      "key": "jingle.levelComplete",
+      "file": "assets/audio/bgm/05_level_complete_jingle.wav",
+      "loop": false
+    }
+  ],
+  "futureAtlases": {
+    "character.player": "public/assets/atlases/player.json",
+    "character.streamer": "public/assets/atlases/streamer.json",
+    "food.atlas": "public/assets/atlases/food.json",
+    "ui.atlas": "public/assets/atlases/ui.json"
+  },
+  "backgroundKeys": [
+    "bg.streaming",
+    "bg.kitchen",
+    "bg.cafe",
+    "bg.classroom",
+    "bg.ramen",
+    "bg.dessert"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "letter-d",
+  "title": "Letter D",
+  "grapheme": "d",
+  "phoneme": "/d/",
+  "phonemeSpeech": "duh",
+  "confusables": ["b", "p", "m", "g", "t"],
+  "targets": [
+    {
+      "id": "dog",
+      "word": "dog",
+      "initialSound": "d",
+      "imageAsset": "picture.dog",
+      "voiceAsset": "voice.word.dog"
+    },
+    {
+      "id": "duck",
+      "word": "duck",
+      "initialSound": "d",
+      "imageAsset": "picture.duck",
+      "voiceAsset": "voice.word.duck"
+    },
+    {
+      "id": "drum",
+      "word": "drum",
+      "initialSound": "d",
+      "imageAsset": "picture.drum",
+      "voiceAsset": "voice.word.drum"
+    },
+    {
+      "id": "desk",
+      "word": "desk",
+      "initialSound": "d",
+      "imageAsset": "picture.desk",
+      "voiceAsset": "voice.word.desk"
+    },
+    {
+      "id": "doll",
+      "word": "doll",
+      "initialSound": "d",
+      "imageAsset": "picture.doll",
+      "voiceAsset": "voice.word.doll"
+    },
+    {
+      "id": "dinosaur",
+      "word": "dinosaur",
+      "initialSound": "d",
+      "imageAsset": "picture.dinosaur",
+      "voiceAsset": "voice.word.dinosaur"
+    },
+    {
+      "id": "dig",
+      "word": "dig",
+      "initialSound": "d",
+      "imageAsset": "picture.dig",
+      "voiceAsset": "voice.word.dig"
+    },
+    {
+      "id": "dirt",
+      "word": "dirt",
+      "initialSound": "d",
+      "imageAsset": "picture.dirt",
+      "voiceAsset": "voice.word.dirt"
+    },
+    {
+      "id": "den",
+      "word": "den",
+      "initialSound": "d",
+      "imageAsset": "picture.den",
+      "voiceAsset": "voice.word.den"
+    },
+    {
+      "id": "day",
+      "word": "day",
+      "initialSound": "d",
+      "imageAsset": "picture.day",
+      "voiceAsset": "voice.word.day"
+    }
+  ],
+  "cvcWords": [
+    {
+      "id": "dog",
+      "word": "dog",
+      "initialSound": "d",
+      "imageAsset": "picture.dog",
+      "voiceAsset": "voice.word.dog"
+    },
+    {
+      "id": "dig",
+      "word": "dig",
+      "initialSound": "d",
+      "imageAsset": "picture.dig",
+      "voiceAsset": "voice.word.dig"
+    },
+    {
+      "id": "den",
+      "word": "den",
+      "initialSound": "d",
+      "imageAsset": "picture.den",
+      "voiceAsset": "voice.word.den"
+    },
+    {
+      "id": "dad",
+      "word": "dad",
+      "initialSound": "d",
+      "voiceAsset": "voice.word.dad"
+    },
+    {
+      "id": "dip",
+      "word": "dip",
+      "initialSound": "d",
+      "voiceAsset": "voice.word.dip"
+    }
+  ]
+}

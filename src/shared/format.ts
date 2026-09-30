@@ -10,3 +10,10 @@ export function formatTime(ms: number): string {
 export function formatPercent(ratio: number): string {
   return `${Math.round(ratio * 100)}%`;
 }
+
+/** 1234 -> "1.2K", 25000 -> "25K" */
+export function compactNumber(value: number): string {
+  if (value < 1000) return String(value);
+  if (value < 1_000_000) return `${(value / 1000).toFixed(value < 10_000 ? 1 : 0)}K`;
+  return `${(value / 1_000_000).toFixed(1)}M`;
+}

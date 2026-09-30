@@ -1,6 +1,7 @@
 # Credits
 
-**Phonics Bread Catcher** — made by **haulv**
+**Phonics Arcade** (Bread Catcher, Food Stream) — made by **haulv**
 
-- Art & audio — Phonics Bread Catcher Resource Pack
+- Bread Catcher art & audio — Phonics Bread Catcher Resource Pack
+- Food Stream art & music — Phonics Food Stream planning package (generated art boards, chiptune BGM)
 - Fonts — Baloo 2, Andika (SIL Open Font License 1.1)

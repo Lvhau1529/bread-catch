@@ -21,6 +21,7 @@
   --red: #ff4d5e;
   --red-edge: #b8283a;
   --pink: #ff6f9c;
+  --pink-edge: #d9446f;
   --teal: #20b8a6;
   --teal-edge: #137e72;
   --font-ui: 'Baloo 2', 'Arial Rounded MT Bold', sans-serif;
@@ -247,6 +248,7 @@ input {
 .app-loading {
   position: fixed;
   inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, #7a3bb8 0%, #3d1c6e 55%, #1d0d38 100%);
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -3,11 +3,10 @@
  * Class Mode hiện 3 ô tên đội; Solo Mode chỉ 1 ô tên người chơi.
  * Lựa chọn được nhớ cho lần sau (session/storage.ts).
  */
-import type { ReactNode } from 'react';
 import { mascotUrl } from '@/games/bread-catcher/app/assets';
-import type { GuideSectionId } from '@/games/bread-catcher/app/guide/guideContent';
-import { openGuide } from '@/platform/ui/guide/guideStore';
 import Button from '@/platform/ui/Button';
+import Field from '@/platform/ui/Field';
+import NameInput from '@/platform/ui/NameInput';
 import OptionGroup, { type Option } from '@/platform/ui/OptionGroup';
 import TimeInput from '@/games/bread-catcher/app/components/TimeInput';
 import { TeamTotalsCard } from '@/games/bread-catcher/app/components/Leaderboard';
@@ -136,7 +135,8 @@ export default function SetupScreen() {
               {TEAM_MASCOTS.map((mascot, index) => (
                 <NameInput
                   key={mascot}
-                  mascot={mascotUrl(mascot)}
+                  image={mascotUrl(mascot)}
+                  maxLength={MAX_NAME_LENGTH}
                   label={[UI_TEXT.team1, UI_TEXT.team2, UI_TEXT.team3][index]}
                   placeholder={DEFAULT_TEAM_NAMES[index]}
                   value={draft.teamNames[index]}
@@ -148,7 +148,8 @@ export default function SetupScreen() {
         ) : (
           <Field label={UI_TEXT.player}>
             <NameInput
-              mascot={mascotUrl(SOLO_MASCOT)}
+              image={mascotUrl(SOLO_MASCOT)}
+              maxLength={MAX_NAME_LENGTH}
               label={UI_TEXT.player}
               placeholder={DEFAULT_PLAYER_NAME}
               value={draft.playerName}
@@ -168,73 +169,10 @@ export default function SetupScreen() {
   );
 }
 
-interface FieldProps {
-  label: string;
-  /** Phần Hướng dẫn (tiếng Việt) mở khi bấm "?" */
-  guide?: GuideSectionId;
-  children: ReactNode;
-}
-
-function Field({ label, guide, children }: FieldProps) {
-  return (
-    <fieldset className="field">
-      <legend className="field__label">
-        {label}
-        {guide && (
-          <button
-            type="button"
-            className="field__help"
-            aria-label={`${UI_TEXT.guide}: ${label}`}
-            onClick={() => {
-              playSfx(SFX.UI_CLICK);
-              openGuide(guide);
-            }}
-          >
-            ?
-          </button>
-        )}
-      </legend>
-      {children}
-    </fieldset>
-  );
-}
-
 /** "45 words · 3–4 letters" */
 function packSummary(id: PackId): string {
   const lengths = PACKS[id].words.map((word) => word.length);
   const min = Math.min(...lengths);
   const max = Math.max(...lengths);
   return `${PACKS[id].words.length} ${UI_TEXT.words.toLowerCase()} · ${min === max ? min : `${min}–${max}`} ${UI_TEXT.letters}`;
-}
-
-interface NameInputProps {
-  mascot: string;
-  label: string;
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-}
-
-function NameInput({ mascot, label, placeholder, value, onChange }: NameInputProps) {
-  return (
-    <label className="name-input">
-      <img src={mascot} alt="" width={40} height={45} />
-      <span className="visually-hidden">{label}</span>
-      <input
-        type="text"
-        value={value}
-        placeholder={placeholder.toUpperCase()}
-        maxLength={MAX_NAME_LENGTH}
-        autoComplete="off"
-        autoCapitalize="characters"
-        spellCheck={false}
-        enterKeyHint="done"
-        onChange={(event) => onChange(event.target.value)}
-        // "Done" trên bàn phím điện thoại: chỉ đóng bàn phím, không bắt đầu game
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') event.currentTarget.blur();
-        }}
-      />
-    </label>
-  );
 }

@@ -1,0 +1,400 @@
+/* =========================================================================
+   Food Stream — CSS riêng của game (Home / Setup / Results), class tiền tố `fs-`.
+   Khung chung (nút, form, hướng dẫn...) ở src/platform/styles/; theme kẹo hồng / tím
+   bằng cách ghi đè biến màu trên .theme-food-stream.
+   ========================================================================= */
+.theme-food-stream {
+  --bg: #2b1740;
+  --ink: #3a2350;
+  --brown: #5b3a70;
+  --cream: #fff4f8;
+  --paper: #fffafc;
+  --tan: #f5c2d4;
+  --orange: #ff6f9c;
+  --orange-edge: #d9446f;
+  --outline:
+    2px 0 var(--ink), -2px 0 var(--ink), 0 2px var(--ink), 0 -2px var(--ink), 2px 2px var(--ink),
+    -2px -2px var(--ink), 2px -2px var(--ink), -2px 2px var(--ink), 0 4px 0 var(--ink);
+  --outline-thick:
+    3px 0 var(--ink), -3px 0 var(--ink), 0 3px var(--ink), 0 -3px var(--ink), 2px 2px var(--ink),
+    -2px -2px var(--ink), 2px -2px var(--ink), -2px 2px var(--ink), 0 6px 0 var(--ink);
+  background: var(--bg);
+}
+
+.theme-food-stream .screen-layer {
+  background: radial-gradient(ellipse at center, rgba(43, 23, 64, 0.2), rgba(43, 23, 64, 0.6));
+}
+
+.theme-food-stream .guide-backdrop {
+  background: rgba(43, 23, 64, 0.75);
+}
+
+@keyframes fs-bob {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes fs-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.3) rotate(-20deg);
+  }
+}
+
+/* =========================================================================
+   Home
+   ========================================================================= */
+.fs-home {
+  position: relative;
+  /* Chừa khoảng dưới cho hai streamer của phòng stream phía sau (StudioScene) */
+  justify-content: flex-start;
+  padding-top: max(72px, env(safe-area-inset-top));
+  gap: 16px;
+  text-align: center;
+}
+
+.fs-home__exit {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: 16px;
+}
+
+.fs-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  line-height: 0.95;
+  font-weight: 800;
+  text-shadow: var(--outline-thick);
+}
+
+.fs-logo__live {
+  margin-bottom: 6px;
+  padding: 2px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  background: var(--red);
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-shadow: none;
+  animation: fs-bob 1.2s ease-in-out infinite;
+}
+
+.fs-logo__top {
+  color: var(--pink);
+  font-size: clamp(44px, 14vw, 64px);
+  letter-spacing: 1px;
+}
+
+.fs-logo__bottom {
+  margin-top: 4px;
+  color: var(--gold);
+  font-size: clamp(32px, 10.5vw, 46px);
+}
+
+.fs-home__play {
+  min-height: 80px;
+  font-size: 34px;
+  letter-spacing: 2px;
+}
+
+/* =========================================================================
+   Setup
+   ========================================================================= */
+.fs-setup__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fs-setup__form .option__sub {
+  font-family: var(--font-learning);
+}
+
+.fs-setup__start {
+  position: sticky;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  font-size: 26px;
+}
+
+/* =========================================================================
+   Results
+   ========================================================================= */
+.fs-results {
+  gap: 14px;
+}
+
+.fs-results__title {
+  margin: 4px 0 0;
+  color: var(--gold);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: var(--outline);
+  animation: fs-bob 1.4s ease-in-out infinite;
+}
+
+.fs-results__subtitle {
+  margin: -8px 0 0;
+  color: var(--cream);
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  text-shadow: var(--outline);
+}
+
+.fs-solo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.fs-solo__streamer {
+  height: 120px;
+  animation: fs-bob 1.2s ease-in-out infinite;
+}
+
+.fs-solo__level {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.fs-solo__best {
+  margin: 0;
+  color: var(--red);
+  font-size: 18px;
+  font-weight: 800;
+  animation: fs-bob 1s ease-in-out infinite;
+}
+
+.fs-solo__total {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.fs-stars {
+  display: flex;
+  gap: 8px;
+}
+
+.fs-stars img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  filter: grayscale(1) opacity(0.35);
+}
+
+.fs-stars img.is-earned {
+  filter: none;
+  animation: fs-pop 0.5s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+}
+
+.fs-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  margin: 6px 0 0;
+}
+
+.fs-stats--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fs-stats__item {
+  padding: 4px 2px;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+}
+
+.fs-stats dt {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  opacity: 0.7;
+}
+
+.fs-stats dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.fs-teams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fs-team {
+  --team: var(--pink);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 8px;
+  border: 4px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--cream);
+  color: var(--brown);
+  box-shadow: 0 5px 0 var(--team);
+  text-align: center;
+}
+
+.fs-team--b {
+  --team: var(--blue);
+}
+
+.fs-team.is-winner {
+  background: #fff6d6;
+}
+
+.fs-team__crown {
+  position: absolute;
+  top: -26px;
+  width: 64px;
+  animation: fs-bob 1s ease-in-out infinite;
+}
+
+.fs-team__streamer {
+  height: 96px;
+}
+
+.fs-team__name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fs-team__score {
+  color: var(--team);
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 var(--ink);
+}
+
+.fs-words h2 {
+  margin: 0 0 8px;
+  color: var(--orange-edge);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.fs-words ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fs-words li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px 2px 4px;
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-learning);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.fs-words li.is-first-try {
+  background: #dff7e6;
+  color: #1f7a45;
+}
+
+.fs-words img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.fs-results__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+}
+
+.fs-results__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* =========================================================================
+   Bố cục ngang (máy chiếu / máy tính) — .app--landscape do FoodStreamGame.tsx gắn
+   ========================================================================= */
+.app--landscape .fs-home {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'logo play'
+    'logo toggles'
+    'logo guide';
+  align-content: center;
+  gap: 18px 48px;
+}
+
+.app--landscape .fs-logo {
+  grid-area: logo;
+}
+.app--landscape .fs-home__play {
+  grid-area: play;
+  align-self: end;
+}
+.app--landscape .fs-home .toggles {
+  grid-area: toggles;
+}
+.app--landscape .fs-home .guide-link {
+  grid-area: guide;
+  align-self: start;
+}
+
+/* Chia 2 cột kiểu báo */
+.app--landscape .fs-setup__form {
+  display: block;
+  columns: 2;
+  column-gap: 28px;
+}
+
+.app--landscape .fs-setup__form .field {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+
+.app--landscape .fs-setup__start {
+  align-self: center;
+  width: min(100%, 420px);
+}
+
+.app--landscape .fs-solo,
+.app--landscape .fs-teams,
+.app--landscape .fs-words,
+.app--landscape .fs-results__actions {
+  width: min(100%, 640px);
+  align-self: center;
+}

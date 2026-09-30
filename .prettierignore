@@ -5,3 +5,4 @@ public/assets
 _source
 pnpm-lock.yaml
 *.md
+src/games/food-stream/sprites.json

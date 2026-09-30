@@ -60,6 +60,11 @@
   --btn-edge: var(--red-edge);
 }
 
+.btn--pink {
+  --btn: var(--pink);
+  --btn-edge: var(--pink-edge);
+}
+
 .btn--cream {
   --btn: var(--cream);
   --btn-edge: var(--tan);
@@ -220,6 +225,13 @@
 .option__label {
   font-size: 15px;
   font-weight: 800;
+}
+
+.option__icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 2px;
+  object-fit: contain;
 }
 
 .option__sub {

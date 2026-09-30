@@ -4,7 +4,7 @@
  */
 import type Phaser from 'phaser';
 import { THEME } from '@/games/bread-catcher/game/config/gameConfig';
-import { RENDER_SCALE } from '@/platform/phaser/viewport';
+import { crispText } from '@/platform/phaser/text';
 
 const { colors, fonts } = THEME;
 
@@ -63,27 +63,5 @@ export function addText(
   preset: TextPreset = 'outline',
   overrides: Phaser.Types.GameObjects.Text.TextStyle = {},
 ): Phaser.GameObjects.Text {
-  return scene.add
-    .text(x, y, text, { fontFamily: fonts.ui, align: 'center', ...PRESETS[preset], ...overrides })
-    .setResolution(RENDER_SCALE)
-    .setOrigin(0.5);
-}
-
-/**
- * Cắt chữ bằng "…" cho vừa `maxWidth` (px logic) — dùng cho tên đội dài
- * (vd "WWWWWWWWWWWW" rộng gấp đôi "IIIIIIIIIIII" dù cùng 12 ký tự).
- */
-export function fitText(
-  text: Phaser.GameObjects.Text,
-  maxWidth: number,
-  /** Phần đuôi luôn giữ lại, vd "!" trong "LIONS!" */
-  suffix = '',
-): Phaser.GameObjects.Text {
-  if (text.width <= maxWidth) return text;
-  const chars = [...text.text.slice(0, text.text.length - suffix.length)];
-  while (chars.length > 1 && text.width > maxWidth) {
-    chars.pop();
-    text.setText(`${chars.join('').trimEnd()}…${suffix}`);
-  }
-  return text;
+  return crispText(scene, x, y, text, { fontFamily: fonts.ui, ...PRESETS[preset], ...overrides });
 }

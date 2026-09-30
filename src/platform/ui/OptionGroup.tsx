@@ -11,6 +11,8 @@ export interface Option<T> {
   sub?: string;
   /** Màu riêng khi được chọn (vd: màu theo level) */
   tone?: string;
+  /** Ảnh minh hoạ phía trên nhãn */
+  icon?: string;
 }
 
 interface OptionGroupProps<T> {
@@ -50,6 +52,7 @@ export default function OptionGroup<T extends string | number>({
               onChange(option.value);
             }}
           >
+            {option.icon && <img className="option__icon" src={option.icon} alt="" />}
             <span className="option__label">{option.label}</span>
             {option.sub && <span className="option__sub">{option.sub}</span>}
           </button>

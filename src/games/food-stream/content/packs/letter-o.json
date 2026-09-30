@@ -1,0 +1,105 @@
+{
+  "id": "letter-o",
+  "title": "Letter O",
+  "grapheme": "o",
+  "phoneme": "/ɒ/",
+  "phonemeSpeech": "ah",
+  "confusables": ["a", "u", "e", "c", "i"],
+  "targets": [
+    {
+      "id": "octopus",
+      "word": "octopus",
+      "initialSound": "o",
+      "imageAsset": "picture.octopus",
+      "voiceAsset": "voice.word.octopus"
+    },
+    {
+      "id": "olive",
+      "word": "olive",
+      "initialSound": "o",
+      "imageAsset": "picture.olive",
+      "voiceAsset": "voice.word.olive"
+    },
+    {
+      "id": "ostrich",
+      "word": "ostrich",
+      "initialSound": "o",
+      "imageAsset": "picture.ostrich",
+      "voiceAsset": "voice.word.ostrich"
+    },
+    {
+      "id": "oven",
+      "word": "oven",
+      "initialSound": "o",
+      "imageAsset": "picture.oven",
+      "voiceAsset": "voice.word.oven"
+    },
+    {
+      "id": "otter",
+      "word": "otter",
+      "initialSound": "o",
+      "imageAsset": "picture.otter",
+      "voiceAsset": "voice.word.otter"
+    },
+    {
+      "id": "onion",
+      "word": "onion",
+      "initialSound": "o",
+      "imageAsset": "picture.onion",
+      "voiceAsset": "voice.word.onion"
+    }
+  ],
+  "cvcWords": [
+    {
+      "id": "on",
+      "word": "on",
+      "initialSound": "o",
+      "voiceAsset": "voice.word.on"
+    },
+    {
+      "id": "top",
+      "word": "top",
+      "initialSound": "t",
+      "imageAsset": "picture.top",
+      "voiceAsset": "voice.word.top"
+    },
+    {
+      "id": "tot",
+      "word": "tot",
+      "initialSound": "t",
+      "voiceAsset": "voice.word.tot"
+    },
+    {
+      "id": "pot",
+      "word": "pot",
+      "initialSound": "p",
+      "imageAsset": "picture.pot",
+      "voiceAsset": "voice.word.pot"
+    },
+    {
+      "id": "mom",
+      "word": "mom",
+      "initialSound": "m",
+      "imageAsset": "picture.mom",
+      "voiceAsset": "voice.word.mom"
+    },
+    {
+      "id": "not",
+      "word": "not",
+      "initialSound": "n",
+      "voiceAsset": "voice.word.not"
+    },
+    {
+      "id": "hop",
+      "word": "hop",
+      "initialSound": "h",
+      "voiceAsset": "voice.word.hop"
+    },
+    {
+      "id": "dot",
+      "word": "dot",
+      "initialSound": "d",
+      "voiceAsset": "voice.word.dot"
+    }
+  ]
+}

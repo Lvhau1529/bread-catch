@@ -1,0 +1,438 @@
+{
+  "character.girl.happy": {
+    "path": "assets/food-stream/characters/girl_happy.png",
+    "width": 243,
+    "height": 300
+  },
+  "character.girl.wow": {
+    "path": "assets/food-stream/characters/girl_wow.png",
+    "width": 252,
+    "height": 300
+  },
+  "character.girl.think": {
+    "path": "assets/food-stream/characters/girl_think.png",
+    "width": 196,
+    "height": 300
+  },
+  "character.boy.happy": {
+    "path": "assets/food-stream/characters/boy_happy.png",
+    "width": 260,
+    "height": 300
+  },
+  "character.boy.wow": {
+    "path": "assets/food-stream/characters/boy_wow.png",
+    "width": 243,
+    "height": 300
+  },
+  "character.boy.think": {
+    "path": "assets/food-stream/characters/boy_think.png",
+    "width": 212,
+    "height": 300
+  },
+  "food.donut": {
+    "path": "assets/food-stream/food/donut.png",
+    "width": 164,
+    "height": 172,
+    "anchors": {
+      "badge": {
+        "x": 80,
+        "y": 81,
+        "r": 48
+      }
+    }
+  },
+  "food.donut.bite1": {
+    "path": "assets/food-stream/food/donut_bite1.png",
+    "width": 164,
+    "height": 172
+  },
+  "food.donut.bite2": {
+    "path": "assets/food-stream/food/donut_bite2.png",
+    "width": 164,
+    "height": 172
+  },
+  "food.cupcake": {
+    "path": "assets/food-stream/food/cupcake.png",
+    "width": 135,
+    "height": 172,
+    "anchors": {
+      "badge": {
+        "x": 69,
+        "y": 90,
+        "r": 36
+      }
+    }
+  },
+  "food.cupcake.bite1": {
+    "path": "assets/food-stream/food/cupcake_bite1.png",
+    "width": 135,
+    "height": 172
+  },
+  "food.cupcake.bite2": {
+    "path": "assets/food-stream/food/cupcake_bite2.png",
+    "width": 135,
+    "height": 172
+  },
+  "food.cookie": {
+    "path": "assets/food-stream/food/cookie.png",
+    "width": 161,
+    "height": 172,
+    "anchors": {
+      "badge": {
+        "x": 78,
+        "y": 83,
+        "r": 42
+      }
+    }
+  },
+  "food.cookie.bite1": {
+    "path": "assets/food-stream/food/cookie_bite1.png",
+    "width": 161,
+    "height": 172
+  },
+  "food.cookie.bite2": {
+    "path": "assets/food-stream/food/cookie_bite2.png",
+    "width": 161,
+    "height": 172
+  },
+  "food.candy": {
+    "path": "assets/food-stream/food/candy.png",
+    "width": 172,
+    "height": 137,
+    "anchors": {
+      "badge": {
+        "x": 89,
+        "y": 55,
+        "r": 38
+      }
+    }
+  },
+  "food.candy.bite1": {
+    "path": "assets/food-stream/food/candy_bite1.png",
+    "width": 172,
+    "height": 137
+  },
+  "food.candy.bite2": {
+    "path": "assets/food-stream/food/candy_bite2.png",
+    "width": 172,
+    "height": 137
+  },
+  "food.pancake": {
+    "path": "assets/food-stream/food/pancake.png",
+    "width": 172,
+    "height": 172,
+    "anchors": {
+      "badge": {
+        "x": 86,
+        "y": 83,
+        "r": 40
+      }
+    }
+  },
+  "food.pancake.bite1": {
+    "path": "assets/food-stream/food/pancake_bite1.png",
+    "width": 172,
+    "height": 172
+  },
+  "food.pancake.bite2": {
+    "path": "assets/food-stream/food/pancake_bite2.png",
+    "width": 172,
+    "height": 172
+  },
+  "food.popsicle": {
+    "path": "assets/food-stream/food/popsicle.png",
+    "width": 113,
+    "height": 172,
+    "anchors": {
+      "badge": {
+        "x": 58,
+        "y": 72,
+        "r": 36
+      }
+    }
+  },
+  "food.popsicle.bite1": {
+    "path": "assets/food-stream/food/popsicle_bite1.png",
+    "width": 113,
+    "height": 172
+  },
+  "food.popsicle.bite2": {
+    "path": "assets/food-stream/food/popsicle_bite2.png",
+    "width": 113,
+    "height": 172
+  },
+  "food.ramen": {
+    "path": "assets/food-stream/food/ramen.png",
+    "width": 172,
+    "height": 143,
+    "anchors": {
+      "badge": {
+        "x": 85,
+        "y": 99,
+        "r": 28
+      }
+    }
+  },
+  "food.ramen.bite1": {
+    "path": "assets/food-stream/food/ramen_bite1.png",
+    "width": 172,
+    "height": 143
+  },
+  "food.ramen.bite2": {
+    "path": "assets/food-stream/food/ramen_bite2.png",
+    "width": 172,
+    "height": 143
+  },
+  "food.boba": {
+    "path": "assets/food-stream/food/boba.png",
+    "width": 104,
+    "height": 172,
+    "anchors": {
+      "badge": {
+        "x": 51,
+        "y": 116,
+        "r": 29
+      }
+    }
+  },
+  "food.boba.bite1": {
+    "path": "assets/food-stream/food/boba_bite1.png",
+    "width": 104,
+    "height": 172
+  },
+  "food.boba.bite2": {
+    "path": "assets/food-stream/food/boba_bite2.png",
+    "width": 104,
+    "height": 172
+  },
+  "prop.plate.pink": {
+    "path": "assets/food-stream/props/plate_pink.png",
+    "width": 190,
+    "height": 101
+  },
+  "prop.plate.blue": {
+    "path": "assets/food-stream/props/plate_blue.png",
+    "width": 190,
+    "height": 102
+  },
+  "prop.window": {
+    "path": "assets/food-stream/props/window.png",
+    "width": 211,
+    "height": 200
+  },
+  "prop.shelf": {
+    "path": "assets/food-stream/props/shelf.png",
+    "width": 220,
+    "height": 190
+  },
+  "prop.chalkboard": {
+    "path": "assets/food-stream/props/chalkboard.png",
+    "width": 136,
+    "height": 190
+  },
+  "prop.plant": {
+    "path": "assets/food-stream/props/plant.png",
+    "width": 102,
+    "height": 120
+  },
+  "prop.lamp": {
+    "path": "assets/food-stream/props/lamp.png",
+    "width": 62,
+    "height": 120
+  },
+  "prop.camera": {
+    "path": "assets/food-stream/props/camera.png",
+    "width": 79,
+    "height": 150
+  },
+  "prop.sign": {
+    "path": "assets/food-stream/props/sign.png",
+    "width": 72,
+    "height": 96
+  },
+  "prop.tissue": {
+    "path": "assets/food-stream/props/tissue.png",
+    "width": 85,
+    "height": 70
+  },
+  "ui.live": {
+    "path": "assets/food-stream/ui/live.png",
+    "width": 106,
+    "height": 52
+  },
+  "ui.chat": {
+    "path": "assets/food-stream/ui/chat.png",
+    "width": 58,
+    "height": 56
+  },
+  "ui.star": {
+    "path": "assets/food-stream/ui/star.png",
+    "width": 72,
+    "height": 67
+  },
+  "ui.coin": {
+    "path": "assets/food-stream/ui/coin.png",
+    "width": 63,
+    "height": 64
+  },
+  "ui.stopwatch": {
+    "path": "assets/food-stream/ui/stopwatch.png",
+    "width": 50,
+    "height": 56
+  },
+  "ui.heart": {
+    "path": "assets/food-stream/ui/heart.png",
+    "width": 42,
+    "height": 44
+  },
+  "ui.sparkle": {
+    "path": "assets/food-stream/ui/sparkle.png",
+    "width": 35,
+    "height": 40
+  },
+  "ui.question": {
+    "path": "assets/food-stream/ui/question.png",
+    "width": 40,
+    "height": 56
+  },
+  "ui.combo": {
+    "path": "assets/food-stream/ui/combo.png",
+    "width": 200,
+    "height": 142
+  },
+  "ui.perfect": {
+    "path": "assets/food-stream/ui/perfect.png",
+    "width": 220,
+    "height": 170
+  },
+  "ui.crown": {
+    "path": "assets/food-stream/ui/crown.png",
+    "width": 110,
+    "height": 87
+  },
+  "ui.banner.a": {
+    "path": "assets/food-stream/ui/banner_a.png",
+    "width": 73,
+    "height": 150
+  },
+  "ui.banner.b": {
+    "path": "assets/food-stream/ui/banner_b.png",
+    "width": 73,
+    "height": 150
+  },
+  "ui.btn.speaker": {
+    "path": "assets/food-stream/ui/btn_speaker.png",
+    "width": 94,
+    "height": 96
+  },
+  "ui.btn.home": {
+    "path": "assets/food-stream/ui/btn_home.png",
+    "width": 78,
+    "height": 84
+  },
+  "ui.btn.back": {
+    "path": "assets/food-stream/ui/btn_back.png",
+    "width": 82,
+    "height": 84
+  },
+  "ui.btn.pause": {
+    "path": "assets/food-stream/ui/btn_pause.png",
+    "width": 78,
+    "height": 84
+  },
+  "ui.btn.play": {
+    "path": "assets/food-stream/ui/btn_play.png",
+    "width": 78,
+    "height": 84
+  },
+  "picture.dog": {
+    "path": "assets/food-stream/pictures/dog.png",
+    "width": 132,
+    "height": 132
+  },
+  "picture.duck": {
+    "path": "assets/food-stream/pictures/duck.png",
+    "width": 107,
+    "height": 132
+  },
+  "picture.drum": {
+    "path": "assets/food-stream/pictures/drum.png",
+    "width": 118,
+    "height": 132
+  },
+  "picture.dinosaur": {
+    "path": "assets/food-stream/pictures/dinosaur.png",
+    "width": 129,
+    "height": 132
+  },
+  "picture.desk": {
+    "path": "assets/food-stream/pictures/desk.png",
+    "width": 132,
+    "height": 132
+  },
+  "picture.doll": {
+    "path": "assets/food-stream/pictures/doll.png",
+    "width": 107,
+    "height": 132
+  },
+  "picture.dig": {
+    "path": "assets/food-stream/pictures/dig.png",
+    "width": 132,
+    "height": 132
+  },
+  "picture.dirt": {
+    "path": "assets/food-stream/pictures/dirt.png",
+    "width": 132,
+    "height": 114
+  },
+  "picture.den": {
+    "path": "assets/food-stream/pictures/den.png",
+    "width": 132,
+    "height": 118
+  },
+  "picture.day": {
+    "path": "assets/food-stream/pictures/day.png",
+    "width": 119,
+    "height": 132
+  },
+  "picture.octopus": {
+    "path": "assets/food-stream/pictures/octopus.png",
+    "width": 120,
+    "height": 132
+  },
+  "picture.oven": {
+    "path": "assets/food-stream/pictures/oven.png",
+    "width": 111,
+    "height": 132
+  },
+  "picture.olive": {
+    "path": "assets/food-stream/pictures/olive.png",
+    "width": 96,
+    "height": 132
+  },
+  "picture.pot": {
+    "path": "assets/food-stream/pictures/pot.png",
+    "width": 123,
+    "height": 132
+  },
+  "picture.top": {
+    "path": "assets/food-stream/pictures/top.png",
+    "width": 105,
+    "height": 132
+  },
+  "picture.mom": {
+    "path": "assets/food-stream/pictures/mom.png",
+    "width": 113,
+    "height": 132
+  },
+  "picture.onion": {
+    "path": "assets/food-stream/pictures/onion.png",
+    "width": 132,
+    "height": 125
+  },
+  "picture.otter": {
+    "path": "assets/food-stream/pictures/otter.png",
+    "width": 132,
+    "height": 109
+  }
+}
