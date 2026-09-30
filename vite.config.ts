@@ -1,7 +1,25 @@
+import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+
+const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
+  version: string;
+};
+
+/** Mã commit của bản build: Vercel có sẵn biến môi trường, build ở máy thì hỏi git */
+function commitSha(): string {
+  if (process.env.VERCEL_GIT_COMMIT_SHA) return process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7);
+  try {
+    return execSync('git rev-parse --short=7 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim();
+  } catch {
+    return 'dev';
+  }
+}
 
 export default defineConfig({
   // Đường dẫn tương đối để deploy được ở bất kỳ thư mục con nào (itch.io, GitHub Pages...)
@@ -10,10 +28,16 @@ export default defineConfig({
     // import '@/game/...' thay cho '../../game/...' (khai báo tương ứng trong tsconfig.json > paths)
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  define: {
+    // Hiện trong Hướng dẫn để biết máy đang chạy bản nào (so với `git log`)
+    __BUILD_ID__: JSON.stringify(`${version} · ${commitSha()}`),
+  },
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // Có bản mới thì hỏi người dùng (nút ở màn Home) thay vì tự reload giữa ván — src/app/pwa
+      registerType: 'prompt',
+      injectRegister: false,
       includeAssets: ['icons/favicon.png', 'icons/apple-touch-icon.png'],
       manifest: {
         name: 'Phonics Bread Catcher',
@@ -33,6 +57,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Chuyển một lần từ bản 'autoUpdate' cũ sang bản có nút UPDATE (xem public/sw-migrate.js)
+        importScripts: ['sw-migrate.js'],
         // Precache mọi thứ cần để chơi offline (nhạc của resource pack nhỏ nên cache luôn)
         globPatterns: ['**/*.{js,css,html,png,json,woff2}', 'assets/{audio,music}/**/*.{ogg,mp3}'],
         // Ảnh nền bản ngang (máy chiếu) chỉ cache khi thực sự dùng — điện thoại không phải tải
@@ -41,7 +67,8 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.endsWith('_wide.png'),
-            handler: 'CacheFirst',
+            // Dùng ngay bản đã cache, đồng thời tải ngầm bản mới — thay ảnh (giữ tên) vẫn được cập nhật
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'phonics-wide-backgrounds',
               expiration: { maxEntries: 8 },

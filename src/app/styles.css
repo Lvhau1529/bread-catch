@@ -410,6 +410,52 @@ input {
   }
 }
 
+/* ---- Có bản mới (src/app/pwa) — nổi ở đỉnh màn Home, không đẩy bố cục ---- */
+.update-banner {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 32px);
+  min-height: 44px;
+  padding: 6px 18px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 4px 0 var(--green-edge);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: var(--outline);
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: update-pop 0.35s ease-out;
+}
+
+.update-banner b {
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--green-edge);
+  font-weight: 800;
+}
+
+.update-banner:active {
+  box-shadow: 0 1px 0 var(--green-edge);
+  transform: translate(-50%, 3px);
+}
+
+@keyframes update-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+}
+
 /* ---- Sound toggles ---- */
 .toggles {
   display: flex;
@@ -1500,6 +1546,13 @@ input {
   margin-top: 12px !important;
   text-align: right;
   font-style: italic;
+}
+
+.guide__build {
+  margin-top: 0 !important;
+  text-align: right;
+  font-size: 13px;
+  opacity: 0.6;
 }
 
 .guide__note {

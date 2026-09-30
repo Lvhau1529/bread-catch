@@ -188,7 +188,10 @@ Cấu hình sẵn trong `vercel.json`: cài bằng `pnpm install --frozen-lockfi
 - Vercel không chạy Python: ảnh / âm thanh trong `public/assets/` phải được sinh sẵn
   (`pnpm assets`) và commit lên.
 - Cache: bundle JS/CSS/font có hash ở `/static` (cache 1 năm); tài nguyên game ở `/assets`
-  (1 ngày, nhạc 7 ngày); `sw.js` và manifest luôn kiểm tra bản mới để PWA tự cập nhật.
+  (1 ngày, nhạc 7 ngày); `sw.js` và manifest luôn kiểm tra bản mới.
+- Cập nhật PWA (`src/app/pwa/`): deploy xong, máy người dùng phát hiện `sw.js` mới khi mở / tải lại
+  trang, quay lại tab, hoặc mỗi 30 phút → màn Home hiện nút **NEW VERSION! UPDATE** (không tự reload
+  giữa ván). Mã bản build (`version · commit`) ghi ở cuối phần Giới thiệu trong Hướng dẫn.
 
 ## Credits
 

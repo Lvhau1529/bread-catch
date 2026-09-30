@@ -221,6 +221,7 @@ export default function GuideDialog() {
             <p className="guide__author">
               Tác giả trò chơi: <b>haulv</b>
             </p>
+            <p className="guide__build">Phiên bản: {__BUILD_ID__}</p>
           </Section>
 
           <Section id="howto" title="Cách chơi (hướng dẫn cho bé)">

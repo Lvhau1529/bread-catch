@@ -1,10 +1,12 @@
 /**
- * Main menu (plan §3): chọn Class Mode / Solo Mode, bật tắt âm thanh, mở Hướng dẫn.
+ * Main menu (plan §3): chọn Class Mode / Solo Mode, bật tắt âm thanh, mở Hướng dẫn,
+ * cập nhật khi có bản mới.
  */
 import { mascotUrl } from '@/app/assets';
 import AudioToggles from '@/app/components/AudioToggles';
 import Button from '@/app/components/Button';
 import { openGuide } from '@/app/guide/guideStore';
+import UpdateBanner from '@/app/pwa/UpdateBanner';
 import { GameBridge } from '@/game/bridge';
 import { SFX } from '@/game/config/assets';
 import { sessionActions } from '@/session/sessionStore';
@@ -17,6 +19,7 @@ const TITLE_LETTERS = 'PHONICS'.split('');
 export default function HomeScreen() {
   return (
     <div className="screen home">
+      <UpdateBanner />
       <h1 className="logo" aria-label={UI_TEXT.title}>
         <span className="logo__top" aria-hidden="true">
           {TITLE_LETTERS.map((letter, index) => (

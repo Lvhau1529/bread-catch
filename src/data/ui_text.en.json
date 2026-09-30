@@ -80,5 +80,7 @@
   "reset": "RESET",
   "noScoresYet": "No team scores yet. Play a class game to start the leaderboard!",
   "guide": "GUIDE",
-  "letters": "letters"
+  "letters": "letters",
+  "newVersion": "NEW VERSION!",
+  "update": "UPDATE"
 }
