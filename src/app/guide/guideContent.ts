@@ -12,7 +12,7 @@ export type GuideSectionId =
   'about' | 'howto' | 'modes' | 'packs' | 'levels' | 'time' | 'combos' | 'teacher' | 'parents';
 
 export const GUIDE_SECTIONS: { id: GuideSectionId; title: string }[] = [
-  { id: 'about', title: 'Trò chơi là gì?' },
+  { id: 'about', title: 'Giới thiệu' },
   { id: 'howto', title: 'Cách chơi' },
   { id: 'modes', title: 'Chế độ chơi' },
   { id: 'packs', title: 'Gói từ' },

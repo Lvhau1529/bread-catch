@@ -402,13 +402,6 @@ input {
   gap: 16px;
 }
 
-.credit {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  text-shadow: var(--outline);
-}
-
 @keyframes letter-bob {
   50% {
     transform: translateY(-5px);
@@ -1349,6 +1342,12 @@ input {
   margin: 0 0 8px;
 }
 
+.guide__author {
+  margin-top: 12px !important;
+  text-align: right;
+  font-style: italic;
+}
+
 .guide__note {
   padding: 8px 12px;
   border-left: 4px solid var(--gold);
@@ -1469,8 +1468,7 @@ input {
     'logo actions'
     'mascots actions'
     'mascots toggles'
-    'mascots guide'
-    'credit credit';
+    'mascots guide';
   align-content: center;
   gap: 18px 48px;
 }
@@ -1490,9 +1488,6 @@ input {
 .app--landscape .toggles {
   grid-area: toggles;
   align-self: start;
-}
-.app--landscape .credit {
-  grid-area: credit;
 }
 .app--landscape .guide-link {
   grid-area: guide;

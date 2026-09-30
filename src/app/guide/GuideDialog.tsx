@@ -140,7 +140,7 @@ export default function GuideDialog() {
         </nav>
 
         <div className="guide__body" ref={bodyRef} onScroll={updateActive}>
-          <Section id="about" title="Trò chơi là gì?">
+          <Section id="about" title="Giới thiệu">
             <p>
               <b>Phonics Bread Catcher</b> là trò chơi luyện <b>phonics</b> (đánh vần – ghép âm tiếng Anh) cho
               trẻ khoảng 5 tuổi. Những chiếc bánh mì có in chữ cái rơi xuống, bé di chuyển chiếc rổ để{' '}
@@ -151,6 +151,9 @@ export default function GuideDialog() {
             </p>
             <p className="guide__note">
               Chữ trong trò chơi là tiếng Anh (đúng như khi học). Phần hướng dẫn này dành cho người lớn.
+            </p>
+            <p className="guide__author">
+              Tác giả trò chơi: <b>haulv</b>
             </p>
           </Section>
 

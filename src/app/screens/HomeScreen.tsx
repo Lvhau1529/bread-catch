@@ -56,7 +56,6 @@ export default function HomeScreen() {
       >
         ? {UI_TEXT.guide}
       </button>
-      <p className="credit">{UI_TEXT.madeBy}</p>
     </div>
   );
 }
