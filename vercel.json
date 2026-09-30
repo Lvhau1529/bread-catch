@@ -37,7 +37,7 @@
       ]
     },
     {
-      "source": "/assets/music/(.*)",
+      "source": "/assets/(.*)/music/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -46,7 +46,16 @@
       ]
     },
     {
-      "source": "/assets/(audio|backgrounds|basket|bread|brainrot|fx|items|phonics|ui)/(.*)",
+      "source": "/assets/(.*)/sfx/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.(png|json)",
       "headers": [
         {
           "key": "Cache-Control",

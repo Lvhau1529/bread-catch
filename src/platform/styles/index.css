@@ -1,0 +1,5 @@
+/* CSS dùng chung của platform — CSS riêng của từng game được import trong root của game đó */
+@import './base.css';
+@import './ui.css';
+@import './guide.css';
+@import './hub.css';

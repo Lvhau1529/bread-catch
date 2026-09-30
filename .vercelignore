@@ -6,4 +6,4 @@ dev-dist
 node_modules
 .claude
 *.local
-Phonics_Bread_Catcher_Game_Plan.md
+docs

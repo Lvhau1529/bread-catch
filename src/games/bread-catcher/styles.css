@@ -1,0 +1,783 @@
+/* =========================================================================
+   Bread Catcher — CSS riêng của game (Home / Setup / Results / Leaderboard).
+   Khung chung (nút, form, hướng dẫn...) ở src/platform/styles/.
+   ========================================================================= */
+
+/* =========================================================================
+   Home
+   ========================================================================= */
+.home {
+  position: relative;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+}
+
+/* Về màn chọn game */
+.home__exit {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: 16px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  line-height: 0.95;
+  font-weight: 800;
+  text-shadow: var(--outline-thick);
+}
+
+.logo__top {
+  font-size: clamp(46px, 15vw, 64px);
+  letter-spacing: 1px;
+}
+
+.logo__letter {
+  display: inline-block;
+  animation: letter-bob 1.6s ease-in-out infinite;
+}
+
+.logo__letter:nth-child(2n) {
+  animation-delay: 0.2s;
+}
+
+.logo__letter--0 {
+  color: var(--pink);
+}
+.logo__letter--1 {
+  color: var(--orange);
+}
+.logo__letter--2 {
+  color: var(--gold);
+}
+.logo__letter--3 {
+  color: var(--green);
+}
+.logo__letter--4 {
+  color: #6fb6ff;
+}
+
+.logo__bottom {
+  margin-top: 4px;
+  font-size: clamp(30px, 10vw, 40px);
+  color: var(--cream);
+}
+
+.home__mascots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.home__mascots img {
+  width: 64px;
+  height: auto;
+  image-rendering: pixelated;
+  animation: letter-bob 1.2s ease-in-out infinite;
+}
+
+.home__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Nút chính duy nhất của màn Home — to, dễ bấm cho bé */
+.home__play {
+  min-height: 80px;
+  font-size: 34px;
+  letter-spacing: 2px;
+}
+
+@keyframes letter-bob {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* =========================================================================
+   Setup
+   ========================================================================= */
+.setup__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option--gentle {
+  --tone: var(--teal);
+  --tone-edge: var(--teal-edge);
+}
+.option--easy {
+  --tone: var(--green);
+  --tone-edge: var(--green-edge);
+}
+.option--normal {
+  --tone: var(--blue);
+  --tone-edge: var(--blue-edge);
+}
+.option--hard {
+  --tone: var(--red);
+  --tone-edge: var(--red-edge);
+}
+
+.setup__start {
+  position: sticky;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  font-size: 26px;
+}
+
+/* =========================================================================
+   Results
+   ========================================================================= */
+.results {
+  gap: 14px;
+}
+
+.results__title {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--gold);
+  text-shadow: var(--outline);
+}
+
+.winner-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 4px solid var(--ink);
+  border-radius: var(--radius);
+  background: linear-gradient(var(--gold), var(--orange));
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  animation: letter-bob 1.4s ease-in-out infinite;
+}
+
+.winner-banner img {
+  flex: none;
+  image-rendering: pixelated;
+}
+
+.winner-banner__label {
+  flex: none;
+}
+
+/* Nhiều đội đồng hạng: mỗi tên một dòng con, tên quá dài thì "…" */
+.winner-banner__names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 8px;
+  min-width: 0;
+}
+
+.winner-banner__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.standings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.standing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 4px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--cream);
+  color: var(--brown);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+}
+
+.standing--place-1 {
+  background: #fff3c4;
+}
+
+.standing__place {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: #cdbfae;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.standing--place-1 .standing__place {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.standing--place-2 .standing__place {
+  background: #b9c4d0;
+  color: var(--ink);
+}
+
+.standing--place-3 .standing__place {
+  background: #d98c4a;
+}
+
+.standing__mascot {
+  flex: none;
+  image-rendering: pixelated;
+}
+
+.standing__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.standing__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.standing__name {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 20px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.standing__score {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.stats__item {
+  padding: 4px 2px;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+}
+
+.stats dt {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  opacity: 0.7;
+}
+
+.stats dd {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.stats--compact {
+  margin-top: 4px;
+}
+
+.stats--compact dt {
+  font-size: 9px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.stats--compact dd {
+  font-size: 14px;
+}
+
+.results__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+}
+
+.results__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.solo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.solo-card p {
+  margin: 0;
+}
+
+.solo-card__mascot {
+  image-rendering: pixelated;
+}
+
+.solo-card__name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 24px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.solo-card__score {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--blue);
+}
+
+.solo-card__score small {
+  font-size: 18px;
+}
+
+.solo-card__best {
+  margin-top: 4px !important;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--orange-edge);
+}
+
+.solo-card__best.is-new {
+  color: var(--red);
+  animation: letter-bob 1s ease-in-out infinite;
+}
+
+.solo-card .stats {
+  width: 100%;
+}
+
+.word-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.word-list li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-family: var(--font-learning);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.word-list .is-correct {
+  background: #dff7d8;
+  color: var(--green-edge);
+}
+
+.word-list .is-wrong {
+  background: #efe6e1;
+  color: #8a7c74;
+}
+
+/* ---- Ô tự nhập thời gian ---- */
+.time-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 3px solid var(--tan);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.time-input.is-custom {
+  border-color: var(--orange);
+}
+
+.time-input__label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--orange-edge);
+}
+
+.time-input input {
+  width: 64px;
+  min-height: 44px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background: var(--paper);
+  color: var(--brown);
+  /* ≥ 16px: iOS không tự zoom khi focus */
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.time-input input::-webkit-inner-spin-button,
+.time-input input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.time-input input:focus {
+  box-shadow: 0 0 0 3px var(--gold);
+}
+
+.time-input__step {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  background: var(--orange);
+  box-shadow: 0 3px 0 var(--orange-edge);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.time-input__step:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--orange-edge);
+}
+
+.time-input__unit {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--brown);
+  opacity: 0.8;
+}
+
+/* =========================================================================
+   Class leaderboard (tổng điểm nhiều buổi)
+   ========================================================================= */
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaderboard__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.leaderboard__header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--orange-edge);
+}
+
+.leaderboard__list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Hàng đặt tuyệt đối, vị trí = translateY (Leaderboard.tsx) -> đổi hạng là tự trượt */
+.leaderboard__row {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 58px;
+  padding: 0 12px 0 8px;
+  border: 3px solid var(--tan);
+  border-radius: 14px;
+  background: #fff;
+  transition:
+    transform 0.8s cubic-bezier(0.34, 1.3, 0.64, 1),
+    border-color 0.3s,
+    background 0.3s;
+}
+
+.leaderboard__list--static {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard__list--static .leaderboard__row {
+  position: static;
+}
+
+.leaderboard__row--place-1 {
+  border-color: var(--gold);
+  background: #fff8dc;
+}
+
+.leaderboard__row.is-rank-up {
+  z-index: 1;
+  border-color: var(--green);
+  background: #eaffe4;
+  animation: rank-up-pop 0.8s ease-out;
+}
+
+@keyframes rank-up-pop {
+  40% {
+    box-shadow: 0 0 0 6px rgba(92, 207, 74, 0.45);
+  }
+}
+
+.leaderboard__place {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: #cdbfae;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.leaderboard__row--place-1 .leaderboard__place {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.leaderboard__row--place-2 .leaderboard__place {
+  background: #b9c4d0;
+  color: var(--ink);
+}
+
+.leaderboard__row--place-3 .leaderboard__place {
+  background: #d98c4a;
+}
+
+.leaderboard__mascot {
+  flex: none;
+  image-rendering: pixelated;
+}
+
+/* Tên + dòng phụ (RANK UP! / +điểm) */
+.leaderboard__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.leaderboard__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.leaderboard__name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard__badge {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  animation: badge-in 0.5s cubic-bezier(0.34, 1.6, 0.64, 1) both 0.5s;
+}
+
+@keyframes badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+.leaderboard__gained {
+  flex: none;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--green-edge);
+  animation: badge-in 0.4s ease-out both;
+}
+
+.leaderboard__games {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.leaderboard__total {
+  flex: none;
+  min-width: 56px;
+  font-size: 22px;
+  font-weight: 800;
+  text-align: right;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard__empty {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.guide-card--gentle {
+  border-left-color: var(--teal);
+}
+.guide-card--easy {
+  border-left-color: var(--green);
+}
+.guide-card--normal {
+  border-left-color: var(--blue);
+}
+.guide-card--fast {
+  border-left-color: var(--orange);
+}
+.guide-card--hard {
+  border-left-color: var(--red);
+}
+
+/* =========================================================================
+   Bố cục ngang (máy chiếu lớp học / máy tính / tablet nằm ngang)
+   .app--landscape do BreadCatcherGame.tsx gắn theo cùng quy tắc với game Phaser
+   ========================================================================= */
+
+.app--landscape .home {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'logo actions'
+    'mascots actions'
+    'mascots toggles'
+    'mascots guide';
+  align-content: center;
+  gap: 18px 48px;
+}
+
+.app--landscape .logo {
+  grid-area: logo;
+  align-self: end;
+}
+.app--landscape .home__mascots {
+  grid-area: mascots;
+  align-self: start;
+}
+.app--landscape .home__actions {
+  grid-area: actions;
+  align-self: end;
+}
+.app--landscape .toggles {
+  grid-area: toggles;
+  align-self: start;
+}
+.app--landscape .guide-link {
+  grid-area: guide;
+}
+
+/* Chia 2 cột kiểu báo: MODE · PACK · LEVEL | TIME · TEAMS */
+.app--landscape .setup__form {
+  display: block;
+  columns: 2;
+  column-gap: 28px;
+}
+
+.app--landscape .setup__form .field {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+
+.app--landscape .setup__start {
+  align-self: center;
+  width: min(100%, 420px);
+}
+
+.app--landscape .standings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.app--landscape .standing {
+  flex-direction: column;
+  text-align: center;
+}
+
+.app--landscape .standing__body {
+  width: 100%;
+}
+
+.app--landscape .standing__head {
+  flex-direction: column;
+  align-items: center;
+}
+
+.app--landscape .stats--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app--landscape .results__actions {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.app--landscape .results__actions > * {
+  flex: 1;
+}
+
+.app--landscape .solo-card,
+.app--landscape .results > .results__row {
+  width: min(100%, 560px);
+  align-self: center;
+}

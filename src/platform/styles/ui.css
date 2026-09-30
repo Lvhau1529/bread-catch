@@ -1,0 +1,376 @@
+/* =========================================================================
+   Buttons
+   ========================================================================= */
+.btn {
+  --btn: var(--orange);
+  --btn-edge: var(--orange-edge);
+  --btn-text: #fff;
+  position: relative;
+  min-height: 52px;
+  padding: 8px 18px 10px;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.28) 0 22%, transparent 22%), var(--btn);
+  box-shadow:
+    0 5px 0 var(--btn-edge),
+    0 7px 0 var(--ink);
+  color: var(--btn-text);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition:
+    transform 0.06s,
+    box-shadow 0.06s;
+}
+
+.btn:active {
+  transform: translateY(5px);
+  box-shadow:
+    0 0 0 var(--btn-edge),
+    0 2px 0 var(--ink);
+}
+
+.btn:focus-visible,
+.option:focus-visible,
+.toggle:focus-visible,
+.icon-btn:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.btn--lg {
+  min-height: 60px;
+  font-size: 22px;
+}
+
+.btn--green {
+  --btn: var(--green);
+  --btn-edge: var(--green-edge);
+}
+
+.btn--blue {
+  --btn: var(--blue);
+  --btn-edge: var(--blue-edge);
+}
+
+.btn--red {
+  --btn: var(--red);
+  --btn-edge: var(--red-edge);
+}
+
+.btn--cream {
+  --btn: var(--cream);
+  --btn-edge: var(--tan);
+  --btn-text: var(--brown);
+  text-shadow: none;
+}
+
+.icon-btn {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 4px 0 var(--blue-edge);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.icon-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--blue-edge);
+}
+
+/* ---- Có bản mới (src/app/pwa) — nổi ở đỉnh màn Home, không đẩy bố cục ---- */
+.update-banner {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 32px);
+  min-height: 44px;
+  padding: 6px 18px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 4px 0 var(--green-edge);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: var(--outline);
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: update-pop 0.35s ease-out;
+}
+
+.update-banner b {
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--green-edge);
+  font-weight: 800;
+}
+
+.update-banner:active {
+  box-shadow: 0 1px 0 var(--green-edge);
+  transform: translate(-50%, 3px);
+}
+
+@keyframes update-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+}
+
+/* ---- Sound toggles ---- */
+.toggles {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 64px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 800;
+  text-shadow: var(--outline);
+  cursor: pointer;
+}
+
+.toggle img {
+  image-rendering: pixelated;
+}
+
+.toggle.is-off span {
+  opacity: 0.6;
+}
+
+/* =========================================================================
+   Form (màn Setup của các game)
+   ========================================================================= */
+.field {
+  margin: 0;
+  padding: 0;
+  border: none;
+  min-width: 0;
+}
+
+.field__label {
+  padding: 0;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--orange-edge);
+}
+
+.field__hint {
+  margin: 6px 2px 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--brown);
+}
+
+.field__hint--hard {
+  color: var(--red-edge);
+}
+
+.options {
+  display: grid;
+  gap: 8px;
+}
+
+.option {
+  --tone: var(--orange);
+  --tone-edge: var(--orange-edge);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 4px 6px;
+  border: 3px solid var(--tan);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--brown);
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.option__label {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.option__sub {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.option.is-selected {
+  border-color: var(--ink);
+  background: var(--tone);
+  box-shadow: 0 3px 0 var(--tone-edge);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.teams {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.name-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 4px 6px;
+  border: 3px solid var(--tan);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.name-input:focus-within {
+  border-color: var(--orange);
+}
+
+.name-input img {
+  image-rendering: pixelated;
+}
+
+.name-input input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--brown);
+  /* ≥ 16px: iOS không tự zoom khi focus */
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.name-input input::placeholder {
+  color: #c4a883;
+}
+
+.text-btn {
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.text-btn--danger {
+  color: var(--red-edge);
+}
+
+/* Xác nhận reset: câu hỏi 1 dòng, 2 nút cạnh nhau, chiếm trọn chiều ngang header */
+.reset-confirm {
+  display: grid;
+  flex-basis: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+  border: 3px dashed var(--red);
+  border-radius: 14px;
+  background: #fff1f1;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--red-edge);
+}
+
+.reset-confirm > span {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.reset-confirm .btn {
+  min-height: 44px;
+  padding: 4px 14px 6px;
+  font-size: 15px;
+}
+
+/* =========================================================================
+   Hướng dẫn (tiếng Việt) cho giáo viên / phụ huynh
+   ========================================================================= */
+.guide-link {
+  align-self: center;
+  justify-self: center;
+  min-height: 44px;
+  padding: 6px 20px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  box-shadow: 0 4px 0 var(--tan);
+  color: var(--brown);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.guide-link:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--tan);
+}
+
+.field__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field__help {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 2px solid var(--orange-edge);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--orange-edge);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Vùng chạm lớn hơn nút nhìn thấy */
+.field__help::after {
+  content: '';
+  position: absolute;
+  width: 44px;
+  height: 44px;
+}

@@ -12,15 +12,16 @@ import '@fontsource/baloo-2/vietnamese-700.css';
 import '@fontsource/baloo-2/vietnamese-800.css';
 // Andika: chữ học (chữ cái, từ vựng) — font dành cho trẻ tập đọc
 import '@fontsource/andika/latin-700.css';
-import '@/app/styles.css';
-import App from '@/app/App';
-import { initPwa } from '@/app/pwa/updateStore';
+import '@/platform/styles/index.css';
+import { GAMES } from '@/games';
+import PlatformApp from '@/platform/PlatformApp';
+import { initPwa } from '@/platform/pwa/updateStore';
 
 initPwa();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <PlatformApp games={GAMES} />
     {/* Vercel Web Analytics: chỉ gửi dữ liệu khi chạy trên Vercel (bật Analytics trong dashboard) */}
     <Analytics />
   </StrictMode>,

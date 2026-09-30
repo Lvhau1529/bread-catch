@@ -1,37 +1,35 @@
 """
-Chuyển audio master (WAV) trong `_source/audio/` thành file dùng trong game (`public/assets/`).
+Chuyển audio master (WAV) trong `_source/` thành file dùng trong game (`public/assets/`).
 
-Chạy:  python tools/build_audio.py
+Chạy:  pnpm assets:audio   (= python tools/build_audio.py)
 
-Audio gốc lấy từ Phonics Bread Catcher resource pack (03_AUDIO/master_wav) — đã được
-mix sẵn nên chỉ encode lại, KHÔNG normalize. Volume từng key nằm ở src/game/config/assets.ts
-(theo audio_manifest.json của pack).
+Audio gốc của các resource pack đã được mix sẵn nên chỉ encode lại, KHÔNG normalize.
+Volume từng key nằm trong code (platform/audio/sfx.ts và config asset của từng game).
 
-- SFX -> public/assets/audio/sfx/<key>.ogg|.mp3
-- BGM -> public/assets/music/<key>.ogg|.mp3
+Mỗi dòng trong JOBS: thư mục WAV nguồn -> thư mục xuất (tên file giữ nguyên = key trong game).
 (.ogg cho Chrome/Android/Firefox, .mp3 fallback cho iOS Safari)
 """
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import numpy as np
 import soundfile as sf
 
-ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "_source" / "audio"
-OUT = ROOT / "public" / "assets"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common.paths import PUBLIC_ASSETS, SOURCE  # noqa: E402
 
-# Thư mục nguồn -> thư mục xuất. Tên file = key trong game.
-GROUPS = {
-    "sfx": "audio/sfx",
-    "bgm": "music",
-}
+JOBS = [
+    # SFX dùng chung cho mọi game (từ resource pack của Bread Catcher)
+    ("bread-catcher/audio/sfx", "shared/sfx"),
+    ("bread-catcher/audio/bgm", "bread-catcher/music"),
+    ("food-stream/audio/bgm", "food-stream/music"),
+]
 
 
-def write_both(data: np.ndarray, rate: int, name: str) -> None:
-    base = OUT / name
+def write_both(data: np.ndarray, rate: int, base: Path) -> None:
     base.parent.mkdir(parents=True, exist_ok=True)
     data = np.clip(data, -1, 1).astype(np.float32)
     targets = ((".ogg", "OGG", "VORBIS"), (".mp3", "MP3", "MPEG_LAYER_III"))
@@ -43,11 +41,11 @@ def write_both(data: np.ndarray, rate: int, name: str) -> None:
 
 
 def main() -> None:
-    for folder, out_dir in GROUPS.items():
-        for wav in sorted((SRC / folder).glob("*.wav")):
+    for source, target in JOBS:
+        for wav in sorted((SOURCE / source).glob("*.wav")):
             data, rate = sf.read(wav, always_2d=True)
-            write_both(data, rate, f"{out_dir}/{wav.stem}")
-            print(f"{folder:4s} {wav.stem:22s} {len(data) / rate:5.2f}s  {data.shape[1]}ch {rate}Hz")
+            write_both(data, rate, PUBLIC_ASSETS / target / wav.stem)
+            print(f"{target:20s} {wav.stem:28s} {len(data) / rate:5.2f}s  {data.shape[1]}ch {rate}Hz")
 
 
 if __name__ == "__main__":

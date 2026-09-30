@@ -1,0 +1,237 @@
+{
+  "letter_bread_01": {
+    "path": "assets/bread-catcher/bread/letter_bread_01.png",
+    "width": 66,
+    "height": 55
+  },
+  "letter_bread_02": {
+    "path": "assets/bread-catcher/bread/letter_bread_02.png",
+    "width": 78,
+    "height": 69
+  },
+  "letter_bread_03": {
+    "path": "assets/bread-catcher/bread/letter_bread_03.png",
+    "width": 70,
+    "height": 62
+  },
+  "letter_bread_04": {
+    "path": "assets/bread-catcher/bread/letter_bread_04.png",
+    "width": 74,
+    "height": 68
+  },
+  "basket_01": {
+    "path": "assets/bread-catcher/basket/basket_01.png",
+    "width": 84,
+    "height": 86
+  },
+  "basket_02": {
+    "path": "assets/bread-catcher/basket/basket_02.png",
+    "width": 92,
+    "height": 88
+  },
+  "basket_03": {
+    "path": "assets/bread-catcher/basket/basket_03.png",
+    "width": 100,
+    "height": 87
+  },
+  "basket_04": {
+    "path": "assets/bread-catcher/basket/basket_04.png",
+    "width": 110,
+    "height": 103
+  },
+  "egg_broken": {
+    "path": "assets/bread-catcher/items/egg_broken.png",
+    "width": 52,
+    "height": 31
+  },
+  "star": {
+    "path": "assets/bread-catcher/items/star.png",
+    "width": 42,
+    "height": 42
+  },
+  "sparkle": {
+    "path": "assets/bread-catcher/fx/sparkle.png",
+    "width": 21,
+    "height": 24
+  },
+  "catch_flash": {
+    "path": "assets/bread-catcher/fx/catch_flash.png",
+    "width": 72,
+    "height": 53
+  },
+  "panel_large": {
+    "path": "assets/bread-catcher/ui/panel_large.png",
+    "width": 320,
+    "height": 217
+  },
+  "panel_small": {
+    "path": "assets/bread-catcher/ui/panel_small.png",
+    "width": 220,
+    "height": 195
+  },
+  "bg_bakery_01": {
+    "path": "assets/bread-catcher/backgrounds/bg_bakery_01.png",
+    "width": 360,
+    "height": 800
+  },
+  "bg_bakery_01_wide": {
+    "path": "assets/bread-catcher/backgrounds/bg_bakery_01_wide.png",
+    "width": 960,
+    "height": 540
+  },
+  "bg_bakery_02": {
+    "path": "assets/bread-catcher/backgrounds/bg_bakery_02.png",
+    "width": 360,
+    "height": 800
+  },
+  "bg_bakery_02_wide": {
+    "path": "assets/bread-catcher/backgrounds/bg_bakery_02_wide.png",
+    "width": 960,
+    "height": 540
+  },
+  "bg_bakery_03": {
+    "path": "assets/bread-catcher/backgrounds/bg_bakery_03.png",
+    "width": 360,
+    "height": 800
+  },
+  "bg_bakery_03_wide": {
+    "path": "assets/bread-catcher/backgrounds/bg_bakery_03_wide.png",
+    "width": 960,
+    "height": 540
+  },
+  "tung_0": {
+    "path": "assets/bread-catcher/brainrot/tung_0.png",
+    "width": 84,
+    "height": 96
+  },
+  "tung_1": {
+    "path": "assets/bread-catcher/brainrot/tung_1.png",
+    "width": 84,
+    "height": 96
+  },
+  "lirili_0": {
+    "path": "assets/bread-catcher/brainrot/lirili_0.png",
+    "width": 90,
+    "height": 102
+  },
+  "lirili_1": {
+    "path": "assets/bread-catcher/brainrot/lirili_1.png",
+    "width": 90,
+    "height": 102
+  },
+  "clock": {
+    "path": "assets/bread-catcher/brainrot/clock.png",
+    "width": 45,
+    "height": 45
+  },
+  "tralalero_0": {
+    "path": "assets/bread-catcher/brainrot/tralalero_0.png",
+    "width": 114,
+    "height": 96
+  },
+  "tralalero_1": {
+    "path": "assets/bread-catcher/brainrot/tralalero_1.png",
+    "width": 114,
+    "height": 96
+  },
+  "bombardiro_0": {
+    "path": "assets/bread-catcher/brainrot/bombardiro_0.png",
+    "width": 138,
+    "height": 84
+  },
+  "bombardiro_1": {
+    "path": "assets/bread-catcher/brainrot/bombardiro_1.png",
+    "width": 138,
+    "height": 84
+  },
+  "bomb": {
+    "path": "assets/bread-catcher/brainrot/bomb.png",
+    "width": 46,
+    "height": 52
+  },
+  "mascot_lion": {
+    "path": "assets/bread-catcher/phonics/mascot_lion.png",
+    "width": 72,
+    "height": 81
+  },
+  "mascot_tiger": {
+    "path": "assets/bread-catcher/phonics/mascot_tiger.png",
+    "width": 72,
+    "height": 81
+  },
+  "mascot_panda": {
+    "path": "assets/bread-catcher/phonics/mascot_panda.png",
+    "width": 72,
+    "height": 81
+  },
+  "mascot_bunny": {
+    "path": "assets/bread-catcher/phonics/mascot_bunny.png",
+    "width": 72,
+    "height": 81
+  },
+  "crown": {
+    "path": "assets/bread-catcher/phonics/crown.png",
+    "width": 54,
+    "height": 36
+  },
+  "dice_1": {
+    "path": "assets/bread-catcher/phonics/dice_1.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_2": {
+    "path": "assets/bread-catcher/phonics/dice_2.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_3": {
+    "path": "assets/bread-catcher/phonics/dice_3.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_4": {
+    "path": "assets/bread-catcher/phonics/dice_4.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_5": {
+    "path": "assets/bread-catcher/phonics/dice_5.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_6": {
+    "path": "assets/bread-catcher/phonics/dice_6.png",
+    "width": 64,
+    "height": 64
+  },
+  "gift_closed_01": {
+    "path": "assets/bread-catcher/phonics/gift_closed_01.png",
+    "width": 80,
+    "height": 80
+  },
+  "gift_open_01": {
+    "path": "assets/bread-catcher/phonics/gift_open_01.png",
+    "width": 88,
+    "height": 96
+  },
+  "gift_closed_02": {
+    "path": "assets/bread-catcher/phonics/gift_closed_02.png",
+    "width": 80,
+    "height": 80
+  },
+  "gift_open_02": {
+    "path": "assets/bread-catcher/phonics/gift_open_02.png",
+    "width": 88,
+    "height": 96
+  },
+  "gift_closed_03": {
+    "path": "assets/bread-catcher/phonics/gift_closed_03.png",
+    "width": 80,
+    "height": 80
+  },
+  "gift_open_03": {
+    "path": "assets/bread-catcher/phonics/gift_open_03.png",
+    "width": 88,
+    "height": 96
+  }
+}

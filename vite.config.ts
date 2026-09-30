@@ -40,9 +40,9 @@ export default defineConfig({
       injectRegister: false,
       includeAssets: ['icons/favicon.png', 'icons/apple-touch-icon.png'],
       manifest: {
-        name: 'Phonics Bread Catcher',
-        short_name: 'Phonics Bread',
-        description: 'Classroom phonics game: catch the letter breads in order to build each word',
+        name: 'Phonics Arcade',
+        short_name: 'Phonics Arcade',
+        description: 'Classroom phonics games for kindergarten: Bread Catcher, Food Stream and more',
         lang: 'en',
         display: 'fullscreen',
         orientation: 'portrait',
@@ -59,8 +59,8 @@ export default defineConfig({
       workbox: {
         // Chuyển một lần từ bản 'autoUpdate' cũ sang bản có nút UPDATE (xem public/sw-migrate.js)
         importScripts: ['sw-migrate.js'],
-        // Precache mọi thứ cần để chơi offline (nhạc của resource pack nhỏ nên cache luôn)
-        globPatterns: ['**/*.{js,css,html,png,json,woff2}', 'assets/{audio,music}/**/*.{ogg,mp3}'],
+        // Precache mọi thứ cần để chơi offline mọi game (nhạc của các resource pack nhỏ nên cache luôn)
+        globPatterns: ['**/*.{js,css,html,png,json,woff2}', 'assets/**/*.{ogg,mp3}'],
         // Ảnh nền bản ngang (máy chiếu) chỉ cache khi thực sự dùng — điện thoại không phải tải
         globIgnores: ['**/*_wide.png'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,

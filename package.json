@@ -1,9 +1,9 @@
 {
-  "name": "phonics-bread-catcher",
-  "version": "2.0.0",
+  "name": "phonics-arcade",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
-  "description": "Phonics Bread Catcher — classroom phonics game built with Phaser 3 + React",
+  "description": "Phonics Arcade — classroom phonics games (Bread Catcher, Food Stream) built with Phaser 3 + React",
   "engines": {
     "node": ">=22.12"
   },
@@ -14,9 +14,10 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "assets:sprites": "python tools/build_sprites.py",
+    "assets:bread": "python tools/bread_catcher/build_sprites.py",
+    "assets:food-stream": "python tools/food_stream/build_sprites.py",
     "assets:audio": "python tools/build_audio.py",
-    "assets": "pnpm run assets:sprites && pnpm run assets:audio"
+    "assets": "pnpm run assets:bread && pnpm run assets:food-stream && pnpm run assets:audio"
   },
   "dependencies": {
     "@fontsource/andika": "^5.3.0",
