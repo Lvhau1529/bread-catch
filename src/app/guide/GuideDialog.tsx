@@ -1,8 +1,9 @@
 /**
  * HƯỚNG DẪN cho giáo viên / phụ huynh (tiếng Việt).
- * Mở ở Home (nút HƯỚNG DẪN) hoặc từ nút "?" cạnh từng mục ở Setup — tự cuộn tới đúng phần.
+ * Mở ở Home (nút GUIDE) hoặc từ nút "?" cạnh từng mục ở Setup — tự cuộn tới đúng phần.
+ * Mục lục phía trên tự sáng theo phần đang đọc (scroll-spy).
  */
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { mascotUrl } from '@/app/assets';
 import {
   COMBOS,
@@ -21,15 +22,71 @@ import { PACK_ORDER, PACKS } from '@/session/content';
 import { LEVEL_ORDER, LEVELS, RULES } from '@/session/settings';
 import { TEAM_MASCOTS } from '@/session/teams';
 
+/** Tiêu đề phần cách đỉnh khung đọc ≤ ngần này (px) thì coi là "đang đọc" */
+const SPY_OFFSET = 48;
+/** Sau khi bấm mục lục, bỏ qua scroll-spy trong lúc cuộn mượt (ms) */
+const JUMP_LOCK_MS = 800;
+
+const LAST_SECTION = GUIDE_SECTIONS[GUIDE_SECTIONS.length - 1].id;
+
 export default function GuideDialog() {
   const { open, section } = useStore(guideStore, (state) => state);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState<GuideSectionId>(section);
+  const lockUntil = useRef(0);
+
+  const scrollToSection = useCallback((id: GuideSectionId, behavior: ScrollBehavior) => {
+    const body = bodyRef.current;
+    const heading = body?.querySelector<HTMLElement>(`#guide-${id}`);
+    lockUntil.current = performance.now() + JUMP_LOCK_MS;
+    setActive(id);
+    if (!body || !heading) return;
+    // Chỉ cuộn khung đọc (scrollIntoView có thể kéo cả các khung bên ngoài)
+    const top = body.scrollTop + heading.getBoundingClientRect().top - body.getBoundingClientRect().top;
+    body.scrollTo({ top: Math.max(0, top - 8), behavior });
+  }, []);
+
+  // Cuộn mượt xong thì mở khoá scroll-spy ngay (trình duyệt có hỗ trợ "scrollend")
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!open || !body) return undefined;
+    const onScrollEnd = () => {
+      lockUntil.current = 0;
+    };
+    body.addEventListener('scrollend', onScrollEnd);
+    return () => body.removeEventListener('scrollend', onScrollEnd);
+  }, [open]);
 
   // Mở tới đúng phần được yêu cầu
   useEffect(() => {
-    if (!open) return;
-    bodyRef.current?.querySelector(`#guide-${section}`)?.scrollIntoView({ block: 'start' });
-  }, [open, section]);
+    if (open) scrollToSection(section, 'auto');
+  }, [open, section, scrollToSection]);
+
+  // Scroll-spy: phần có tiêu đề đã chạm gần đỉnh khung đọc; cuộn tới cuối thì là phần cuối
+  const updateActive = () => {
+    const body = bodyRef.current;
+    if (!body || performance.now() < lockUntil.current) return;
+    const top = body.getBoundingClientRect().top;
+    let current: GuideSectionId = GUIDE_SECTIONS[0].id;
+    if (body.scrollTop + body.clientHeight >= body.scrollHeight - 4) {
+      current = LAST_SECTION;
+    } else {
+      GUIDE_SECTIONS.forEach(({ id }) => {
+        const heading = body.querySelector(`#guide-${id}`);
+        if (heading && heading.getBoundingClientRect().top - top <= SPY_OFFSET) current = id;
+      });
+    }
+    setActive(current);
+  };
+
+  // Mục đang sáng luôn nằm giữa hàng mục lục (chỉ cuộn ngang, không kéo cả hộp thoại)
+  useEffect(() => {
+    const nav = navRef.current;
+    const chip = nav?.querySelector<HTMLElement>('.is-active');
+    if (!nav || !chip) return;
+    nav.scrollTo({ left: chip.offsetLeft - (nav.clientWidth - chip.offsetWidth) / 2, behavior: 'smooth' });
+  }, [active, open]);
 
   // Esc để đóng
   useEffect(() => {
@@ -42,10 +99,6 @@ export default function GuideDialog() {
   }, [open]);
 
   if (!open) return null;
-
-  const jumpTo = (id: GuideSectionId) => {
-    bodyRef.current?.querySelector(`#guide-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
 
   return (
     <div className="guide-backdrop" onClick={closeGuide}>
@@ -72,15 +125,21 @@ export default function GuideDialog() {
           </button>
         </header>
 
-        <nav className="guide__nav" aria-label="Mục lục">
+        <nav className="guide__nav" aria-label="Mục lục" ref={navRef}>
           {GUIDE_SECTIONS.map((item) => (
-            <button key={item.id} type="button" onClick={() => jumpTo(item.id)}>
+            <button
+              key={item.id}
+              type="button"
+              className={item.id === active ? 'is-active' : undefined}
+              aria-current={item.id === active ? 'true' : undefined}
+              onClick={() => scrollToSection(item.id, 'smooth')}
+            >
               {item.title}
             </button>
           ))}
         </nav>
 
-        <div className="guide__body" ref={bodyRef}>
+        <div className="guide__body" ref={bodyRef} onScroll={updateActive}>
           <Section id="about" title="Trò chơi là gì?">
             <p>
               <b>Phonics Bread Catcher</b> là trò chơi luyện <b>phonics</b> (đánh vần – ghép âm tiếng Anh) cho

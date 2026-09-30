@@ -145,6 +145,101 @@ input {
 }
 
 /* =========================================================================
+   Thanh cuộn kiểu "kẹo" — cùng tông với nút trong game
+   (thanh kéo cam viền nâu đậm, rãnh nâu mờ trên nền game / kem trong panel)
+   ========================================================================= */
+.screen-layer,
+.guide__body,
+.guide__nav,
+.guide__table-wrap {
+  --sb-track: rgba(30, 12, 4, 0.45);
+  --sb-track-border: rgba(255, 244, 220, 0.25);
+}
+
+.guide__body,
+.guide__nav,
+.guide__table-wrap {
+  --sb-track: #f1dfbf;
+  --sb-track-border: var(--tan);
+}
+
+/* Firefox (không hỗ trợ ::-webkit-scrollbar): chỉ đổi được màu */
+@supports not selector(::-webkit-scrollbar) {
+  .screen-layer,
+  .guide__body,
+  .guide__nav,
+  .guide__table-wrap {
+    scrollbar-color: var(--orange) var(--sb-track);
+    scrollbar-width: thin;
+  }
+}
+
+.screen-layer::-webkit-scrollbar,
+.guide__body::-webkit-scrollbar {
+  width: 16px;
+}
+
+.guide__nav::-webkit-scrollbar,
+.guide__table-wrap::-webkit-scrollbar {
+  height: 12px;
+}
+
+.screen-layer::-webkit-scrollbar-track,
+.guide__body::-webkit-scrollbar-track,
+.guide__nav::-webkit-scrollbar-track,
+.guide__table-wrap::-webkit-scrollbar-track {
+  margin: 10px;
+  border: 2px solid var(--sb-track-border);
+  border-radius: 999px;
+  background: var(--sb-track);
+}
+
+.screen-layer::-webkit-scrollbar-thumb,
+.guide__body::-webkit-scrollbar-thumb,
+.guide__nav::-webkit-scrollbar-thumb,
+.guide__table-wrap::-webkit-scrollbar-thumb {
+  min-height: 56px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  /* Vệt sáng bên trái + gờ tối bên phải như nút kẹo */
+  background: linear-gradient(to right, #ffd48a 0 30%, var(--orange) 30% 70%, var(--orange-edge) 70%);
+}
+
+.guide__nav::-webkit-scrollbar-thumb,
+.guide__table-wrap::-webkit-scrollbar-thumb {
+  min-width: 56px;
+  border-width: 2px;
+  background: linear-gradient(to bottom, #ffd48a 0 30%, var(--orange) 30% 70%, var(--orange-edge) 70%);
+}
+
+.screen-layer::-webkit-scrollbar-thumb:hover,
+.guide__body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to right, #ffe2ad 0 30%, #ffb547 30% 70%, var(--orange) 70%);
+}
+
+.guide__nav::-webkit-scrollbar-thumb:hover,
+.guide__table-wrap::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ffe2ad 0 30%, #ffb547 30% 70%, var(--orange) 70%);
+}
+
+.screen-layer::-webkit-scrollbar-thumb:active,
+.guide__body::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(to right, #ffc15e 0 30%, var(--orange-edge) 30%);
+}
+
+.screen-layer::-webkit-scrollbar-button,
+.guide__body::-webkit-scrollbar-button,
+.guide__nav::-webkit-scrollbar-button,
+.guide__table-wrap::-webkit-scrollbar-button {
+  display: none;
+}
+
+.screen-layer::-webkit-scrollbar-corner,
+.guide__body::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* =========================================================================
    Buttons
    ========================================================================= */
 .btn {
@@ -1196,7 +1291,16 @@ input {
   border-bottom: 3px solid var(--tan);
 }
 
+.guide__nav {
+  position: relative;
+}
+
 .guide__nav button {
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
   flex: none;
   min-height: 36px;
   padding: 4px 12px;
@@ -1207,6 +1311,15 @@ input {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+}
+
+/* Mục đang đọc */
+.guide__nav button.is-active {
+  border-color: var(--ink);
+  background: var(--orange);
+  box-shadow: 0 3px 0 var(--orange-edge);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
 .guide__body {
