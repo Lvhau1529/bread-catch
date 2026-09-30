@@ -1,10 +1,23 @@
 /**
- * Background của stage. Ảnh 360x800 được đặt giữa màn hình nên máy thấp
- * (640) chỉ cắt bớt trên/dưới, máy dài hiển thị trọn vẹn.
+ * Background của stage, tự chọn bản dọc (360x800) hoặc ngang (960x540, "_wide")
+ * theo hướng màn hình và phủ kín màn hình (cắt bớt phần thừa, không méo).
  */
 import type Phaser from 'phaser';
 import { DEPTH } from '@/game/config/gameConfig';
-import { view } from '@/game/core/view';
+import { isLandscape, view } from '@/game/core/view';
+
+/** Key texture phù hợp hướng màn hình, vd "bg_bakery_01" -> "bg_bakery_01_wide" */
+function backgroundKey(scene: Phaser.Scene, key: string): string {
+  const wide = `${key}_wide`;
+  return isLandscape(scene) && scene.textures.exists(wide) ? wide : key;
+}
+
+/** Đổi ảnh (giữ tint) và scale kiểu "cover" */
+export function setStageBackground(image: Phaser.GameObjects.Image, key: string): void {
+  const { width, height } = view(image.scene);
+  image.setTexture(backgroundKey(image.scene, key));
+  image.setScale(Math.max(width / image.width, height / image.height));
+}
 
 export function addStageBackground(
   scene: Phaser.Scene,
@@ -13,8 +26,10 @@ export function addStageBackground(
   tint = 0xffffff,
 ): Phaser.GameObjects.Image {
   const { width, height } = view(scene);
-  return scene.add
-    .image(width / 2, height / 2, key)
+  const image = scene.add
+    .image(width / 2, height / 2, backgroundKey(scene, key))
     .setDepth(DEPTH.BACKGROUND)
     .setTint(tint);
+  setStageBackground(image, key);
+  return image;
 }

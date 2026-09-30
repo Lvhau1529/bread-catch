@@ -1,5 +1,6 @@
 /**
  * Gói từ vựng (PHONICS PACK) dựng từ src/data/phonics_word_bank.json.
+ * Chỉ dùng phần Phonics của bảng từ (không dùng phần ESL review).
  * Chữ luôn viết HOA khi chơi (plan §34: chữ rơi in hoa, cỡ lớn).
  */
 import wordBank from '@/data/phonics_word_bank.json';
@@ -11,9 +12,6 @@ export interface PackDef {
   words: string[];
 }
 
-/** Từ tranh dài quá thì trẻ 5 tuổi không kịp hứng hết trong một lượt */
-const MAX_PICTURE_WORD_LENGTH = 6;
-
 const { packs } = wordBank;
 
 /** Chỉ giữ từ đơn gồm chữ cái, viết hoa, bỏ trùng */
@@ -22,35 +20,18 @@ function normalize(words: readonly string[]): string[] {
   return [...new Set(clean)];
 }
 
-const pictureWords = normalize(Object.values(packs.phonics_picture_vocab).flat()).filter(
-  (word) => word.length <= MAX_PICTURE_WORD_LENGTH,
-);
+const earlyWords = normalize(packs.early_blending);
+const blendingWords = normalize([...packs.blending_core, ...packs.longer_review]);
+const pictureWords = normalize(Object.values(packs.phonics_picture_vocab).flat());
 
 export const PACKS: Record<PackId, PackDef> = {
-  early_blending: {
-    id: 'early_blending',
-    label: 'EARLY BLENDING',
-    words: normalize(packs.early_blending),
-  },
-  blending_core: {
-    id: 'blending_core',
-    label: 'BLENDING WORDS',
-    words: normalize(packs.blending_core),
-  },
-  picture_vocab: {
-    id: 'picture_vocab',
-    label: 'PICTURE VOCABULARY',
-    words: pictureWords,
-  },
+  blending_core: { id: 'blending_core', label: 'BLENDING WORDS', words: blendingWords },
+  early_blending: { id: 'early_blending', label: 'EARLY BLENDING', words: earlyWords },
+  picture_vocab: { id: 'picture_vocab', label: 'PICTURE VOCABULARY', words: pictureWords },
   mixed_review: {
     id: 'mixed_review',
     label: 'MIXED REVIEW',
-    words: normalize([
-      ...packs.early_blending,
-      ...packs.blending_core,
-      ...packs.longer_review,
-      ...pictureWords,
-    ]),
+    words: normalize([...earlyWords, ...blendingWords, ...pictureWords]),
   },
 };
 

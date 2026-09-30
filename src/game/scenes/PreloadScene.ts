@@ -5,6 +5,7 @@
 import Phaser from 'phaser';
 import { MUSIC, SFX, SPRITE_MANIFEST, musicUrls, sfxUrls, type SpriteManifest } from '@/game/config/assets';
 import { SCENES } from '@/game/core/keys';
+import { isLandscape } from '@/game/core/view';
 import { registerBrainrotAnims } from '@/game/objects/brainrot';
 
 /** Game phát event này khi asset đã sẵn sàng (SceneDirector bắt đầu điều phối) */
@@ -17,7 +18,15 @@ export default class PreloadScene extends Phaser.Scene {
 
   preload(): void {
     const manifest = this.cache.json.get(SPRITE_MANIFEST.key) as SpriteManifest;
-    Object.entries(manifest).forEach(([key, info]) => this.load.image(key, info.path));
+    // Ảnh nền chỉ tải bộ đúng hướng màn hình (bản dọc hoặc bản ngang "_wide")
+    const landscape = isLandscape(this);
+    const needed = ([key]: [string, unknown]) => {
+      if (key.endsWith('_wide')) return landscape;
+      return !(landscape && `${key}_wide` in manifest);
+    };
+    Object.entries(manifest)
+      .filter(needed)
+      .forEach(([key, info]) => this.load.image(key, info.path));
     Object.values(SFX).forEach((key) => this.load.audio(key, sfxUrls(key)));
     Object.values(MUSIC).forEach((key) => this.load.audio(key, musicUrls(key)));
   }

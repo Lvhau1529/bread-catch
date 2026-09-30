@@ -748,6 +748,187 @@ input {
   color: #8a7c74;
 }
 
+/* ---- Ô tự nhập thời gian ---- */
+.time-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 3px solid var(--tan);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.time-input.is-custom {
+  border-color: var(--orange);
+}
+
+.time-input__label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--orange-edge);
+}
+
+.time-input input {
+  width: 64px;
+  min-height: 44px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background: var(--paper);
+  color: var(--brown);
+  /* ≥ 16px: iOS không tự zoom khi focus */
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.time-input input::-webkit-inner-spin-button,
+.time-input input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.time-input input:focus {
+  box-shadow: 0 0 0 3px var(--gold);
+}
+
+.time-input__step {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  background: var(--orange);
+  box-shadow: 0 3px 0 var(--orange-edge);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.time-input__step:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--orange-edge);
+}
+
+.time-input__unit {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--brown);
+  opacity: 0.8;
+}
+
+/* =========================================================================
+   Bố cục ngang (máy chiếu lớp học / máy tính / tablet nằm ngang)
+   .app--landscape do App.tsx gắn theo cùng quy tắc với game Phaser
+   ========================================================================= */
+.app--landscape .screen {
+  max-width: 1000px;
+}
+
+.app--landscape .home {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'logo actions'
+    'mascots actions'
+    'mascots toggles'
+    'credit credit';
+  align-content: center;
+  gap: 18px 48px;
+}
+
+.app--landscape .logo {
+  grid-area: logo;
+  align-self: end;
+}
+.app--landscape .home__mascots {
+  grid-area: mascots;
+  align-self: start;
+}
+.app--landscape .home__actions {
+  grid-area: actions;
+  align-self: end;
+}
+.app--landscape .toggles {
+  grid-area: toggles;
+  align-self: start;
+}
+.app--landscape .credit {
+  grid-area: credit;
+}
+
+/* Chia 2 cột kiểu báo: MODE · PACK · LEVEL | TIME · TEAMS */
+.app--landscape .setup__form {
+  display: block;
+  columns: 2;
+  column-gap: 28px;
+}
+
+.app--landscape .setup__form .field {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+
+.app--landscape .setup__start {
+  align-self: center;
+  width: min(100%, 420px);
+}
+
+.app--landscape .standings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.app--landscape .standing {
+  flex-direction: column;
+  text-align: center;
+}
+
+.app--landscape .standing__body {
+  width: 100%;
+}
+
+.app--landscape .standing__head {
+  flex-direction: column;
+  align-items: center;
+}
+
+.app--landscape .stats--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app--landscape .results__actions {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.app--landscape .results__actions > * {
+  flex: 1;
+}
+
+.app--landscape .solo-card,
+.app--landscape .results > .results__row {
+  width: min(100%, 560px);
+  align-self: center;
+}
+
+/* Màn hình lớn (máy chiếu, TV): phóng to UI để cả lớp đọc được */
+@media (min-width: 1280px) and (min-height: 700px) {
+  .app--landscape .screen {
+    zoom: 1.3;
+  }
+}
+
 /* =========================================================================
    Nhắc xoay dọc (chỉ trên thiết bị cảm ứng nằm ngang)
    ========================================================================= */

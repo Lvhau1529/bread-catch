@@ -1,7 +1,8 @@
 # 🍞 Phonics Bread Catcher
 
 Game phonics cho lớp mẫu giáo (~5 tuổi): bánh chữ rơi xuống, di chuyển rổ để **hứng đúng thứ tự
-các chữ** ghép thành từ mục tiêu. Mobile-first, chạy trên web, cài được như app nhờ PWA.
+các chữ** ghép thành từ mục tiêu. Chạy trên web, cài được như app nhờ PWA; bố cục **dọc** cho điện thoại
+và **ngang** cho máy chiếu lớp học / máy tính / tablet.
 Giao diện trong game hoàn toàn bằng tiếng Anh.
 
 Thiết kế chi tiết: [Phonics_Bread_Catcher_Game_Plan.md](Phonics_Bread_Catcher_Game_Plan.md)
@@ -37,8 +38,8 @@ pnpm format       # Prettier
 
 - **Home:** `PLAY CLASS MODE` (3 đội) hoặc `PLAY SOLO MODE` (1 người) + bật/tắt SOUND · MUSIC · VOICE.
 - **Setup:** chế độ, gói từ (Blending Words / Early Blending / Picture Vocabulary / Mixed Review),
-  cấp độ, thời gian (AUTO / 45–120s), tên đội (bỏ trống = LIONS / TIGERS / PANDAS).
-  Lựa chọn được nhớ cho lần sau.
+  cấp độ, thời gian (AUTO / 45–120s, hoặc **tự nhập** 15–600 giây ở ô CUSTOM), tên đội
+  (bỏ trống = LIONS / TIGERS / PANDAS). Lựa chọn được nhớ cho lần sau.
 - **Magic Dice** (Class): thứ tự lượt được xáo **một lần** đầu buổi, xúc xắc chỉ hé lộ đội kế tiếp
   → mỗi đội chơi đúng 1 lần.
 - **Một lượt:** `GET READY! 3-2-1-GO!` → tối đa **5 từ**. Hứng đúng lần lượt từng chữ; hứng nhầm
@@ -53,6 +54,30 @@ pnpm format       # Prettier
 
 **Điều khiển:** mobile kéo ngang ở bất kỳ đâu (kéo tương đối, ngón tay không che rổ);
 desktop dùng chuột hoặc ← → / A D, `P` / `Esc` để tạm dừng. Game tự dừng khi chuyển app.
+
+### Từ vựng
+
+Lấy toàn bộ phần **Phonics** của bảng học (M A S P T I N C O D) trong `src/data/phonics_word_bank.json`;
+phần ESL của bảng không dùng.
+
+| Gói                | Nội dung                                                          |
+| ------------------ | ----------------------------------------------------------------- |
+| BLENDING WORDS     | map, mop, man… + miss, cast (mặc định)                            |
+| EARLY BLENDING     | am, at, it, in, on, ma                                            |
+| PICTURE VOCABULARY | 68 từ tranh theo chữ cái (monkey, alligator, astronaut, dinosaur…) |
+| MIXED REVIEW       | tất cả các gói trên                                               |
+
+Từ dài (tới 9 chữ) tự thu nhỏ ô chữ cho vừa màn hình; nên chọn thời gian dài hơn cho gói từ tranh.
+
+### Bố cục ngang (máy chiếu lớp học)
+
+- Tự bật khi màn hình rộng hơn cao (máy tính nối máy chiếu, TV, tablet nằm ngang).
+  Điện thoại xoay ngang vẫn chơi dọc và hiện lời nhắc xoay máy.
+- Game: toạ độ cao 540, rộng 720–960 (4:3 → 16:9); HUD gọn 1 hàng, ô từ ở giữa, ảnh nền bản ngang;
+  màn mở quà chia 2 cột.
+- Màn React: Home / Setup chia 2 cột, Final Results xếp 3 đội nằm ngang; màn hình ≥ 1280×700 tự phóng to UI.
+- Đổi hướng màn hình khi đang ở Home / Setup / Results thì game tự chuyển bố cục; đang chơi dở thì
+  chờ hết phiên mới chuyển.
 
 ### Cấp độ
 
@@ -112,9 +137,10 @@ src/
 (Phaser vẽ nền động phía sau), `SceneDirector` chạy các scene Phaser cho play / gift.
 Hai bên chỉ nói chuyện qua `appStore` và `GameBridge`.
 
-**Độ phân giải:** toạ độ game là 360 × (640–800) nhưng canvas render gấp đôi (`RENDER_SCALE`)
-qua camera zoom → chữ học sắc nét, sprite pixel-art vẫn giữ chất pixel. Code layout luôn dùng
-`view(scene)` (toạ độ logic), không dùng `scene.scale`.
+**Độ phân giải:** toạ độ game là 360 × (640–800) khi dọc, (720–960) × 540 khi ngang, nhưng canvas
+render gấp đôi (`RENDER_SCALE`) qua camera zoom → chữ học sắc nét, sprite pixel-art vẫn giữ chất pixel.
+Code layout luôn dùng `view(scene)` / `isLandscape(scene)` (toạ độ logic), không dùng `scene.scale`;
+vị trí HUD / ô từ ở `src/game/ui/layout.ts`.
 
 **Import:** alias `@/` trỏ tới `src/` (khai báo ở `tsconfig.json` và `vite.config.ts`).
 

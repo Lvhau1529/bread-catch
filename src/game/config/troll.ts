@@ -90,8 +90,8 @@ export const TROLL_PRANKS = {
     bombardiro: {
       weight: 3,
       speed: 110,
-      /** Độ cao bay (px, ngay dưới ô từ) */
-      altitude: 220,
+      /** Độ cao bay: cách đáy ô từ ngần này px */
+      altitudeBelowHud: 34,
       bombs: 4,
       /** Bom rơi nhanh hơn chữ */
       bombSpeedScale: 1.4,

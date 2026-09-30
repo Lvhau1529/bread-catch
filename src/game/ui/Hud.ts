@@ -1,9 +1,11 @@
 /**
- * HUD trong lúc chơi (plan §17), tối ưu cho màn hình dọc 360px:
+ * HUD trong lúc chơi (plan §17). Dọc (điện thoại) 2 hàng, ngang (máy chiếu) 1 hàng:
  *
  *   [🦁 LIONS]                         [⏱ 01:03]
  *   SCORE 100   WORD 2/5          [⏸] [↩] [■]
  *   ┌──────────── ô từ mục tiêu (TargetPanel) ───────────┐
+ *
+ * Toạ độ từng phần lấy từ ui/layout.ts.
  *
  * HUD chỉ lắng nghe event, không chứa logic gameplay.
  */
@@ -13,6 +15,7 @@ import { DEPTH, THEME } from '@/game/config/gameConfig';
 import type { GameEventBus } from '@/game/core/events';
 import { view } from '@/game/core/view';
 import IconButton from '@/game/ui/IconButton';
+import { hudLayout } from '@/game/ui/layout';
 import { addText } from '@/game/ui/text';
 import { UI_TEXT } from '@/session/text';
 import type { Team } from '@/session/types';
@@ -43,7 +46,9 @@ export default class Hud {
     options: HudOptions,
   ) {
     const { width } = view(scene);
-    this.addTopShade();
+    const layout = hudLayout(scene);
+    const rowY = layout.controlsY;
+    this.addTopShade(layout.shadeHeight);
 
     // Hàng 1: đội + đồng hồ
     const mascot = scene.add.image(24, 24, mascotTexture(options.team.mascot)).setDepth(DEPTH.HUD);
@@ -54,22 +59,25 @@ export default class Hud {
 
     this.timerText = addText(scene, 12, 1, '00:00', 'label', { fontSize: '19px', fontStyle: '800' });
     this.timerBox = scene.add
-      .container(width - TIMER_SIZE.width / 2 - 10, 24, [this.createTimerFrame(), this.timerText])
+      .container(layout.timerX, layout.landscape ? rowY : 24, [this.createTimerFrame(), this.timerText])
       .setDepth(DEPTH.HUD);
 
     // Hàng 2: điểm, số từ, nút giáo viên
-    this.scoreText = addText(scene, 12, 62, '', 'outline', { fontSize: '17px' })
+    this.scoreText = addText(scene, layout.scoreX, rowY, '', 'outline', { fontSize: '17px' })
       .setOrigin(0, 0.5)
       .setDepth(DEPTH.HUD);
-    this.wordText = addText(scene, 118, 62, '', 'outline', { fontSize: '17px', color: colors.gold })
+    this.wordText = addText(scene, layout.wordX, rowY, '', 'outline', {
+      fontSize: '17px',
+      color: colors.gold,
+    })
       .setOrigin(0, 0.5)
       .setDepth(DEPTH.HUD);
     this.setScore(0, false);
 
     [
-      new IconButton(scene, width - 24, 62, 'stop', options.onEnd),
-      new IconButton(scene, width - 70, 62, 'back', options.onBack),
-      new IconButton(scene, width - 116, 62, 'pause', options.onPause),
+      new IconButton(scene, width - 24, rowY, 'stop', options.onEnd),
+      new IconButton(scene, width - 70, rowY, 'back', options.onBack),
+      new IconButton(scene, width - 116, rowY, 'pause', options.onPause),
     ].forEach((button) => button.setDepth(DEPTH.HUD));
 
     bus
@@ -126,10 +134,10 @@ export default class Hud {
   }
 
   /** Dải tối mờ phía trên để HUD dễ đọc trên nền ảnh */
-  private addTopShade(): void {
+  private addTopShade(height: number): void {
     const { width } = view(this.scene);
     const g = this.scene.add.graphics().setDepth(DEPTH.HUD - 1);
     g.fillGradientStyle(0x3b1a0b, 0x3b1a0b, 0x3b1a0b, 0x3b1a0b, 0.75, 0.75, 0.15, 0.15);
-    g.fillRect(0, 0, width, 90);
+    g.fillRect(0, 0, width, height);
   }
 }

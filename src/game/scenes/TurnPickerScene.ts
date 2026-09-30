@@ -10,7 +10,7 @@ import { DEPTH, THEME } from '@/game/config/gameConfig';
 import { STAGE_BACKGROUNDS } from '@/game/config/stages';
 import { SCENES } from '@/game/core/keys';
 import { getAudio } from '@/game/core/services';
-import { setupView, view } from '@/game/core/view';
+import { isLandscape, setupView, view } from '@/game/core/view';
 import { addStageBackground } from '@/game/objects/StageBackground';
 import { showConfirm } from '@/game/scenes/overlay';
 import IconButton from '@/game/ui/IconButton';
@@ -23,7 +23,7 @@ import type { Team } from '@/session/types';
 /** Vị trí xúc xắc (tỉ lệ chiều cao) */
 const DICE_Y = 0.41;
 const TOKEN_RADIUS = 40;
-const TOKEN_SPACING = 112;
+const TOKEN_SPACING = { portrait: 112, landscape: 170 };
 /** Nhịp nhảy của vòng sáng qua các đội: nhanh dần chậm lại (ms) */
 const ROLL_STEPS = [70, 70, 80, 80, 90, 100, 110, 130, 150, 180, 220, 270];
 
@@ -92,10 +92,11 @@ export default class TurnPickerScene extends Phaser.Scene {
 
   private createTokens(y: number): void {
     const cx = view(this).width / 2;
+    const spacing = isLandscape(this) ? TOKEN_SPACING.landscape : TOKEN_SPACING.portrait;
     const played = new Set(this.session.results.map((result) => result.teamId));
 
     this.tokens = this.session.teams.map((team, index) => {
-      const x = cx + (index - (this.session.teams.length - 1) / 2) * TOKEN_SPACING;
+      const x = cx + (index - (this.session.teams.length - 1) / 2) * spacing;
       const done = played.has(team.id);
 
       const ring = this.add.graphics();
@@ -110,7 +111,7 @@ export default class TurnPickerScene extends Phaser.Scene {
       mascot.setScale((TOKEN_RADIUS * 1.5) / mascot.height);
       const name = addText(this, 0, TOKEN_RADIUS + 18, team.name, 'outline', {
         fontSize: '15px',
-        wordWrap: { width: TOKEN_SPACING - 6 },
+        wordWrap: { width: spacing - 6 },
       });
       const root = this.add.container(x, y, [ring, disc, mascot, name]);
 

@@ -32,6 +32,7 @@ import TrollSystem from '@/game/systems/troll/TrollSystem';
 import TurnTimer from '@/game/systems/TurnTimer';
 import { playCountdown } from '@/game/ui/Countdown';
 import Hud from '@/game/ui/Hud';
+import { hudLayout } from '@/game/ui/layout';
 import TargetPanel from '@/game/ui/TargetPanel';
 import { packLetters } from '@/session/content';
 import {
@@ -121,7 +122,7 @@ export default class GameScene extends Phaser.Scene {
       this.bus,
       this.level,
       packLetters(session.settings.packId),
-      TargetPanel.bottom + 4,
+      hudLayout(this).playTop,
     );
     this.timer = new TurnTimer(this.bus, timeLimitSeconds(session.settings) * 1000, () => this.timeUp());
 
@@ -230,7 +231,7 @@ export default class GameScene extends Phaser.Scene {
       total: this.totalWords,
       support: this.support,
     });
-    this.spawner.setTarget(this.word, 0);
+    this.spawner.setTarget(this.word, this.letterIndex);
     this.spawner.resume();
     this.timer.start();
     this.speakWord();

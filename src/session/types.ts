@@ -10,6 +10,7 @@ export type LevelId = 'gentle' | 'easy' | 'normal' | 'fast' | 'hard';
 
 export type PackId = 'early_blending' | 'blending_core' | 'picture_vocab' | 'mixed_review';
 
+/** 'auto' = theo level, hoặc số giây (có sẵn 45–120 hoặc giáo viên tự nhập) */
 export type TimeOption = 'auto' | number;
 
 export type TeamId = 0 | 1 | 2;

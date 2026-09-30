@@ -84,15 +84,30 @@
     "width": 360,
     "height": 800
   },
+  "bg_bakery_01_wide": {
+    "path": "assets/backgrounds/bg_bakery_01_wide.png",
+    "width": 960,
+    "height": 540
+  },
   "bg_bakery_02": {
     "path": "assets/backgrounds/bg_bakery_02.png",
     "width": 360,
     "height": 800
   },
+  "bg_bakery_02_wide": {
+    "path": "assets/backgrounds/bg_bakery_02_wide.png",
+    "width": 960,
+    "height": 540
+  },
   "bg_bakery_03": {
     "path": "assets/backgrounds/bg_bakery_03.png",
     "width": 360,
     "height": 800
+  },
+  "bg_bakery_03_wide": {
+    "path": "assets/backgrounds/bg_bakery_03_wide.png",
+    "width": 960,
+    "height": 540
   },
   "tung_0": {
     "path": "assets/brainrot/tung_0.png",

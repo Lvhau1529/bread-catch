@@ -4,7 +4,7 @@
  * Arcade body co giãn theo scale, nên `setSizeScale` (prank rổ teo) thu nhỏ luôn vùng hứng.
  */
 import Phaser from 'phaser';
-import { DEPTH, PLAYER, TIMING } from '@/game/config/gameConfig';
+import { DEPTH, PLAYER, PORTRAIT, TIMING } from '@/game/config/gameConfig';
 import { BASKET_TEXTURES, type BasketTier } from '@/game/config/stages';
 import { view } from '@/game/core/view';
 import type InputController from '@/game/systems/InputController';
@@ -130,7 +130,9 @@ export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
     const direction = input.direction;
 
     if (direction !== 0) {
-      this.x += direction * PLAYER.keyboardSpeed * dt;
+      // Màn ngang rộng hơn -> bàn phím nhanh hơn tương ứng
+      const widthFactor = Math.sqrt(view(this.scene).width / PORTRAIT.width);
+      this.x += direction * PLAYER.keyboardSpeed * widthFactor * dt;
     } else if (input.targetX !== null) {
       const maxStep = PLAYER.pointerMaxSpeed * dt;
       this.x += Phaser.Math.Clamp(input.targetX - this.x, -maxStep, maxStep);

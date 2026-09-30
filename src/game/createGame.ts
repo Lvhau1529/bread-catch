@@ -3,7 +3,7 @@
  */
 import Phaser from 'phaser';
 import { GameBridge } from '@/game/bridge';
-import { GAME_WIDTH, RENDER_SCALE, THEME, computeGameHeight } from '@/game/config/gameConfig';
+import { RENDER_SCALE, THEME, computeGameSize } from '@/game/config/gameConfig';
 import { getGameAudio } from '@/game/core/services';
 import { startSceneDirector } from '@/game/SceneDirector';
 import BootScene from '@/game/scenes/BootScene';
@@ -17,12 +17,13 @@ import TurnPickerScene from '@/game/scenes/TurnPickerScene';
 import { appStore, sessionActions } from '@/session/sessionStore';
 
 export function createGame(parent: HTMLElement): Phaser.Game {
+  const size = computeGameSize();
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent,
     // Canvas lớn gấp RENDER_SCALE lần toạ độ logic (xem core/view.ts)
-    width: GAME_WIDTH * RENDER_SCALE,
-    height: computeGameHeight() * RENDER_SCALE,
+    width: size.width * RENDER_SCALE,
+    height: size.height * RENDER_SCALE,
     backgroundColor: THEME.backgroundColor,
     pixelArt: true,
     roundPixels: true,

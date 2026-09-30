@@ -8,6 +8,7 @@ import { SFX } from '@/game/config/assets';
 import { DEPTH, THEME } from '@/game/config/gameConfig';
 import { TROLL_PRANKS } from '@/game/config/troll';
 import { view } from '@/game/core/view';
+import { hudLayout } from '@/game/ui/layout';
 import { BRAINROT } from '@/game/objects/brainrot';
 import type FallingItem from '@/game/objects/FallingItem';
 import type { Prank, TrollContext } from '@/game/systems/troll/types';
@@ -184,7 +185,7 @@ const bombardiroCrocodilo: Prank = (ctx) => {
   const { width, height } = view(scene);
 
   const plane = scene.add
-    .sprite(startX, bombardiro.altitude, BRAINROT.bombardiro.idle)
+    .sprite(startX, hudLayout(scene).playTop + bombardiro.altitudeBelowHud, BRAINROT.bombardiro.idle)
     .setDepth(DEPTH.HUD - 2)
     .setFlipX(direction < 0)
     .play(BRAINROT.bombardiro.walk);

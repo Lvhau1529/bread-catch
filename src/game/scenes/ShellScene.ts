@@ -8,7 +8,7 @@ import { LETTER_BREADS, STAGE_BACKGROUNDS } from '@/game/config/stages';
 import { SCENES } from '@/game/core/keys';
 import { getAudio } from '@/game/core/services';
 import { setupView, view } from '@/game/core/view';
-import { addStageBackground } from '@/game/objects/StageBackground';
+import { addStageBackground, setStageBackground } from '@/game/objects/StageBackground';
 import { ensureLetterTexture, LETTER_TEXTURE_SCALE } from '@/game/objects/letterTextures';
 import type { Screen } from '@/session/sessionStore';
 
@@ -48,11 +48,11 @@ export default class ShellScene extends Phaser.Scene {
     this.screen = screen;
 
     if (screen === 'results') {
-      this.background.setTexture(STAGE_BACKGROUNDS[2]);
+      setStageBackground(this.background, STAGE_BACKGROUNDS[2]);
       audio.playSfx(SFX.FINAL_RESULTS);
       audio.playMusic(MUSIC.RESULTS);
     } else {
-      this.background.setTexture(STAGE_BACKGROUNDS[0]);
+      setStageBackground(this.background, STAGE_BACKGROUNDS[0]);
       audio.playMusic(MUSIC.MENU);
     }
   }

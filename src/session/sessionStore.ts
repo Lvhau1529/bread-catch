@@ -11,7 +11,7 @@
 import { createStore } from '@/shared/createStore';
 import { shuffle } from '@/shared/random';
 import { PACKS } from '@/session/content';
-import { DEFAULT_SETTINGS, LEVELS, RULES, TIME_OPTIONS } from '@/session/settings';
+import { DEFAULT_SETTINGS, isValidTime, LEVELS, RULES } from '@/session/settings';
 import { loadLastSetup, recordSoloScore, saveLastSetup } from '@/session/storage';
 import { buildTeams } from '@/session/teams';
 import type { GameMode, SessionSettings, SetupDraft, Team, TeamId, TurnResult } from '@/session/types';
@@ -47,7 +47,7 @@ function initialDraft(): SetupDraft {
     mode: saved.mode === 'solo' ? 'solo' : 'class',
     packId: saved.packId in PACKS ? saved.packId : fallback.packId,
     levelId: saved.levelId in LEVELS ? saved.levelId : fallback.levelId,
-    time: TIME_OPTIONS.includes(saved.time) ? saved.time : fallback.time,
+    time: isValidTime(saved.time) ? saved.time : fallback.time,
     teamNames: [0, 1, 2].map((i) => String(saved.teamNames?.[i] ?? '')) as SetupDraft['teamNames'],
     playerName: String(saved.playerName ?? ''),
   };

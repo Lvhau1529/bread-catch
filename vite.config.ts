@@ -35,7 +35,20 @@ export default defineConfig({
       workbox: {
         // Precache mọi thứ cần để chơi offline (nhạc của resource pack nhỏ nên cache luôn)
         globPatterns: ['**/*.{js,css,html,png,json,woff2}', 'assets/{audio,music}/**/*.{ogg,mp3}'],
+        // Ảnh nền bản ngang (máy chiếu) chỉ cache khi thực sự dùng — điện thoại không phải tải
+        globIgnores: ['**/*_wide.png'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.endsWith('_wide.png'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'phonics-wide-backgrounds',
+              expiration: { maxEntries: 8 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
     }),
   ],

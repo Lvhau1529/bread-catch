@@ -12,13 +12,16 @@
 import type Phaser from 'phaser';
 import { DEPTH, THEME } from '@/game/config/gameConfig';
 import type { GameEventBus } from '@/game/core/events';
-import { view } from '@/game/core/view';
 import IconButton from '@/game/ui/IconButton';
+import { hudLayout } from '@/game/ui/layout';
 import { addText } from '@/game/ui/text';
 import type { TargetSupport } from '@/session/types';
 
-const PANEL = { y: 92, height: 88, marginX: 10, radius: 18 };
+const RADIUS = 18;
 const SLOT_GAP = 6;
+/** Từ dài (alligator, astronaut...) dùng khoảng cách ô hẹp hơn */
+const LONG_WORD = 7;
+const LONG_SLOT_GAP = 3;
 const MAX_SLOT = 44;
 /** Chừa chỗ bên trái cho nút phát âm */
 const SPEAKER_SPACE = 58;
@@ -40,6 +43,8 @@ export default class TargetPanel {
   private word = '';
   private current = 0;
   private cursorTween: Phaser.Tweens.Tween | null = null;
+  private readonly panelWidth: number;
+  private readonly centerX: number;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -47,27 +52,29 @@ export default class TargetPanel {
     /** Có nút phát âm lại (khi có giọng đọc) */
     onSpeak: (() => void) | null,
   ) {
-    const { width } = view(scene);
-    const panelWidth = width - PANEL.marginX * 2;
-    this.root = scene.add.container(width / 2, PANEL.y + PANEL.height / 2).setDepth(DEPTH.HUD);
+    const { panel } = hudLayout(scene);
+    const { width: panelWidth, height: panelHeight } = panel;
+    this.panelWidth = panelWidth;
+    this.centerX = panel.x;
+    this.root = scene.add.container(panel.x, panel.y + panelHeight / 2).setDepth(DEPTH.HUD);
 
     this.glow = scene.add.graphics().setAlpha(0);
     this.glow.fillStyle(0xffd23f, 1);
     this.glow.fillRoundedRect(
       -panelWidth / 2 - 5,
-      -PANEL.height / 2 - 5,
+      -panelHeight / 2 - 5,
       panelWidth + 10,
-      PANEL.height + 10,
-      PANEL.radius + 4,
+      panelHeight + 10,
+      RADIUS + 4,
     );
 
     const frame = scene.add.graphics();
     frame
       .fillStyle(0xfff4dc, 0.97)
-      .fillRoundedRect(-panelWidth / 2, -PANEL.height / 2, panelWidth, PANEL.height, PANEL.radius);
+      .fillRoundedRect(-panelWidth / 2, -panelHeight / 2, panelWidth, panelHeight, RADIUS);
     frame
       .lineStyle(4, 0x3b1a0b, 1)
-      .strokeRoundedRect(-panelWidth / 2, -PANEL.height / 2, panelWidth, PANEL.height, PANEL.radius);
+      .strokeRoundedRect(-panelWidth / 2, -panelHeight / 2, panelWidth, panelHeight, RADIUS);
 
     this.wordText = addText(scene, SPEAKER_SPACE / 2, -24, '', 'learning', { fontSize: '26px' });
     this.slotsRoot = scene.add.container(0, 0);
@@ -85,11 +92,6 @@ export default class TargetPanel {
       .on('word-finished', ({ correct }) => (correct ? this.celebrate() : this.fail()));
   }
 
-  /** Y (logic) của đáy panel */
-  static get bottom(): number {
-    return PANEL.y + PANEL.height;
-  }
-
   private showWord(word: string, support: TargetSupport): void {
     this.word = word;
     this.current = 0;
@@ -97,16 +99,21 @@ export default class TargetPanel {
     this.cursorTween?.stop();
 
     const showWord = support === 'full' || support === 'word';
-    this.wordText.setText(showWord ? word.split('').join(' ') : '').setVisible(showWord);
+    const isLong = word.length > LONG_WORD;
+    this.wordText
+      .setText(showWord ? word.split('').join(isLong ? '' : ' ') : '')
+      .setVisible(showWord)
+      .setFontSize(isLong ? 22 : 26);
 
-    const available = view(this.scene).width - PANEL.marginX * 2 - SPEAKER_SPACE - 20;
-    const size = Math.min(MAX_SLOT, Math.floor((available - SLOT_GAP * (word.length - 1)) / word.length));
-    const rowWidth = word.length * size + (word.length - 1) * SLOT_GAP;
+    const gap = isLong ? LONG_SLOT_GAP : SLOT_GAP;
+    const available = this.panelWidth - SPEAKER_SPACE - 20;
+    const size = Math.min(MAX_SLOT, Math.floor((available - gap * (word.length - 1)) / word.length));
+    const rowWidth = word.length * size + (word.length - 1) * gap;
     const startX = SPEAKER_SPACE / 2 - rowWidth / 2 + size / 2;
     const y = showWord ? 14 : 0;
 
     this.slots = word.split('').map((char, index) => {
-      const x = startX + index * (size + SLOT_GAP);
+      const x = startX + index * (size + gap);
       const box = this.scene.add.graphics();
       const showHint = support === 'full' || (support === 'first-letter' && index === 0);
       const hint = addText(this.scene, x, y, showHint ? char : '', 'learning', {
@@ -184,7 +191,7 @@ export default class TargetPanel {
       duration: 60,
       yoyo: true,
       repeat: 2,
-      onComplete: () => this.root.setX(view(this.scene).width / 2),
+      onComplete: () => this.root.setX(this.centerX),
     });
   }
 

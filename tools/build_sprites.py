@@ -44,6 +44,10 @@ OUTLINE_COLOR = (255, 244, 220)
 
 # Kích thước background xuất ra (game rộng 360, cao 640..800 tuỳ máy)
 BG_SIZE = (360, 800)
+# Bản ngang cho máy chiếu / máy tính (game ngang cao 540, rộng 720..960)
+BG_WIDE_SIZE = (960, 540)
+# Tâm crop theo chiều dọc của bản ngang (0 = đỉnh, 1 = đáy) — giữ phần sàn cho rổ
+BG_WIDE_FOCUS_Y = 0.6
 
 # --------------------------------------------------------------------------- #
 # Định nghĩa sprite
@@ -238,6 +242,14 @@ def build_backgrounds() -> dict:
         panel = img.crop((cx0, 0, cx0 + crop_w, panel_h)).resize(BG_SIZE, Image.LANCZOS)
         save(panel, name)
         meta[name] = {"width": target_w, "height": target_h}
+
+        # Bản ngang: lấy trọn chiều rộng panel, cắt bớt trên / dưới
+        wide_w, wide_h = BG_WIDE_SIZE
+        crop_h = round((px1 - px0) * wide_h / wide_w)
+        cy0 = int(np.clip(panel_h * BG_WIDE_FOCUS_Y - crop_h / 2, 0, panel_h - crop_h))
+        wide = img.crop((px0, cy0, px1, cy0 + crop_h)).resize(BG_WIDE_SIZE, Image.LANCZOS)
+        save(wide, f"{name}_wide")
+        meta[f"{name}_wide"] = {"width": wide_w, "height": wide_h}
     return meta
 
 

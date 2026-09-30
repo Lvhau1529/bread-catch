@@ -69,5 +69,7 @@
   "voice": "VOICE",
   "loading": "LOADING...",
   "madeBy": "Made by haulv",
-  "turn": "TURN"
+  "turn": "TURN",
+  "custom": "CUSTOM",
+  "seconds": "sec"
 }

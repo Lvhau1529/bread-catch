@@ -7,12 +7,13 @@ import type { ReactNode } from 'react';
 import { mascotUrl } from '@/app/assets';
 import Button from '@/app/components/Button';
 import OptionGroup, { type Option } from '@/app/components/OptionGroup';
+import TimeInput from '@/app/components/TimeInput';
 import { useAppState } from '@/app/hooks/useStore';
 import { SFX } from '@/game/config/assets';
 import { GameBridge } from '@/game/bridge';
 import { PACK_ORDER, PACKS, packPreview } from '@/session/content';
 import { sessionActions } from '@/session/sessionStore';
-import { LEVEL_ORDER, LEVELS, TIME_OPTIONS } from '@/session/settings';
+import { LEVEL_ORDER, LEVELS, TIME_OPTIONS, timeLimitSeconds } from '@/session/settings';
 import {
   DEFAULT_PLAYER_NAME,
   DEFAULT_TEAM_NAMES,
@@ -116,6 +117,11 @@ export default function SetupScreen() {
             value={draft.time}
             onChange={(time) => update({ time })}
             columns={3}
+          />
+          <TimeInput
+            value={draft.time}
+            effectiveSeconds={timeLimitSeconds(draft)}
+            onChange={(time) => update({ time })}
           />
         </Field>
 

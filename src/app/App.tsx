@@ -6,7 +6,7 @@
  *
  * React và Phaser chỉ nói chuyện qua `appStore` (session/sessionStore.ts) và `GameBridge`.
  */
-import { useEffect, type ComponentType } from 'react';
+import { useEffect, useState, type ComponentType } from 'react';
 import PhaserGame from '@/app/PhaserGame';
 import RotateHint from '@/app/RotateHint';
 import { useAppState } from '@/app/hooks/useStore';
@@ -14,6 +14,7 @@ import HomeScreen from '@/app/screens/HomeScreen';
 import ResultsScreen from '@/app/screens/ResultsScreen';
 import SetupScreen from '@/app/screens/SetupScreen';
 import { GameBridge } from '@/game/bridge';
+import { currentOrientation } from '@/game/config/gameConfig';
 import type { Screen } from '@/session/sessionStore';
 
 const REACT_SCREENS: Partial<Record<Screen, ComponentType>> = {
@@ -22,8 +23,25 @@ const REACT_SCREENS: Partial<Record<Screen, ComponentType>> = {
   results: ResultsScreen,
 };
 
+/**
+ * Hướng bố cục của game (dọc / ngang). Đổi hướng thì dựng lại game Phaser,
+ * nhưng chờ tới khi không còn đang chơi để không mất lượt đang dở.
+ */
+function useGameOrientation(screen: Screen) {
+  const [orientation, setOrientation] = useState(currentOrientation);
+  useEffect(() => {
+    if (screen === 'play' || screen === 'gift') return undefined;
+    const sync = () => setOrientation(currentOrientation());
+    sync();
+    window.addEventListener('resize', sync);
+    return () => window.removeEventListener('resize', sync);
+  }, [screen]);
+  return orientation;
+}
+
 export default function App() {
   const screen = useAppState((state) => state.screen);
+  const orientation = useGameOrientation(screen);
   const Overlay = REACT_SCREENS[screen];
 
   useEffect(() => {
@@ -31,8 +49,8 @@ export default function App() {
   }, [Overlay]);
 
   return (
-    <main className="app">
-      <PhaserGame />
+    <main className={`app app--${orientation}`}>
+      <PhaserGame key={orientation} />
       {Overlay && (
         <div className="screen-layer" key={screen}>
           <Overlay />

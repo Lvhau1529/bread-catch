@@ -9,7 +9,7 @@ import { DEPTH, THEME } from '@/game/config/gameConfig';
 import { STAGE_BACKGROUNDS } from '@/game/config/stages';
 import { SCENES } from '@/game/core/keys';
 import { getAudio } from '@/game/core/services';
-import { setupView, view } from '@/game/core/view';
+import { isLandscape, setupView, view } from '@/game/core/view';
 import { addStageBackground } from '@/game/objects/StageBackground';
 import IconButton from '@/game/ui/IconButton';
 import TextButton from '@/game/ui/TextButton';
@@ -22,6 +22,53 @@ import { shuffle } from '@/shared/random';
 
 const GIFT_COUNT = 3;
 const GIFT_SPACING = 108;
+
+/**
+ * Vị trí các phần (toạ độ logic).
+ * Dọc: xếp từ trên xuống. Ngang: đội thắng bên trái, hộp quà + phần thưởng bên phải.
+ */
+interface GiftLayout {
+  winnerX: number;
+  giftsX: number;
+  mascotScale: number;
+  titleY: number;
+  mascotY: number;
+  nameY: number;
+  promptY: number;
+  giftsY: number;
+  cardY: number;
+  buttonsY: number;
+}
+
+function giftLayout(scene: Phaser.Scene): GiftLayout {
+  const { width, height } = view(scene);
+  if (isLandscape(scene)) {
+    return {
+      winnerX: width * 0.27,
+      giftsX: width * 0.66,
+      mascotScale: 2,
+      titleY: height * 0.16,
+      mascotY: height * 0.44,
+      nameY: height * 0.72,
+      promptY: height * 0.14,
+      giftsY: height * 0.38,
+      cardY: height * 0.64,
+      buttonsY: height * 0.87,
+    };
+  }
+  return {
+    winnerX: width / 2,
+    giftsX: width / 2,
+    mascotScale: 1.3,
+    titleY: height * 0.1,
+    mascotY: height * 0.27,
+    nameY: height * 0.4,
+    promptY: height * 0.47,
+    giftsY: height * 0.64,
+    cardY: height * 0.8,
+    buttonsY: height * 0.93,
+  };
+}
 
 export default class GiftScene extends Phaser.Scene {
   private winners: Standing[] = [];
@@ -60,25 +107,25 @@ export default class GiftScene extends Phaser.Scene {
   }
 
   private showWinner(): void {
-    const { width, height } = view(this);
+    const layout = giftLayout(this);
     const standing = this.winners[this.winnerIndex];
     if (!standing) return;
     this.layer?.destroy();
     this.layer = this.add.container(0, 0);
 
-    const title = addText(this, width / 2, height * 0.1, UI_TEXT.winner, 'title', { fontSize: '44px' });
+    const title = addText(this, layout.winnerX, layout.titleY, UI_TEXT.winner, 'title', { fontSize: '44px' });
     const mascot = this.add
-      .image(width / 2, height * 0.27, mascotTexture(standing.team.mascot))
-      .setScale(1.3);
-    const crown = this.add.image(width / 2, mascot.y - mascot.displayHeight / 2 - 8, 'crown');
-    const name = addText(this, width / 2, height * 0.4, standing.team.name, 'title', {
+      .image(layout.winnerX, layout.mascotY, mascotTexture(standing.team.mascot))
+      .setScale(layout.mascotScale);
+    const crown = this.add.image(layout.winnerX, mascot.y - mascot.displayHeight / 2 - 8, 'crown');
+    const name = addText(this, layout.winnerX, layout.nameY, standing.team.name, 'title', {
       fontSize: '30px',
       color: THEME.colors.cream,
     });
     const prompt = addText(
       this,
-      width / 2,
-      height * 0.47,
+      layout.giftsX,
+      layout.promptY,
       `${UI_TEXT.openGift} ${UI_TEXT.chooseBox}`,
       'outline',
       {
@@ -99,9 +146,9 @@ export default class GiftScene extends Phaser.Scene {
 
     const rewards = shuffle(REWARDS);
     const gifts = Array.from({ length: GIFT_COUNT }, (_, index) => {
-      const x = width / 2 + (index - (GIFT_COUNT - 1) / 2) * GIFT_SPACING;
+      const x = layout.giftsX + (index - (GIFT_COUNT - 1) / 2) * GIFT_SPACING;
       const gift = this.add
-        .image(x, height * 0.64, `gift_closed_${String(index + 1).padStart(2, '0')}`)
+        .image(x, layout.giftsY, `gift_closed_${String(index + 1).padStart(2, '0')}`)
         .setInteractive({ useHandCursor: true });
       this.tweens.add({
         targets: gift,
@@ -129,7 +176,7 @@ export default class GiftScene extends Phaser.Scene {
     reward: (typeof REWARDS)[number],
     prompt: Phaser.GameObjects.Text,
   ): void {
-    const { width, height } = view(this);
+    const layout = giftLayout(this);
     const gift = gifts[index];
     const audio = getAudio(this);
     prompt.setVisible(false);
@@ -140,7 +187,7 @@ export default class GiftScene extends Phaser.Scene {
     });
     this.tweens.add({
       targets: gift,
-      x: width / 2,
+      x: layout.giftsX,
       scale: 1.3,
       angle: 0,
       duration: 300,
@@ -153,7 +200,7 @@ export default class GiftScene extends Phaser.Scene {
       this.stars.explode(24, gift.x, gift.y - 20);
       this.cameras.main.flash(200, 255, 244, 200);
 
-      const card = this.add.container(width / 2, height * 0.8);
+      const card = this.add.container(layout.giftsX, layout.cardY);
       const bg = this.add.graphics();
       bg.fillStyle(0xfff4dc, 1).fillRoundedRect(-150, -46, 300, 92, 16);
       bg.lineStyle(4, 0x3b1a0b, 1).strokeRoundedRect(-150, -46, 300, 92, 16);
@@ -170,15 +217,14 @@ export default class GiftScene extends Phaser.Scene {
   }
 
   private showActions(): void {
-    const { width, height } = view(this);
-    const y = height * 0.93;
+    const { giftsX: x, buttonsY: y } = giftLayout(this);
     const hasNext = this.winnerIndex < this.winners.length - 1;
 
     if (hasNext) {
       this.layer.add(
         new TextButton(
           this,
-          width / 2,
+          x,
           y,
           UI_TEXT.nextWinner,
           () => {
@@ -191,13 +237,13 @@ export default class GiftScene extends Phaser.Scene {
       return;
     }
     this.layer.add([
-      new TextButton(this, width / 2 - 82, y, UI_TEXT.playAgain, () => sessionActions.playAgain(), {
+      new TextButton(this, x - 82, y, UI_TEXT.playAgain, () => sessionActions.playAgain(), {
         color: 'green',
         width: 156,
         fontSize: 18,
         sfx: SFX.UI_START,
       }),
-      new TextButton(this, width / 2 + 82, y, UI_TEXT.home, () => sessionActions.goHome(), {
+      new TextButton(this, x + 82, y, UI_TEXT.home, () => sessionActions.goHome(), {
         color: 'blue',
         width: 140,
         fontSize: 18,

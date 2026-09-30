@@ -73,6 +73,16 @@ export const LEVEL_ORDER: LevelId[] = ['gentle', 'easy', 'normal', 'fast', 'hard
 
 export const TIME_OPTIONS: TimeOption[] = ['auto', ...gameConfig.timerOptionsSeconds];
 
+/** Giới hạn khi giáo viên tự nhập thời gian (giây) */
+export const CUSTOM_TIME = { min: 15, max: 600 } as const;
+
+export function isValidTime(time: unknown): time is TimeOption {
+  return (
+    time === 'auto' ||
+    (Number.isInteger(time) && (time as number) >= CUSTOM_TIME.min && (time as number) <= CUSTOM_TIME.max)
+  );
+}
+
 export const RULES = {
   teamCount: gameConfig.classMode.teamCount,
   wordsPerTurn: gameConfig.classMode.wordsPerTurn,

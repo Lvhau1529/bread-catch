@@ -5,7 +5,7 @@
     "immutableSource": true
   },
   "packs": {
-    "early_blending": ["am", "at", "it", "in", "on"],
+    "early_blending": ["am", "at", "it", "in", "on", "ma"],
     "blending_core": [
       "map",
       "mop",
@@ -48,7 +48,8 @@
       "dam",
       "rod",
       "pad",
-      "hid"
+      "hid",
+      "Nan"
     ],
     "longer_review": ["miss", "cast"],
     "phonics_picture_vocab": {
