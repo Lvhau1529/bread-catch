@@ -4,7 +4,8 @@
  */
 import { ICONS, mascotUrl } from '@/app/assets';
 import Button from '@/app/components/Button';
-import { useAppState } from '@/app/hooks/useStore';
+import Leaderboard, { TeamTotalsCard } from '@/app/components/Leaderboard';
+import { useAppState, useTeamTotals } from '@/app/hooks/useStore';
 import { SFX } from '@/game/config/assets';
 import { accuracyOf, rankTeams, winnersOf, type Standing } from '@/session/ranking';
 import { sessionActions, type ActiveSession } from '@/session/sessionStore';
@@ -26,6 +27,7 @@ export default function ResultsScreen() {
 function ClassResults({ session }: { session: ActiveSession }) {
   const standings = rankTeams(session.teams, session.results);
   const winners = winnersOf(standings);
+  const hasTotals = useTeamTotals().length > 0;
 
   return (
     <div className="screen results">
@@ -33,8 +35,14 @@ function ClassResults({ session }: { session: ActiveSession }) {
 
       <div className="winner-banner">
         <img src={ICONS.crown} alt="" width={54} height={36} />
-        <span>
-          {UI_TEXT.winner} {winners.map((winner) => winner.team.name).join(' & ')}
+        <span className="winner-banner__label">{UI_TEXT.winner}</span>
+        <span className="winner-banner__names">
+          {winners.map((winner, index) => (
+            <span key={winner.team.id} className="winner-banner__name" title={winner.team.name}>
+              {index > 0 && '& '}
+              {winner.team.name}
+            </span>
+          ))}
         </span>
       </div>
 
@@ -43,6 +51,9 @@ function ClassResults({ session }: { session: ActiveSession }) {
           <StandingRow key={standing.team.id} standing={standing} />
         ))}
       </ol>
+
+      {/* Bảng tổng điểm nhiều buổi; vừa reset thì hiện bảng tĩnh (trống) */}
+      {session.leaderboard && hasTotals ? <Leaderboard update={session.leaderboard} /> : <TeamTotalsCard />}
 
       <div className="results__actions">
         <Button color="orange" size="lg" onClick={() => sessionActions.openGift()}>
@@ -69,7 +80,9 @@ function StandingRow({ standing }: { standing: Standing }) {
       <img className="standing__mascot" src={mascotUrl(team.mascot)} alt="" width={48} height={54} />
       <div className="standing__body">
         <div className="standing__head">
-          <span className="standing__name">{team.name}</span>
+          <span className="standing__name" title={team.name}>
+            {team.name}
+          </span>
           <span className="standing__score">{result.score}</span>
         </div>
         <Stats result={result} compact />
@@ -90,7 +103,9 @@ function SoloResults({ session }: { session: ActiveSession }) {
 
       <div className="card solo-card">
         <img className="solo-card__mascot" src={mascotUrl(team.mascot)} alt="" width={72} height={81} />
-        <p className="solo-card__name">{team.name}</p>
+        <p className="solo-card__name" title={team.name}>
+          {team.name}
+        </p>
         <p className="solo-card__score">
           {result.score} <small>{UI_TEXT.points}</small>
         </p>

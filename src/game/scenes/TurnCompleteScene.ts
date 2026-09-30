@@ -14,7 +14,7 @@ import { getAudio } from '@/game/core/services';
 import { setupView } from '@/game/core/view';
 import { createDim, createPanel } from '@/game/scenes/overlay';
 import TextButton from '@/game/ui/TextButton';
-import { addText } from '@/game/ui/text';
+import { addText, fitText } from '@/game/ui/text';
 import { appStore, isSessionComplete, sessionActions } from '@/session/sessionStore';
 import { UI_TEXT } from '@/session/text';
 import type { Team, TurnResult } from '@/session/types';
@@ -66,7 +66,10 @@ export default class TurnCompleteScene extends Phaser.Scene {
         fontSize: '23px',
       }),
       mascot,
-      addText(this, 0, top + 222, team.name, 'heading', { fontSize: '28px', color: THEME.colors.orange }),
+      fitText(
+        addText(this, 0, top + 222, team.name, 'heading', { fontSize: '28px', color: THEME.colors.orange }),
+        panel.panelWidth - 70,
+      ),
       addText(this, 0, top + 262, `${result.correctWords} / ${totalWords} ${UI_TEXT.words}`, 'label', {
         fontSize: '20px',
       }),

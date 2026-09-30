@@ -8,7 +8,8 @@ import { mascotUrl } from '@/app/assets';
 import Button from '@/app/components/Button';
 import OptionGroup, { type Option } from '@/app/components/OptionGroup';
 import TimeInput from '@/app/components/TimeInput';
-import { useAppState } from '@/app/hooks/useStore';
+import { TeamTotalsCard } from '@/app/components/Leaderboard';
+import { useAppState, useTeamTotals } from '@/app/hooks/useStore';
 import { SFX } from '@/game/config/assets';
 import { GameBridge } from '@/game/bridge';
 import { PACK_ORDER, PACKS, packPreview } from '@/session/content';
@@ -44,6 +45,7 @@ const LEVEL_OPTIONS: Option<LevelId>[] = LEVEL_ORDER.map((id) => ({
 
 export default function SetupScreen() {
   const draft = useAppState((state) => state.draft);
+  const hasTotals = useTeamTotals().length > 0;
   const update = (patch: Partial<SetupDraft>) => sessionActions.updateDraft(patch);
   const level = LEVELS[draft.levelId];
 
@@ -152,6 +154,9 @@ export default function SetupScreen() {
           </Field>
         )}
       </div>
+
+      {/* Tổng điểm các đội từ các buổi trước (có nút reset) */}
+      {draft.mode === 'class' && hasTotals && <TeamTotalsCard />}
 
       <Button color="green" size="lg" sfx={null} className="setup__start" onClick={start}>
         {UI_TEXT.start}

@@ -51,6 +51,10 @@ pnpm format       # Prettier
 - **Final Results:** xếp hạng theo điểm → ít lần hứng nhầm hơn → còn nhiều thời gian hơn →
   đồng hạng. Mọi đội hạng nhất đều được mở **Winner's Gift** (nội dung quà đang là placeholder
   trong `src/session/rewards.ts`).
+- **Class Leaderboard:** tổng điểm các đội qua nhiều buổi được lưu localStorage (theo vị trí TEAM 1/2/3,
+  đổi tên vẫn giữ điểm). Ở Final Results bảng hiện thứ tự cũ rồi trượt sang thứ tự mới — đội vượt hạng
+  có "▲ RANK UP!". Nút **RESET SCORES** (có xác nhận) ở Final Results và Setup.
+- Tên đội / cài đặt Setup được lưu ngay khi gõ, mở lại app vẫn còn. Tên quá dài tự cắt "…" ở mọi màn.
 
 **Điều khiển:** mobile kéo ngang ở bất kỳ đâu (kéo tương đối, ngón tay không che rổ);
 desktop dùng chuột hoặc ← → / A D, `P` / `Esc` để tạm dừng. Game tự dừng khi chuyển app.

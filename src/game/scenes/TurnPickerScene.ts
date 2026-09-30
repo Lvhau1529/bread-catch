@@ -15,7 +15,7 @@ import { addStageBackground } from '@/game/objects/StageBackground';
 import { showConfirm } from '@/game/scenes/overlay';
 import IconButton from '@/game/ui/IconButton';
 import TextButton from '@/game/ui/TextButton';
-import { addText } from '@/game/ui/text';
+import { addText, fitText } from '@/game/ui/text';
 import { appStore, currentTeam, sessionActions, type ActiveSession } from '@/session/sessionStore';
 import { UI_TEXT } from '@/session/text';
 import type { Team } from '@/session/types';
@@ -109,10 +109,10 @@ export default class TurnPickerScene extends Phaser.Scene {
       disc.lineStyle(4, 0x3b1a0b, 1).strokeCircle(0, 0, TOKEN_RADIUS);
       const mascot = this.add.image(0, -2, mascotTexture(team.mascot));
       mascot.setScale((TOKEN_RADIUS * 1.5) / mascot.height);
-      const name = addText(this, 0, TOKEN_RADIUS + 18, team.name, 'outline', {
-        fontSize: '15px',
-        wordWrap: { width: spacing - 6 },
-      });
+      const name = fitText(
+        addText(this, 0, TOKEN_RADIUS + 18, team.name, 'outline', { fontSize: '15px' }),
+        spacing - 8,
+      );
       const root = this.add.container(x, y, [ring, disc, mascot, name]);
 
       if (done) {
@@ -188,10 +188,14 @@ export default class TurnPickerScene extends Phaser.Scene {
         repeat: -1,
       });
     }
-    const banner = addText(this, width / 2, height * DICE_Y - 80, `${team.name}!`, 'title', {
-      fontSize: '38px',
-      color: THEME.colors.cream,
-    });
+    const banner = fitText(
+      addText(this, width / 2, height * DICE_Y - 80, `${team.name}!`, 'title', {
+        fontSize: '38px',
+        color: THEME.colors.cream,
+      }),
+      Math.min(width - 40, 520),
+      '!',
+    );
     this.tweens.add({ targets: banner, scale: { from: 0, to: 1 }, duration: 350, ease: 'Back.easeOut' });
 
     this.actionButton.destroy();

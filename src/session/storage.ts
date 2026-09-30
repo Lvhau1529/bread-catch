@@ -1,8 +1,10 @@
 /**
- * Lưu localStorage: cài đặt âm thanh, form Setup gần nhất, điểm cao chế độ Solo.
+ * Lưu localStorage: cài đặt âm thanh, form Setup gần nhất (gồm tên đội), điểm cao Solo,
+ * bảng tổng điểm các đội qua nhiều buổi.
  * An toàn khi localStorage bị chặn (private mode): chỉ giữ trong bộ nhớ.
  */
 import { createStore } from '@/shared/createStore';
+import type { TeamTotal } from '@/session/leaderboard';
 import type { LevelId, SetupDraft } from '@/session/types';
 
 const STORAGE_KEY = 'phonics-bread-catcher-v2';
@@ -20,19 +22,26 @@ interface SaveData {
   prefs: Prefs;
   lastSetup: SetupDraft | null;
   soloBest: Partial<Record<LevelId, number>>;
+  teamTotals: TeamTotal[];
 }
 
 const DEFAULTS: SaveData = {
   prefs: { sfx: true, music: true, voice: true },
   lastSetup: null,
   soloBest: {},
+  teamTotals: [],
 };
 
 function read(): SaveData {
   try {
     LEGACY_KEYS.forEach((key) => localStorage.removeItem(key));
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as Partial<SaveData>;
-    return { ...DEFAULTS, ...stored, prefs: { ...DEFAULTS.prefs, ...stored.prefs } };
+    return {
+      ...DEFAULTS,
+      ...stored,
+      prefs: { ...DEFAULTS.prefs, ...stored.prefs },
+      teamTotals: Array.isArray(stored.teamTotals) ? stored.teamTotals : [],
+    };
   } catch {
     return structuredClone(DEFAULTS);
   }
@@ -77,4 +86,19 @@ export function recordSoloScore(levelId: LevelId, score: number): { best: number
     write();
   }
   return { best: Math.max(previous, score), isNewBest };
+}
+
+/** Bảng tổng điểm các đội (Class Mode) — React đọc để hiện / reset */
+export const teamTotalsStore = createStore<{ totals: TeamTotal[] }>({ totals: data.teamTotals });
+teamTotalsStore.subscribe(() => {
+  data.teamTotals = teamTotalsStore.get().totals;
+  write();
+});
+
+export function saveTeamTotals(totals: TeamTotal[]): void {
+  teamTotalsStore.set({ totals });
+}
+
+export function resetTeamTotals(): void {
+  teamTotalsStore.set({ totals: [] });
 }

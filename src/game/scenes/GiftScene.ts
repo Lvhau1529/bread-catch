@@ -13,7 +13,7 @@ import { isLandscape, setupView, view } from '@/game/core/view';
 import { addStageBackground } from '@/game/objects/StageBackground';
 import IconButton from '@/game/ui/IconButton';
 import TextButton from '@/game/ui/TextButton';
-import { addText } from '@/game/ui/text';
+import { addText, fitText } from '@/game/ui/text';
 import { rankTeams, winnersOf, type Standing } from '@/session/ranking';
 import { REWARDS } from '@/session/rewards';
 import { appStore, sessionActions } from '@/session/sessionStore';
@@ -31,6 +31,8 @@ interface GiftLayout {
   winnerX: number;
   giftsX: number;
   mascotScale: number;
+  /** Tên đội dài hơn thì cắt "…" */
+  nameMaxWidth: number;
   titleY: number;
   mascotY: number;
   nameY: number;
@@ -47,6 +49,7 @@ function giftLayout(scene: Phaser.Scene): GiftLayout {
       winnerX: width * 0.27,
       giftsX: width * 0.66,
       mascotScale: 2,
+      nameMaxWidth: width * 0.5,
       titleY: height * 0.16,
       mascotY: height * 0.44,
       nameY: height * 0.72,
@@ -60,6 +63,7 @@ function giftLayout(scene: Phaser.Scene): GiftLayout {
     winnerX: width / 2,
     giftsX: width / 2,
     mascotScale: 1.3,
+    nameMaxWidth: width - 40,
     titleY: height * 0.1,
     mascotY: height * 0.27,
     nameY: height * 0.4,
@@ -118,10 +122,13 @@ export default class GiftScene extends Phaser.Scene {
       .image(layout.winnerX, layout.mascotY, mascotTexture(standing.team.mascot))
       .setScale(layout.mascotScale);
     const crown = this.add.image(layout.winnerX, mascot.y - mascot.displayHeight / 2 - 8, 'crown');
-    const name = addText(this, layout.winnerX, layout.nameY, standing.team.name, 'title', {
-      fontSize: '30px',
-      color: THEME.colors.cream,
-    });
+    const name = fitText(
+      addText(this, layout.winnerX, layout.nameY, standing.team.name, 'title', {
+        fontSize: '30px',
+        color: THEME.colors.cream,
+      }),
+      layout.nameMaxWidth,
+    );
     const prompt = addText(
       this,
       layout.giftsX,
@@ -181,9 +188,10 @@ export default class GiftScene extends Phaser.Scene {
     const audio = getAudio(this);
     prompt.setVisible(false);
 
+    // Hộp được chọn bay vào giữa -> ẩn hẳn các hộp còn lại để không bị chồng hình
     gifts.forEach((other) => {
       this.tweens.killTweensOf(other);
-      if (other !== gift) this.tweens.add({ targets: other, alpha: 0.25, scale: 0.85, duration: 250 });
+      if (other !== gift) this.tweens.add({ targets: other, alpha: 0, scale: 0.6, duration: 250 });
     });
     this.tweens.add({
       targets: gift,

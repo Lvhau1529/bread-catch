@@ -71,5 +71,13 @@
   "madeBy": "Made by haulv",
   "turn": "TURN",
   "custom": "CUSTOM",
-  "seconds": "sec"
+  "seconds": "sec",
+  "leaderboard": "CLASS LEADERBOARD",
+  "total": "TOTAL",
+  "games": "GAMES",
+  "rankUp": "RANK UP!",
+  "resetScores": "RESET SCORES",
+  "resetScoresQuestion": "RESET ALL TEAM SCORES?",
+  "reset": "RESET",
+  "noScoresYet": "No team scores yet. Play a class game to start the leaderboard!"
 }

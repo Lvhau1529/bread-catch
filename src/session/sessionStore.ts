@@ -12,7 +12,15 @@ import { createStore } from '@/shared/createStore';
 import { shuffle } from '@/shared/random';
 import { PACKS } from '@/session/content';
 import { DEFAULT_SETTINGS, isValidTime, LEVELS, RULES } from '@/session/settings';
-import { loadLastSetup, recordSoloScore, saveLastSetup } from '@/session/storage';
+import { addSession, rankTotals, withTeams, type LeaderboardUpdate } from '@/session/leaderboard';
+import {
+  loadLastSetup,
+  recordSoloScore,
+  resetTeamTotals,
+  saveLastSetup,
+  saveTeamTotals,
+  teamTotalsStore,
+} from '@/session/storage';
 import { buildTeams } from '@/session/teams';
 import type { GameMode, SessionSettings, SetupDraft, Team, TeamId, TurnResult } from '@/session/types';
 import WordPool from '@/session/WordPool';
@@ -30,6 +38,8 @@ export interface ActiveSession {
   results: TurnResult[];
   /** Chỉ có ở Solo */
   soloBest?: { best: number; isNewBest: boolean };
+  /** Chỉ có ở Class Mode khi chơi đủ lượt: bảng tổng điểm trước / sau buổi này */
+  leaderboard?: LeaderboardUpdate;
 }
 
 export interface AppState {
@@ -78,6 +88,16 @@ function createSession(settings: SessionSettings, teams: Team[]): ActiveSession 
   };
 }
 
+/** Class Mode chơi đủ lượt: cộng điểm vào bảng tổng (một lần cho mỗi buổi) */
+function recordLeaderboard(session: ActiveSession): ActiveSession {
+  if (session.settings.mode !== 'class' || session.leaderboard) return session;
+  const previous = withTeams(teamTotalsStore.get().totals, session.teams);
+  const next = addSession(previous, session.teams, session.results);
+  saveTeamTotals(next);
+  const gained = Object.fromEntries(session.results.map((result) => [result.teamId, result.score]));
+  return { ...session, leaderboard: { before: rankTotals(previous), after: rankTotals(next), gained } };
+}
+
 // ---------------------------------------------------------------------------
 // Selectors
 // ---------------------------------------------------------------------------
@@ -115,8 +135,11 @@ export const sessionActions = {
     update({ screen: 'setup', session: null, draft: mode ? { ...draft, mode } : draft });
   },
 
+  /** Cập nhật form Setup và lưu ngay (tên đội còn nguyên khi mở lại app) */
   updateDraft(patch: Partial<SetupDraft>): void {
-    update({ draft: { ...appStore.get().draft, ...patch } });
+    const draft = { ...appStore.get().draft, ...patch };
+    saveLastSetup(draft);
+    update({ draft });
   },
 
   startSession(): void {
@@ -144,8 +167,16 @@ export const sessionActions = {
   /** Đủ lượt -> Final Results; chưa đủ thì kết thúc và không hiện thống kê (plan §20) */
   finishSession(): void {
     const { session } = appStore.get();
-    if (session && isSessionComplete(session)) update({ screen: 'results' });
-    else sessionActions.abortSession();
+    if (!session || !isSessionComplete(session)) {
+      sessionActions.abortSession();
+      return;
+    }
+    update({ screen: 'results', session: recordLeaderboard(session) });
+  },
+
+  /** Xoá bảng tổng điểm các đội (nút RESET SCORES) */
+  resetTeamTotals(): void {
+    resetTeamTotals();
   },
 
   abortSession(): void {

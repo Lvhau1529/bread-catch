@@ -16,7 +16,7 @@ import type { GameEventBus } from '@/game/core/events';
 import { view } from '@/game/core/view';
 import IconButton from '@/game/ui/IconButton';
 import { hudLayout } from '@/game/ui/layout';
-import { addText } from '@/game/ui/text';
+import { addText, fitText } from '@/game/ui/text';
 import { UI_TEXT } from '@/session/text';
 import type { Team } from '@/session/types';
 import { formatTime } from '@/shared/format';
@@ -25,6 +25,7 @@ const { colors } = THEME;
 /** Dưới ngần này giây thì đồng hồ chuyển đỏ và nhịp đập */
 const TIMER_WARNING_S = 10;
 const TIMER_SIZE = { width: 96, height: 32 };
+const NAME_X = 46;
 
 export interface HudOptions {
   team: Team;
@@ -53,7 +54,14 @@ export default class Hud {
     // Hàng 1: đội + đồng hồ
     const mascot = scene.add.image(24, 24, mascotTexture(options.team.mascot)).setDepth(DEPTH.HUD);
     mascot.setScale(34 / mascot.height);
-    addText(scene, 46, 24, options.team.name, 'outline', { fontSize: '19px', fontStyle: '800' })
+    // Tên dài: cắt "…" trước điểm số (ngang) / đồng hồ (dọc)
+    const nameMaxWidth = layout.landscape
+      ? layout.scoreX - NAME_X - 14
+      : layout.timerX - TIMER_SIZE.width / 2 - NAME_X - 10;
+    fitText(
+      addText(scene, NAME_X, 24, options.team.name, 'outline', { fontSize: '19px', fontStyle: '800' }),
+      nameMaxWidth,
+    )
       .setOrigin(0, 0.5)
       .setDepth(DEPTH.HUD);
 
