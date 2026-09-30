@@ -4,7 +4,7 @@
  */
 import Phaser from 'phaser';
 import { MUSIC } from '@/games/bread-catcher/game/config/assets';
-import { SFX } from '@/platform/audio/sfx';
+import { SFX, SFX_VOLUME } from '@/platform/audio/sfx';
 import { LETTER_BREADS, STAGE_BACKGROUNDS } from '@/games/bread-catcher/game/config/stages';
 import { SCENES } from '@/games/bread-catcher/game/core/keys';
 import { getAudio } from '@/games/bread-catcher/game/core/services';
@@ -50,8 +50,8 @@ export default class ShellScene extends Phaser.Scene {
 
     if (screen === 'results') {
       setStageBackground(this.background, STAGE_BACKGROUNDS[2]);
-      audio.playSfx(SFX.FINAL_RESULTS);
-      audio.playMusic(MUSIC.RESULTS);
+      // Fanfare kết thúc phát một mình, xong mới vào nhạc màn kết quả
+      audio.playJingle(SFX.FINAL_RESULTS, SFX_VOLUME.final_results, MUSIC.RESULTS);
     } else {
       setStageBackground(this.background, STAGE_BACKGROUNDS[0]);
       audio.playMusic(MUSIC.MENU);

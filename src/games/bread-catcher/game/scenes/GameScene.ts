@@ -257,6 +257,8 @@ export default class GameScene extends Phaser.Scene {
     // Từ đang làm dở: không tính đúng/sai, nhưng giữ lại để luyện sau
     if (this.state === 'playing' && this.word) getWordPool().markWrong(this.word);
     this.stopPlay();
+    // Hết lượt: tắt nhạc nền, chỉ còn âm báo hết giờ
+    this.audio.silence();
     this.audio.playSfx(SFX.TIME_UP);
     this.effects.announce(UI_TEXT.timesUp, colors.red, { holdMs: 1000, size: 46 });
     this.time.delayedCall(TIMING.timesUp, () => this.endTurn('time'));

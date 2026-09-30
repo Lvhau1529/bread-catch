@@ -1,9 +1,9 @@
 /**
  * Phòng stream phía sau các màn React (Home / Setup / Results): hai streamer ngồi chờ,
- * tim bay lên, kèm nhạc theo màn (menu / phần thưởng + jingle khi xong lượt).
+ * tim bay lên, kèm nhạc menu (màn kết quả giữ nhạc kết thúc do LiveScene phát).
  */
 import Phaser from 'phaser';
-import { JINGLE, MUSIC } from '@/games/food-stream/game/config/assets';
+import { MUSIC } from '@/games/food-stream/game/config/assets';
 import { SCENES } from '@/games/food-stream/game/core/keys';
 import { getAudio } from '@/games/food-stream/game/core/services';
 import StreamRoom from '@/games/food-stream/game/objects/StreamRoom';
@@ -50,13 +50,11 @@ export default class StudioScene extends Phaser.Scene {
   setScreen(screen: StudioScreen): void {
     if (screen === this.screen) return;
     this.screen = screen;
-    const audio = getAudio(this);
     if (screen === 'results') {
-      audio.playOneShot(JINGLE.key, JINGLE.volume);
-      audio.playMusic(MUSIC.REWARD);
+      // Nhạc kết thúc đã được LiveScene phát (xong jingle mới tự sang nhạc reward) — không phát chồng
       this.streamers.forEach((streamer) => streamer.cheer());
     } else {
-      audio.playMusic(MUSIC.MENU);
+      getAudio(this).playMusic(MUSIC.MENU);
     }
   }
 }

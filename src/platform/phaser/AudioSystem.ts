@@ -5,10 +5,11 @@
  * - Bật/tắt theo `prefsStore` (React và Phaser cùng đổi được).
  * - Nhạc được tải trước ở PreloadScene của game (file nhỏ) nên đổi nhạc là phát ngay.
  * - "Duck": giảm nhạc khi Pause hoặc khi đang đọc âm / từ (để nghe rõ giọng đọc).
+ * - Nhạc kết thúc (playJingle) không bao giờ chồng lên nhạc nền.
  * - Fade dùng event `step` của game nên không phụ thuộc scene nào đang chạy.
  * - Trên mobile, audio bị khoá tới lần chạm đầu tiên: chờ `unlocked` rồi mới phát.
  */
-import type Phaser from 'phaser';
+import Phaser from 'phaser';
 import { SFX_VOLUME, type SfxKey } from '@/platform/audio/sfx';
 import { prefsStore } from '@/platform/prefs';
 
@@ -33,6 +34,8 @@ export default class AudioSystem<MusicKey extends string = string> {
   /** Track muốn phát (kể cả khi nhạc đang tắt) */
   private desiredMusicKey: MusicKey | null = null;
   private readonly ducks = new Set<DuckReason>();
+  /** Nhạc kết thúc đang phát (playJingle) */
+  private jingle: Sound | null = null;
   private fadeHandler: ((time: number, delta: number) => void) | null = null;
   private readonly unsubscribePrefs: () => void;
 
@@ -57,12 +60,6 @@ export default class AudioSystem<MusicKey extends string = string> {
   playSfx(key: SfxKey, { rate = 1, volumeScale = 1 }: PlayOptions = {}): void {
     if (!prefsStore.get().sfx || !this.game.cache.audio.exists(key)) return;
     this.sound.play(key, { volume: SFX_VOLUME[key] * volumeScale, rate });
-  }
-
-  /** Âm thanh một lần riêng của game (jingle...) — `volume` tuyệt đối */
-  playOneShot(key: string, volume: number): void {
-    if (!prefsStore.get().music || !this.game.cache.audio.exists(key)) return;
-    this.sound.play(key, { volume });
   }
 
   // -------------------------------------------------------------------------
@@ -93,6 +90,35 @@ export default class AudioSystem<MusicKey extends string = string> {
     this.music?.destroy();
     this.music = null;
     this.musicKey = null;
+    this.stopJingle();
+  }
+
+  /** Tắt hẳn nhạc nền (kể cả khi người dùng bật lại MUSIC) cho tới lần playMusic / playJingle sau */
+  silence(): void {
+    this.desiredMusicKey = null;
+    this.stopMusic();
+  }
+
+  /**
+   * Nhạc kết thúc lượt / màn kết quả: tắt nhạc nền rồi phát `key` MỘT lần, không chồng lên nhạc khác.
+   * Phát xong mới chuyển sang nhạc `then` (nếu có). Đổi nhạc giữa chừng (playMusic) thì jingle dừng.
+   * `key` có thể là nhạc riêng của game hoặc một SFX trong thư viện chung (đã được tải sẵn).
+   */
+  playJingle(key: string, volume: number, then?: MusicKey): void {
+    this.silence();
+    this.desiredMusicKey = then ?? null;
+    if (!prefsStore.get().music || this.sound.locked || !this.game.cache.audio.exists(key)) {
+      if (then) this.playMusic(then);
+      return;
+    }
+    const jingle = this.sound.add(key, { volume }) as Sound;
+    jingle.once(Phaser.Sound.Events.COMPLETE, () => {
+      if (this.jingle !== jingle) return;
+      this.stopJingle();
+      if (this.desiredMusicKey) this.playMusic(this.desiredMusicKey);
+    });
+    jingle.play();
+    this.jingle = jingle;
   }
 
   /** Giảm / trả lại âm lượng nhạc nền; nhiều lý do có thể chồng lên nhau */
@@ -110,6 +136,13 @@ export default class AudioSystem<MusicKey extends string = string> {
   // -------------------------------------------------------------------------
   // Internal
   // -------------------------------------------------------------------------
+  private stopJingle(): void {
+    const jingle = this.jingle;
+    this.jingle = null;
+    jingle?.stop();
+    jingle?.destroy();
+  }
+
   private get targetVolume(): number {
     if (!this.musicKey) return 0;
     return this.musicVolume[this.musicKey] * (this.ducks.size > 0 ? DUCK_LEVEL : 1);

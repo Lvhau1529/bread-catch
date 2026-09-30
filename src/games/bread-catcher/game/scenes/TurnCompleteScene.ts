@@ -8,7 +8,7 @@
  */
 import Phaser from 'phaser';
 import { mascotTexture } from '@/games/bread-catcher/game/config/assets';
-import { SFX } from '@/platform/audio/sfx';
+import { SFX, SFX_VOLUME } from '@/platform/audio/sfx';
 import { THEME } from '@/games/bread-catcher/game/config/gameConfig';
 import { SCENES } from '@/games/bread-catcher/game/core/keys';
 import { getAudio } from '@/games/bread-catcher/game/core/services';
@@ -83,7 +83,8 @@ export default class TurnCompleteScene extends Phaser.Scene {
       button,
     ]);
 
-    getAudio(this).playSfx(SFX.ROUND_COMPLETE);
+    // Nhạc kết thúc lượt phát một mình (nhạc nền của lượt tắt hẳn)
+    getAudio(this).playJingle(SFX.ROUND_COMPLETE, SFX_VOLUME.round_complete);
     this.input.keyboard?.once('keydown-ENTER', () => button.trigger());
   }
 

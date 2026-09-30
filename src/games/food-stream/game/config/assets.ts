@@ -14,7 +14,7 @@ export const MUSIC = {
   GAMEPLAY: 'bgm_gameplay',
   /** Classroom — đội A đấu đội B */
   CLASSROOM: 'bgm_classroom',
-  /** Màn kết quả / phần thưởng */
+  /** Màn kết quả — chỉ vào sau khi nhạc kết thúc (JINGLE) phát xong */
   REWARD: 'bgm_reward',
 } as const;
 export type MusicKey = (typeof MUSIC)[keyof typeof MUSIC];
@@ -26,7 +26,7 @@ export const MUSIC_VOLUME: Record<MusicKey, number> = {
   bgm_reward: 0.24,
 };
 
-/** Nhạc một lần khi xong lượt */
+/** Nhạc kết thúc lượt: phát một mình (nhạc nền tắt), xong mới sang nhạc màn kết quả */
 export const JINGLE = { key: 'jingle_level_complete', volume: 0.4 } as const;
 
 export const musicUrls = (key: string): string[] => audioUrls(`${ASSET_ROOT}/music/${key}`);

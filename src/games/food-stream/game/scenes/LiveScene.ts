@@ -10,7 +10,7 @@
 import Phaser from 'phaser';
 import { getLevel, type LevelDef } from '@/games/food-stream/content/levels';
 import { getPack, PACKS } from '@/games/food-stream/content/packs';
-import { MUSIC } from '@/games/food-stream/game/config/assets';
+import { JINGLE, MUSIC } from '@/games/food-stream/game/config/assets';
 import { DEPTH, THEME, TIMING } from '@/games/food-stream/game/config/theme';
 import { SCENES } from '@/games/food-stream/game/core/keys';
 import { getAudio, type FoodStreamAudio } from '@/games/food-stream/game/core/services';
@@ -376,11 +376,13 @@ export default class LiveScene extends Phaser.Scene {
     const run = this.run;
 
     this.hud.setViewers(result.viewers);
+    // Hết lượt: tắt nhạc nền ngay, chỉ còn nhạc kết thúc (không chồng lên nhau)
+    this.audio.silence();
     if (endedBy === 'time') {
       this.audio.playSfx(SFX.TIME_UP);
       await this.effects.banner(TEXT.timesUp, { color: THEME.colors.red });
     }
-    this.audio.playSfx(SFX.ROUND_COMPLETE);
+    this.audio.playJingle(JINGLE.key, JINGLE.volume, MUSIC.REWARD);
     this.streamers.forEach((streamer) => streamer.cheer());
     const { stage } = this.layout;
     this.effects.hearts(stage.centerX, stage.bottom - 20, 10);
