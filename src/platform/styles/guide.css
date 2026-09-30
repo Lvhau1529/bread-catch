@@ -269,12 +269,6 @@
   margin: 0 0 8px;
 }
 
-.guide__author {
-  margin-top: 12px !important;
-  text-align: right;
-  font-style: italic;
-}
-
 .guide__build {
   margin-top: 0 !important;
   text-align: right;

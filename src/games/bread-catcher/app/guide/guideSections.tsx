@@ -33,9 +33,6 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
         <p className="guide__note">
           Chữ trong trò chơi là tiếng Anh (đúng như khi học). Phần hướng dẫn này dành cho người lớn.
         </p>
-        <p className="guide__author">
-          Tác giả trò chơi: <b>haulv</b>
-        </p>
       </>
     ),
   },

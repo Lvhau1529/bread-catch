@@ -1,10 +1,12 @@
 /**
- * Màn chọn game chung của Phonics Arcade: thẻ từng game + bật/tắt âm thanh + nút cập nhật PWA.
+ * Màn chọn game chung của Phonics Arcade: thẻ từng game + bật/tắt âm thanh + nút cập nhật PWA
+ * + nút thông tin tác giả ở góc màn hình.
  * Danh sách game truyền vào từ src/games/index.ts.
  */
 import type { CSSProperties } from 'react';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx, preloadSfx } from '@/platform/audio/sfxPlayer';
+import AuthorBadge from '@/platform/hub/AuthorBadge';
 import { platformActions } from '@/platform/platformStore';
 import UpdateBanner from '@/platform/pwa/UpdateBanner';
 import type { GameManifest } from '@/platform/types';
@@ -69,6 +71,7 @@ export default function HubScreen({ games }: { games: readonly GameManifest[] })
       </ul>
 
       <AudioToggles />
+      <AuthorBadge />
     </main>
   );
 }
