@@ -11,16 +11,17 @@ import type { LevelId, PackId } from '@/session/types';
 export type GuideSectionId =
   'about' | 'howto' | 'modes' | 'packs' | 'levels' | 'time' | 'combos' | 'teacher' | 'parents';
 
-export const GUIDE_SECTIONS: { id: GuideSectionId; title: string }[] = [
-  { id: 'about', title: 'Giới thiệu' },
-  { id: 'howto', title: 'Cách chơi' },
-  { id: 'modes', title: 'Chế độ chơi' },
-  { id: 'packs', title: 'Gói từ' },
-  { id: 'levels', title: 'Cấp độ' },
-  { id: 'time', title: 'Thời gian' },
-  { id: 'combos', title: 'Gợi ý kết hợp' },
-  { id: 'teacher', title: 'Dành cho giáo viên' },
-  { id: 'parents', title: 'Dành cho phụ huynh' },
+/** `short`: nhãn gọn cho bảng chọn 3×3 trên điện thoại */
+export const GUIDE_SECTIONS: { id: GuideSectionId; title: string; short: string }[] = [
+  { id: 'about', title: 'Giới thiệu', short: 'Giới thiệu' },
+  { id: 'howto', title: 'Cách chơi', short: 'Cách chơi' },
+  { id: 'modes', title: 'Chế độ chơi', short: 'Chế độ chơi' },
+  { id: 'packs', title: 'Gói từ', short: 'Gói từ' },
+  { id: 'levels', title: 'Cấp độ', short: 'Cấp độ' },
+  { id: 'time', title: 'Thời gian', short: 'Thời gian' },
+  { id: 'combos', title: 'Gợi ý kết hợp', short: 'Gợi ý' },
+  { id: 'teacher', title: 'Dành cho giáo viên', short: 'Giáo viên' },
+  { id: 'parents', title: 'Dành cho phụ huynh', short: 'Phụ huynh' },
 ];
 
 // ---------------------------------------------------------------------------

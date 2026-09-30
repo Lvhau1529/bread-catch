@@ -1,7 +1,9 @@
 /**
  * HƯỚNG DẪN cho giáo viên / phụ huynh (tiếng Việt).
  * Mở ở Home (nút GUIDE) hoặc từ nút "?" cạnh từng mục ở Setup — tự cuộn tới đúng phần.
- * Mục lục phía trên tự sáng theo phần đang đọc (scroll-spy).
+ * Mục lục tự sáng theo phần đang đọc (scroll-spy) và KHÔNG phải cuộn ngang:
+ *   - màn rộng: cột mục lục bên trái (đủ chỗ cho cả 9 phần)
+ *   - điện thoại: thanh [◀] Tên phần ▾ [▶], bấm tên mở bảng chọn 3×3
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { mascotUrl } from '@/app/assets';
@@ -32,11 +34,12 @@ const LAST_SECTION = GUIDE_SECTIONS[GUIDE_SECTIONS.length - 1].id;
 export default function GuideDialog() {
   const { open, section } = useStore(guideStore, (state) => state);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const navRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState<GuideSectionId>(section);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lockUntil = useRef(0);
 
   const scrollToSection = useCallback((id: GuideSectionId, behavior: ScrollBehavior) => {
+    setMenuOpen(false);
     const body = bodyRef.current;
     const heading = body?.querySelector<HTMLElement>(`#guide-${id}`);
     lockUntil.current = performance.now() + JUMP_LOCK_MS;
@@ -80,25 +83,28 @@ export default function GuideDialog() {
     setActive(current);
   };
 
-  // Mục đang sáng luôn nằm giữa hàng mục lục (chỉ cuộn ngang, không kéo cả hộp thoại)
-  useEffect(() => {
-    const nav = navRef.current;
-    const chip = nav?.querySelector<HTMLElement>('.is-active');
-    if (!nav || !chip) return;
-    nav.scrollTo({ left: chip.offsetLeft - (nav.clientWidth - chip.offsetWidth) / 2, behavior: 'smooth' });
-  }, [active, open]);
-
-  // Esc để đóng
+  // Esc: đóng bảng chọn phần trước, bấm lần nữa mới đóng hướng dẫn
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeGuide();
+      if (event.key !== 'Escape') return;
+      if (menuOpen) setMenuOpen(false);
+      else closeGuide();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
+  }, [open, menuOpen]);
 
   if (!open) return null;
+
+  const activeIndex = GUIDE_SECTIONS.findIndex((item) => item.id === active);
+  const activeItem = GUIDE_SECTIONS[activeIndex];
+  const goTo = (index: number) => {
+    const target = GUIDE_SECTIONS[index];
+    if (!target) return;
+    GameBridge.playSfx(SFX.UI_CLICK);
+    scrollToSection(target.id, 'smooth');
+  };
 
   return (
     <div className="guide-backdrop" onClick={closeGuide}>
@@ -125,21 +131,81 @@ export default function GuideDialog() {
           </button>
         </header>
 
-        <nav className="guide__nav" aria-label="Mục lục" ref={navRef}>
-          {GUIDE_SECTIONS.map((item) => (
+        {/* Màn rộng: cột mục lục bên trái */}
+        <nav className="guide__nav" aria-label="Mục lục">
+          {GUIDE_SECTIONS.map((item, index) => (
             <button
               key={item.id}
               type="button"
               className={item.id === active ? 'is-active' : undefined}
               aria-current={item.id === active ? 'true' : undefined}
-              onClick={() => scrollToSection(item.id, 'smooth')}
+              onClick={() => goTo(index)}
             >
+              <span className="guide__nav-index">{index + 1}</span>
               {item.title}
             </button>
           ))}
         </nav>
 
-        <div className="guide__body" ref={bodyRef} onScroll={updateActive}>
+        {/* Điện thoại: phần đang đọc + trước / sau + bảng chọn nhanh */}
+        <div className="guide__picker">
+          <button
+            type="button"
+            className="guide__step"
+            aria-label="Phần trước"
+            disabled={activeIndex <= 0}
+            onClick={() => goTo(activeIndex - 1)}
+          >
+            ◀
+          </button>
+          <button
+            type="button"
+            className="guide__current"
+            aria-expanded={menuOpen}
+            aria-haspopup="true"
+            onClick={() => setMenuOpen((value) => !value)}
+          >
+            <span className="guide__current-index">
+              {activeIndex + 1}/{GUIDE_SECTIONS.length}
+            </span>
+            <span className="guide__current-title">{activeItem?.title}</span>
+            <span className="guide__caret" aria-hidden="true">
+              ▾
+            </span>
+          </button>
+          <button
+            type="button"
+            className="guide__step"
+            aria-label="Phần sau"
+            disabled={activeIndex >= GUIDE_SECTIONS.length - 1}
+            onClick={() => goTo(activeIndex + 1)}
+          >
+            ▶
+          </button>
+
+          {menuOpen && (
+            <div className="guide__menu" aria-label="Chọn phần">
+              {GUIDE_SECTIONS.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={item.id === active ? 'is-active' : undefined}
+                  aria-current={item.id === active ? 'true' : undefined}
+                  onClick={() => goTo(index)}
+                >
+                  {item.short}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div
+          className="guide__body"
+          ref={bodyRef}
+          onScroll={updateActive}
+          onPointerDown={() => setMenuOpen(false)}
+        >
           <Section id="about" title="Giới thiệu">
             <p>
               <b>Phonics Bread Catcher</b> là trò chơi luyện <b>phonics</b> (đánh vần – ghép âm tiếng Anh) cho
