@@ -16,10 +16,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/favicon.png', 'icons/apple-touch-icon.png'],
       manifest: {
-        name: 'Bread Catcher',
-        short_name: 'Bread Catcher',
-        description: 'Cozy pixel-art bread catching game',
-        lang: 'vi',
+        name: 'Phonics Bread Catcher',
+        short_name: 'Phonics Bread',
+        description: 'Classroom phonics game: catch the letter breads in order to build each word',
+        lang: 'en',
         display: 'fullscreen',
         orientation: 'portrait',
         start_url: './',
@@ -33,21 +33,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Precache mọi thứ cần để chơi offline, trừ nhạc nền (lớn)
-        globPatterns: ['**/*.{js,css,html,png,json,woff,woff2}', 'assets/audio/**/*.{ogg,mp3}'],
+        // Precache mọi thứ cần để chơi offline (nhạc của resource pack nhỏ nên cache luôn)
+        globPatterns: ['**/*.{js,css,html,png,json,woff2}', 'assets/{audio,music}/**/*.{ogg,mp3}'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
-        // Nhạc nền được cache khi phát lần đầu
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.pathname.includes('/assets/music/'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'bread-catcher-music',
-              expiration: { maxEntries: 16 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-        ],
       },
     }),
   ],

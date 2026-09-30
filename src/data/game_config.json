@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "language": "en",
+  "classMode": {
+    "teamCount": 3,
+    "defaultTeamNames": ["Lions", "Tigers", "Pandas"],
+    "wordsPerTurn": 5,
+    "showFinalStatsOnlyWhenAllTeamsComplete": true
+  },
+  "soloMode": {
+    "defaultPlayerName": "Player",
+    "wordsPerTurn": 5
+  },
+  "defaults": {
+    "difficulty": "easy",
+    "timeLimitSeconds": 75,
+    "countdownSeconds": 3,
+    "contentPack": "blending_core"
+  },
+  "difficulty": {
+    "gentle": {
+      "fallSpeed": 58,
+      "spawnMs": 1750,
+      "suggestedTime": 90
+    },
+    "easy": {
+      "fallSpeed": 72,
+      "spawnMs": 1450,
+      "suggestedTime": 75
+    },
+    "normal": {
+      "fallSpeed": 92,
+      "spawnMs": 1200,
+      "suggestedTime": 60
+    },
+    "fast": {
+      "fallSpeed": 115,
+      "spawnMs": 1000,
+      "suggestedTime": 50
+    }
+  },
+  "timerOptionsSeconds": [45, 60, 75, 90, 120],
+  "scoring": {
+    "correctWord": 100,
+    "wrongWord": 0,
+    "correctLetter": 0
+  },
+  "wordPool": {
+    "correctAction": "temporarily_remove_from_active_rotation",
+    "wrongAction": "keep_for_retry",
+    "wrongRetryAfterDraws": 2,
+    "reserveFloorRatio": 0.3
+  },
+  "pause": {
+    "overlayOpacity": 0.85,
+    "resumeCountdownSeconds": 3,
+    "hidePlayfieldLetters": true
+  }
+}

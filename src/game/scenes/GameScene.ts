@@ -1,122 +1,170 @@
 /**
- * Gameplay chính. Scene chỉ "điều phối": tạo các system, nối event,
- * và áp luật khi hứng / bỏ lỡ vật phẩm. Logic chi tiết nằm trong systems/.
+ * Một lượt chơi của một đội (plan §8–§16).
  *
- * TROLL MODE: thêm TrollSystem và không thể thua (hết mạng thì hồi đầy);
- * còn lại luật chơi giữ nguyên ở cả 2 mode.
+ *   GET READY 3-2-1-GO ─▶ từ 1 ─▶ ... ─▶ từ 5 ─▶ TEAM TURN COMPLETE
+ *                          (hoặc hết giờ: TIME'S UP!)
+ *
+ * Mỗi từ: hứng đúng lần lượt từng chữ. Hứng nhầm MỘT chữ là kết thúc từ đó
+ * (từ sai ở lại để luyện sau). Đúng cả từ: +100 điểm.
+ *
+ * Scene chỉ "điều phối": tạo system, nối event, áp luật khi hứng.
+ * Level HARD thêm TrollSystem (prank + chữ láo) — luật chấm điểm giữ nguyên.
  */
 import Phaser from 'phaser';
 import { SFX } from '@/game/config/assets';
 import { PLAYER, THEME, TIMING } from '@/game/config/gameConfig';
-import { ItemCategory, type ItemDef } from '@/game/config/items';
-import { STAGES } from '@/game/config/levels';
-import { MODE_LABELS, TROLL_RULES } from '@/game/config/troll';
-import { GameEventBus, type GameEventMap } from '@/game/core/events';
+import { HAZARDS } from '@/game/config/hazards';
+import { LEVEL_STAGES, basketTierFor } from '@/game/config/stages';
+import { GameEventBus } from '@/game/core/events';
 import { SCENES } from '@/game/core/keys';
-import { getAudio, getSave } from '@/game/core/services';
+import { getAudio } from '@/game/core/services';
+import { setupView } from '@/game/core/view';
 import type FallingItem from '@/game/objects/FallingItem';
 import PlayerBasket from '@/game/objects/PlayerBasket';
-import StageBackground from '@/game/objects/StageBackground';
+import { addStageBackground } from '@/game/objects/StageBackground';
+import type { PauseOrigin } from '@/game/scenes/PauseScene';
+import type { TurnCompleteData } from '@/game/scenes/TurnCompleteScene';
 import type AudioSystem from '@/game/systems/AudioSystem';
 import EffectsSystem from '@/game/systems/EffectsSystem';
 import InputController from '@/game/systems/InputController';
-import LevelSystem from '@/game/systems/LevelSystem';
-import LifeSystem from '@/game/systems/LifeSystem';
-import ScoreSystem from '@/game/systems/ScoreSystem';
-import SpawnSystem from '@/game/systems/SpawnSystem';
+import LetterSpawnSystem from '@/game/systems/LetterSpawnSystem';
 import TrollSystem from '@/game/systems/troll/TrollSystem';
-import ComboLabel from '@/game/ui/ComboLabel';
+import TurnTimer from '@/game/systems/TurnTimer';
+import { playCountdown } from '@/game/ui/Countdown';
 import Hud from '@/game/ui/Hud';
-import LevelUpBanner from '@/game/ui/LevelUpBanner';
-import type { GameOverData } from '@/game/scenes/GameOverScene';
+import TargetPanel from '@/game/ui/TargetPanel';
+import { packLetters } from '@/session/content';
+import {
+  appStore,
+  currentTeam,
+  getWordPool,
+  previousTeamWords,
+  sessionActions,
+} from '@/session/sessionStore';
+import { LEVELS, RULES, timeLimitSeconds, wordsPerTurn, type LevelDef } from '@/session/settings';
+import { prefsStore } from '@/session/storage';
+import { LETTER_PRAISE, UI_TEXT, WORD_PRAISE } from '@/session/text';
+import type { TargetSupport, Team, TurnResult, WordAttempt } from '@/session/types';
+import { pickRandom } from '@/shared/random';
+import { speech } from '@/shared/speech';
 
 const { colors } = THEME;
+
+/**
+ * intro      — đang đếm ngược đầu lượt
+ * playing    — đang hứng chữ (đồng hồ chạy)
+ * transition — ăn mừng / chuyển từ (đồng hồ dừng)
+ * over       — hết lượt
+ */
+type TurnState = 'intro' | 'playing' | 'transition' | 'over';
 
 export default class GameScene extends Phaser.Scene {
   private bus!: GameEventBus;
   private audio!: AudioSystem;
-  private score!: ScoreSystem;
-  private lives!: LifeSystem;
-  private levels!: LevelSystem;
-  private spawner!: SpawnSystem;
+  private spawner!: LetterSpawnSystem;
   private effects!: EffectsSystem;
   private controls!: InputController;
   private basket!: PlayerBasket;
-  private background!: StageBackground;
-  private comboLabel!: ComboLabel;
-  private banner!: LevelUpBanner;
-  /** null ở NORMAL MODE */
+  private timer!: TurnTimer;
+  /** Chỉ có ở level HARD */
   private troll: TrollSystem | null = null;
-  private canLose = true;
-  private isOver = false;
+
+  private team!: Team;
+  private level!: LevelDef;
+  private support: TargetSupport = 'word';
+  private totalWords = 0;
+  /** Có giọng đọc (trình duyệt hỗ trợ + giáo viên bật VOICE) */
+  private canHear = false;
+
+  private state: TurnState = 'intro';
+  private word = '';
+  private letterIndex = 0;
+  private attempts: WordAttempt[] = [];
+  private score = 0;
+  private wrongCatches = 0;
+  /** Tránh lặp từ trong lượt và từ của đội ngay trước (plan §14) */
+  private avoidWords = new Set<string>();
 
   constructor() {
     super(SCENES.GAME);
   }
 
   create(): void {
-    const { width, height } = this.scale;
-    this.isOver = false;
+    const { width, height } = setupView(this);
+    const session = appStore.get().session;
+    const team = session && currentTeam(session);
+    if (!session || !team) {
+      sessionActions.abortSession();
+      return;
+    }
+
+    this.team = team;
+    this.level = LEVELS[session.settings.levelId];
+    this.totalWords = wordsPerTurn(session.settings);
+    this.canHear = speech.supported && prefsStore.get().voice;
+    // Không nghe được thì mức gợi ý "chỉ nghe" phải hiện chữ, nếu không sẽ không chơi được
+    const listenOnly = this.level.support === 'first-letter' || this.level.support === 'blank';
+    this.support = listenOnly && !this.canHear ? 'word' : this.level.support;
+    this.resetTurnState(previousTeamWords(session));
     this.physics.world.timeScale = 1;
 
     this.bus = new GameEventBus();
     this.audio = getAudio(this);
-    this.score = new ScoreSystem(this.bus);
-    this.lives = new LifeSystem(this.bus);
-    this.levels = new LevelSystem(this.bus);
+    const stage = LEVEL_STAGES[this.level.id];
+    addStageBackground(this, stage.background, THEME.gameplayBackgroundTint);
 
-    this.background = new StageBackground(
-      this,
-      STAGES[this.levels.unlocked.stage].background,
-      THEME.gameplayBackgroundTint,
-    );
-    this.basket = new PlayerBasket(
-      this,
-      width / 2,
-      height - PLAYER.bottomMargin,
-      this.levels.unlocked.basket,
-    );
+    this.basket = new PlayerBasket(this, width / 2, height - PLAYER.bottomMargin);
     this.controls = new InputController(this, () => this.basket.x);
-    this.spawner = new SpawnSystem(this, this.bus, this.levels, this.lives);
     this.effects = new EffectsSystem(this);
-    this.comboLabel = new ComboLabel(this);
-    this.banner = new LevelUpBanner(this);
-
-    const mode = getSave(this).get('mode');
-    this.troll = mode === 'troll' ? this.createTrollSystem() : null;
-    this.canLose = mode === 'normal' || TROLL_RULES.canLose;
+    this.spawner = new LetterSpawnSystem(
+      this,
+      this.bus,
+      this.level,
+      packLetters(session.settings.packId),
+      TargetPanel.bottom + 4,
+    );
+    this.timer = new TurnTimer(this.bus, timeLimitSeconds(session.settings) * 1000, () => this.timeUp());
 
     new Hud(this, this.bus, {
-      lives: this.lives.lives,
-      maxLives: this.lives.max,
-      level: this.levels.level,
-      badge: mode === 'troll' ? MODE_LABELS.troll : undefined,
-      onPause: () => this.pauseGame(),
+      team,
+      onPause: () => this.openPause('pause'),
+      onBack: () => this.openPause('back'),
+      onEnd: () => this.openPause('end'),
     });
+    new TargetPanel(this, this.bus, this.canHear ? () => this.speakWord() : null);
+    this.troll = this.level.troll ? this.createTrollSystem() : null;
 
     this.physics.add.overlap(this.basket, this.spawner.group, (_basket, item) => {
       this.handleCatch(item as FallingItem);
     });
     this.bindEvents();
 
-    this.levels.handleScore(0); // đẩy trạng thái progress ban đầu lên HUD
-    this.audio.playMusic(this, STAGES[this.levels.unlocked.stage].music);
-    this.audio.preloadMusic(this, [STAGES[2].music, STAGES[3].music]);
+    this.audio.playMusic(stage.music);
     this.cameras.main.fadeIn(250);
+    playCountdown(this, { withGetReady: true }).then(() => this.startTurn());
   }
 
   override update(_time: number, delta: number): void {
-    if (this.isOver) return;
+    if (this.state === 'over') return;
     this.basket.move(delta, this.controls);
     this.spawner.update(delta);
-    this.score.update(delta);
+    if (this.state === 'playing') this.timer.update(delta);
     this.troll?.update(delta);
-    this.comboLabel.follow(this.basket.x, this.basket.y - this.basket.displayHeight);
   }
 
   // -------------------------------------------------------------------------
   // Wiring
   // -------------------------------------------------------------------------
+  private resetTurnState(avoid: Set<string>): void {
+    this.state = 'intro';
+    this.word = '';
+    this.letterIndex = 0;
+    this.attempts = [];
+    this.score = 0;
+    this.wrongCatches = 0;
+    this.avoidWords = avoid;
+  }
+
   private createTrollSystem(): TrollSystem {
     return new TrollSystem({
       scene: this,
@@ -124,178 +172,224 @@ export default class GameScene extends Phaser.Scene {
       basket: this.basket,
       controls: this.controls,
       spawner: this.spawner,
-      score: this.score,
       effects: this.effects,
-      banner: this.banner,
       audio: this.audio,
-      getLevel: () => this.levels.level,
     });
   }
 
   private bindEvents(): void {
-    this.bus
-      .on('score-changed', ({ score }) => {
-        if (!this.isOver) this.levels.handleScore(score);
-      })
-      .on('combo-changed', ({ multiplier }) => this.comboLabel.setMultiplier(multiplier))
-      .on('level-up', (payload) => this.playLevelUp(payload))
-      .on('item-missed', (item) => this.handleMiss(item));
-
     // Phím tắt pause + tự pause khi chuyển app / khoá màn hình (mobile)
-    this.input.keyboard?.on('keydown-P', () => this.pauseGame());
-    this.input.keyboard?.on('keydown-ESC', () => this.pauseGame());
-    this.game.events.on(Phaser.Core.Events.HIDDEN, this.pauseGame, this);
-    this.game.events.on(Phaser.Core.Events.BLUR, this.pauseGame, this);
+    this.input.keyboard?.on('keydown-P', () => this.openPause('pause'));
+    this.input.keyboard?.on('keydown-ESC', () => this.openPause('pause'));
+    this.game.events.on(Phaser.Core.Events.HIDDEN, this.autoPause, this);
+    this.game.events.on(Phaser.Core.Events.BLUR, this.autoPause, this);
+
+    // Pause che hẳn chữ đang rơi để không ai "học tủ" vị trí chữ (plan §18)
+    this.events.on(Phaser.Scenes.Events.PAUSE, () => this.spawner.group.setVisible(false));
+    this.events.on(Phaser.Scenes.Events.RESUME, () => {
+      this.spawner.group
+        .getMatching('active', true)
+        .forEach((item) => (item as FallingItem).setVisible(true));
+    });
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.game.events.off(Phaser.Core.Events.HIDDEN, this.pauseGame, this);
-      this.game.events.off(Phaser.Core.Events.BLUR, this.pauseGame, this);
+      this.game.events.off(Phaser.Core.Events.HIDDEN, this.autoPause, this);
+      this.game.events.off(Phaser.Core.Events.BLUR, this.autoPause, this);
+      this.troll?.setEnabled(false);
+      this.troll = null;
+      speech.cancel();
+      this.audio.setDucked('speech', false);
       this.bus.destroy();
     });
   }
 
   // -------------------------------------------------------------------------
-  // Catch / miss rules
+  // Turn flow
   // -------------------------------------------------------------------------
-  private handleCatch(item: FallingItem): void {
-    const def = item.def;
-    if (!def || this.isOver) return;
-    if (this.troll?.interceptCatch(item)) return; // vd: vật phẩm nảy khỏi rổ
-
-    const { x, y } = item;
-    this.troll?.onCaught(item);
-    this.bus.emit('item-caught', item);
-    item.collect(this.basket.x, this.basket.rimY);
-    this.basket.squash();
-
-    if (def.category === ItemCategory.BAD) this.catchBadItem(def, x, y);
-    else this.catchGoodItem(def, x, y);
+  private startTurn(): void {
+    if (this.state !== 'intro') return;
+    this.timer.start();
+    this.nextWord();
   }
 
-  private catchGoodItem(def: ItemDef, x: number, y: number): void {
-    const { gained, comboMultiplier } = this.score.registerCatch(def.score);
-    this.effects.catchBurst(x, y);
-    if (gained > 0) this.effects.popup(x, y - 16, `+${gained}`);
-
-    switch (def.effect?.type) {
-      case 'score-boost':
-        this.score.activateBoost(def.effect.multiplier, def.effect.duration);
-        this.effects.popup(x, y - 40, `x${def.effect.multiplier} SCORE!`, colors.gold);
-        break;
-      case 'heal':
-        this.lives.heal(def.effect.amount);
-        this.effects.popup(x, y - 40, '+1 LIFE', colors.pink);
-        break;
+  private nextWord(): void {
+    if (this.state === 'over') return;
+    if (this.attempts.length >= this.totalWords) {
+      this.endTurn('words');
+      return;
     }
 
-    // Combo càng cao, tiếng hứng càng cao (1.00 → 1.15)
-    const rate = def.sfx ? 1 : 1 + (comboMultiplier - 1) * 0.05 + Phaser.Math.FloatBetween(-0.03, 0.03);
-    this.audio.playSfx(def.sfx ?? SFX.BREAD_CATCH, { rate });
+    this.word = getWordPool().draw(this.avoidWords);
+    this.avoidWords.add(this.word);
+    this.letterIndex = 0;
+    this.state = 'playing';
+
+    this.bus.emit('word-started', {
+      word: this.word,
+      index: this.attempts.length,
+      total: this.totalWords,
+      support: this.support,
+    });
+    this.spawner.setTarget(this.word, 0);
+    this.spawner.resume();
+    this.timer.start();
+    this.speakWord();
   }
 
-  private catchBadItem(def: ItemDef, x: number, y: number): void {
-    this.score.breakCombo();
-    this.effects.shake('strong');
-    this.audio.playSfx(def.sfx ?? SFX.BAD_ITEM);
-
-    if (def.score < 0) {
-      const lost = this.score.applyPenalty(def.score);
-      this.effects.popup(x, y - 16, lost > 0 ? `-${lost}` : 'OOPS!', colors.red);
-    }
-
-    switch (def.effect?.type) {
-      case 'slow':
-        this.basket.applySlow(def.effect.speedMultiplier, def.effect.duration);
-        this.effects.slowAura(this.basket, def.effect.duration);
-        this.effects.announce('EWW! MOLDY!', colors.green);
-        this.bus.emit('basket-slowed', { duration: def.effect.duration });
-        break;
-      case 'damage':
-        this.lives.damage(def.effect.amount);
-        this.effects.popup(x, y - 16, 'OUCH!', colors.red);
-        this.checkGameOver();
-        break;
-    }
-  }
-
-  private handleMiss(item: FallingItem): void {
-    if (!item.def?.missPenalty || this.isOver) return;
-    this.lives.damage(1);
-    this.score.breakCombo();
-    this.effects.shake('light');
-    this.effects.popup(item.x, this.scale.height - 40, 'MISS', colors.red);
-    this.audio.playSfx(SFX.UI_CANCEL, { volumeScale: 0.8 });
-    this.checkGameOver();
-  }
-
-  // -------------------------------------------------------------------------
-  // Level up: slow-mo → sparkle → banner → đổi rổ/background/nhạc → tiếp tục
-  // -------------------------------------------------------------------------
-  private playLevelUp({ level, unlocks }: GameEventMap['level-up']): void {
-    const { width, height } = this.scale;
-    // Tắt troll TRƯỚC khi pause spawner: hoàn tác prank không được đè trạng thái level up
-    this.troll?.setEnabled(false);
-    this.spawner.pause();
-    this.physics.world.timeScale = TIMING.levelUpSlowMotion;
-
-    this.audio.playSfx(SFX.LEVEL_UP);
-    this.effects.bigBurst(width / 2, height * 0.38);
-    this.banner.play(level, unlocks);
-
-    const { basket, stage } = this.levels.unlocked;
-    this.basket.setTier(basket);
-    if (unlocks.some((u) => u.type === 'stage')) {
-      this.background.transitionTo(STAGES[stage].background);
-      this.audio.playMusic(this, STAGES[stage].music);
-    }
-
-    this.time.delayedCall(TIMING.levelUp, () => {
-      if (this.isOver) return;
-      this.physics.world.timeScale = 1;
-      this.spawner.resume();
-      this.troll?.setEnabled(true);
+  /** Đọc to từ mục tiêu, giảm nhạc nền trong lúc đọc (plan §28) */
+  private speakWord(): void {
+    if (!this.canHear || !this.word) return;
+    speech.say(this.word, {
+      onStart: () => this.audio.setDucked('speech', true),
+      onEnd: () => this.audio.setDucked('speech', false),
     });
   }
 
-  // -------------------------------------------------------------------------
-  // Pause / game over
-  // -------------------------------------------------------------------------
-  private pauseGame(): void {
-    if (this.isOver || !this.scene.isActive()) return;
-    this.controls.reset();
-    this.scene.launch(SCENES.PAUSE);
+  private timeUp(): void {
+    if (this.state === 'over') return;
+    // Từ đang làm dở: không tính đúng/sai, nhưng giữ lại để luyện sau
+    if (this.state === 'playing' && this.word) getWordPool().markWrong(this.word);
+    this.stopPlay();
+    this.audio.playSfx(SFX.TIME_UP);
+    this.effects.announce(UI_TEXT.timesUp, colors.red, { holdMs: 1000, size: 46 });
+    this.time.delayedCall(TIMING.timesUp, () => this.endTurn('time'));
+  }
+
+  private endTurn(endedBy: TurnResult['endedBy']): void {
+    this.stopPlay();
+    const correctWords = this.attempts.filter((attempt) => attempt.correct).length;
+    const result: TurnResult = {
+      teamId: this.team.id,
+      attempts: this.attempts,
+      correctWords,
+      wrongWords: this.attempts.length - correctWords,
+      wrongCatches: this.wrongCatches,
+      timeLimitMs: timeLimitSeconds(appStore.get().session!.settings) * 1000,
+      timeRemainingMs: Math.round(this.timer.remainingMs),
+      score: this.score,
+      endedBy,
+    };
+    sessionActions.recordTurn(result);
+
+    const data: TurnCompleteData = { team: this.team, result, totalWords: this.totalWords };
+    this.scene.launch(SCENES.TURN_COMPLETE, data);
     this.scene.pause();
   }
 
-  /** TROLL MODE: không cho thua — hồi đầy mạng và trêu tiếp */
-  private revive(): void {
-    this.lives.heal(this.lives.max);
-    this.effects.announce(Phaser.Utils.Array.GetRandom(TROLL_RULES.reviveLines) as string, colors.pink);
-    this.audio.playSfx(SFX.HEART);
+  /** Dừng mọi thứ đang chạy của lượt */
+  private stopPlay(): void {
+    this.state = 'over';
+    this.timer.stop();
+    this.spawner.freeze();
+    this.troll?.setEnabled(false);
+    this.controls.enabled = false;
+    speech.cancel();
   }
 
-  private checkGameOver(): void {
-    if (!this.lives.isDead || this.isOver) return;
-    if (!this.canLose) {
-      this.revive();
+  // -------------------------------------------------------------------------
+  // Catch rules
+  // -------------------------------------------------------------------------
+  private handleCatch(item: FallingItem): void {
+    if (this.state !== 'playing' || !item.body.enable) return;
+    if (this.troll?.interceptCatch(item)) return; // vd: chữ nảy khỏi rổ
+
+    this.bus.emit('item-caught', item);
+    if (!item.isLetter) this.catchHazard(item);
+    else if (item.letter === this.word[this.letterIndex]) this.catchCorrect(item);
+    else this.catchWrong(item);
+  }
+
+  private catchCorrect(item: FallingItem): void {
+    const { x, y } = item;
+    const letter = this.word[this.letterIndex];
+    item.collect(this.basket.x, this.basket.rimY);
+    this.basket.squash();
+    this.effects.catchBurst(x, y);
+    this.audio.playSfx(SFX.CORRECT_LETTER, { rate: 1 + this.letterIndex * 0.06 });
+    this.bus.emit('letter-filled', { index: this.letterIndex, letter });
+
+    this.letterIndex += 1;
+    if (this.letterIndex >= this.word.length) {
+      this.completeWord();
       return;
     }
-    this.isOver = true;
-    this.controls.enabled = false;
-    this.troll?.setEnabled(false);
+    this.effects.popup(x, y - 24, pickRandom(LETTER_PRAISE), colors.green);
+    this.spawner.setTarget(this.word, this.letterIndex);
+  }
+
+  /** Đúng cả từ: pháo sao, rổ nảy, đọc lại từ, +100 (plan §12) */
+  private completeWord(): void {
+    this.state = 'transition';
+    this.timer.stop();
+    this.spawner.pause();
+    this.spawner.clear();
+
+    this.attempts.push({ word: this.word, correct: true });
+    getWordPool().markCorrect(this.word);
+    this.score += RULES.correctWordScore;
+    this.bus.emit('score-changed', { score: this.score, delta: RULES.correctWordScore });
+    this.bus.emit('word-finished', { word: this.word, correct: true });
+
+    const { x, rimY } = this.basket;
+    this.effects.wordBurst(x, rimY - 10);
+    this.effects.popup(x, rimY - 40, `+${RULES.correctWordScore}`);
+    this.effects.announce(pickRandom(WORD_PRAISE), colors.gold, { size: 40 });
+    this.audio.playSfx(SFX.WORD_COMPLETE);
+    this.basket.celebrate();
+    this.basket.setTier(basketTierFor(this.attempts.filter((attempt) => attempt.correct).length));
+    this.speakWord();
+
+    this.time.delayedCall(TIMING.wordComplete, () => this.nextWord());
+  }
+
+  /** Hứng nhầm một chữ: kết thúc từ này, nhẹ nhàng chuyển sang từ khác (plan §13) */
+  private catchWrong(item: FallingItem): void {
+    this.state = 'transition';
+    this.timer.stop();
     this.spawner.freeze();
-    this.physics.world.timeScale = 1;
-    this.audio.stopMusic();
-    this.audio.playSfx(SFX.GAME_OVER);
 
-    const finalScore = this.score.score;
-    const finalLevel = this.levels.level;
-    const { isNewBest, bestScore } = getSave(this).recordRun(finalScore, finalLevel);
-    const data: GameOverData = { score: finalScore, level: finalLevel, bestScore, isNewBest };
+    this.wrongCatches += 1;
+    this.attempts.push({ word: this.word, correct: false });
+    getWordPool().markWrong(this.word);
+    this.bus.emit('word-finished', { word: this.word, correct: false });
 
-    this.time.delayedCall(TIMING.gameOverDelay, () => {
-      this.scene.launch(SCENES.GAME_OVER, data);
-      this.scene.pause();
+    this.effects.wrongPuff(item.x, item.y);
+    item.vanish();
+    this.basket.shake();
+    this.audio.playSfx(SFX.WRONG_LETTER);
+    this.effects.announce(UI_TEXT.tryNextWord, colors.cream, { size: 28 });
+
+    this.time.delayedCall(TIMING.wordFailed, () => {
+      this.spawner.clear();
+      this.nextWord();
     });
+  }
+
+  /** Vật cản (level HARD): rổ bị choáng, không tính là hứng sai */
+  private catchHazard(item: FallingItem): void {
+    const hazard = HAZARDS[item.hazard ?? 'egg_broken'];
+    const { x, y } = item;
+    item.collect(this.basket.x, this.basket.rimY);
+    if (hazard.explodes) this.effects.explosion(x, y);
+    else this.effects.wrongPuff(x, y);
+    this.basket.freeze(hazard.stunMs);
+    this.effects.popup(this.basket.x, this.basket.rimY - 30, hazard.label, colors.red);
+    this.audio.playSfx(SFX.WRONG_LETTER, { rate: 0.7 });
+  }
+
+  // -------------------------------------------------------------------------
+  // Pause / teacher controls
+  // -------------------------------------------------------------------------
+  private autoPause(): void {
+    this.openPause('pause');
+  }
+
+  private openPause(origin: PauseOrigin): void {
+    if (this.state === 'over' || !this.scene.isActive()) return;
+    this.controls.reset();
+    speech.cancel();
+    this.audio.playSfx(SFX.PAUSE);
+    this.scene.launch(SCENES.PAUSE, { origin });
+    this.scene.pause();
   }
 }

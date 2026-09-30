@@ -1,29 +1,43 @@
 /**
- * App shell React: game Phaser + các lớp UI phủ bên ngoài.
+ * App shell React: game Phaser + các màn UI phủ lên trên.
  *
- * - TROLL MODE: mở đầu bằng "game làm bánh" giả (FakeBakeryIntro), game thật
- *   vẫn load ngầm bên dưới và bị khoá input cho tới khi màn giả đóng lại.
- * - Giai đoạn mở rộng (shop, collection, settings...) thêm UI React ở đây,
- *   giao tiếp với game qua `GameBridge`.
+ *   home / setup / results -> màn React (Phaser vẽ nền động phía sau, input game bị khoá)
+ *   play / gift            -> chỉ còn game Phaser
+ *
+ * React và Phaser chỉ nói chuyện qua `appStore` (session/sessionStore.ts) và `GameBridge`.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, type ComponentType } from 'react';
 import PhaserGame from '@/app/PhaserGame';
 import RotateHint from '@/app/RotateHint';
-import FakeBakeryIntro from '@/app/prank/FakeBakeryIntro';
+import { useAppState } from '@/app/hooks/useStore';
+import HomeScreen from '@/app/screens/HomeScreen';
+import ResultsScreen from '@/app/screens/ResultsScreen';
+import SetupScreen from '@/app/screens/SetupScreen';
 import { GameBridge } from '@/game/bridge';
-import { loadSaveData } from '@/game/systems/SaveSystem';
+import type { Screen } from '@/session/sessionStore';
+
+const REACT_SCREENS: Partial<Record<Screen, ComponentType>> = {
+  home: HomeScreen,
+  setup: SetupScreen,
+  results: ResultsScreen,
+};
 
 export default function App() {
-  const [showFakeIntro, setShowFakeIntro] = useState(() => loadSaveData().mode === 'troll');
+  const screen = useAppState((state) => state.screen);
+  const Overlay = REACT_SCREENS[screen];
 
   useEffect(() => {
-    GameBridge.setOverlayOpen(showFakeIntro);
-  }, [showFakeIntro]);
+    GameBridge.setOverlayOpen(Overlay !== undefined);
+  }, [Overlay]);
 
   return (
     <main className="app">
       <PhaserGame />
-      {showFakeIntro && <FakeBakeryIntro onFinish={() => setShowFakeIntro(false)} />}
+      {Overlay && (
+        <div className="screen-layer" key={screen}>
+          <Overlay />
+        </div>
+      )}
       <RotateHint />
     </main>
   );

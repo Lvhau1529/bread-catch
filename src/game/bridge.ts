@@ -1,17 +1,19 @@
 /**
- * Cầu nối React ↔ Phaser.
+ * Cầu nối React ↔ Phaser cho những việc KHÔNG thuộc về trạng thái phiên chơi
+ * (trạng thái phiên đi qua `appStore` trong src/session/sessionStore.ts).
  *
- * Phaser phát event ra ngoài (vd: scene nào đang chạy) và React có thể gửi
- * lệnh vào game qua cùng một bus có kiểu. Khi mở rộng (shop, collection,
- * settings bằng React...) chỉ cần thêm event vào `BridgeEventMap`.
+ * Khi mở rộng (shop, collection...) chỉ cần thêm event vào `BridgeEventMap`.
  */
 import Phaser from 'phaser';
+import type { SfxKey } from '@/game/config/assets';
 
 export interface BridgeEventMap {
   /** Một scene vừa chạy xong create() */
   'scene-ready': { key: string; scene: Phaser.Scene };
   /** React đang phủ UI lên game (game cần tạm khoá input) */
   'overlay-changed': { open: boolean };
+  /** React muốn phát SFX (nút bấm ở màn React) */
+  'play-sfx': { key: SfxKey };
 }
 
 type BridgeEvent = keyof BridgeEventMap;
@@ -35,7 +37,12 @@ export const GameBridge = {
     return overlayOpen;
   },
   setOverlayOpen(open: boolean): void {
+    if (open === overlayOpen) return;
     overlayOpen = open;
     emitter.emit('overlay-changed', { open });
+  },
+
+  playSfx(key: SfxKey): void {
+    emitter.emit('play-sfx', { key });
   },
 };

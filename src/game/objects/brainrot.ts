@@ -1,5 +1,5 @@
 /**
- * Nhân vật "brainrot" của TROLL MODE: texture (sinh bởi tools/brainrot_art.py)
+ * Nhân vật "brainrot" của level HARD: texture (sinh bởi tools/brainrot_art.py)
  * và animation 2 frame.
  */
 import type Phaser from 'phaser';

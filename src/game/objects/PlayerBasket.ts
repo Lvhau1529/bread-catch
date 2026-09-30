@@ -1,34 +1,30 @@
 /**
- * Rổ hứng của người chơi — chỉ di chuyển ngang, không ra khỏi màn hình.
- * Vùng va chạm là dải mỏng ở miệng rổ, rộng theo `hitWidth` của tier.
- * Arcade body co giãn theo scale, nên `setSizeScale` thu nhỏ luôn vùng hứng.
+ * Rổ hứng — chỉ di chuyển ngang, không ra khỏi màn hình.
+ * Vùng va chạm là dải mỏng ở miệng rổ, rộng CỐ ĐỊNH (PLAYER.catchZone) cho mọi tier.
+ * Arcade body co giãn theo scale, nên `setSizeScale` (prank rổ teo) thu nhỏ luôn vùng hứng.
  */
 import Phaser from 'phaser';
 import { DEPTH, PLAYER, TIMING } from '@/game/config/gameConfig';
-import { BASKETS, type BasketTier } from '@/game/config/levels';
+import { BASKET_TEXTURES, type BasketTier } from '@/game/config/stages';
+import { view } from '@/game/core/view';
 import type InputController from '@/game/systems/InputController';
 
 export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
   declare body: Phaser.Physics.Arcade.Body;
   tier: BasketTier;
-  private hitWidth: number;
-  private speedMultiplier = 1;
-  /** Scale gốc của rổ (1 = bình thường); các tween squash / pop tính quanh giá trị này */
+  /** Scale gốc (1 = bình thường); các tween squash / pop tính quanh giá trị này */
   private sizeScale = 1;
-  private slowTimer: Phaser.Time.TimerEvent | null = null;
-  private wobble: Phaser.Tweens.Tween | null = null;
   private sizeTween: Phaser.Tweens.Tween | null = null;
-  /** Lực đẩy ngang (px/s) cộng thêm mỗi frame — prank "gió" của TROLL MODE */
+  /** Lực đẩy ngang (px/s) cộng thêm mỗi frame — prank "gió" */
   private wind = 0;
   private frozenTimer: Phaser.Time.TimerEvent | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number, tier: BasketTier = 1) {
-    super(scene, x, y, BASKETS[tier].texture);
+    super(scene, x, y, BASKET_TEXTURES[tier]);
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.tier = tier;
-    this.hitWidth = BASKETS[tier].hitWidth;
     this.setOrigin(0.5, 1).setDepth(DEPTH.BASKET);
     this.body.setAllowGravity(false).setImmovable(true);
     this.updateBody();
@@ -39,15 +35,17 @@ export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
     return this.y - this.displayHeight * (1 - PLAYER.catchZone.topRatio);
   }
 
+  get isFrozen(): boolean {
+    return this.frozenTimer !== null;
+  }
+
+  /** Đổi tier (phần thưởng hình ảnh) kèm hiệu ứng "pop" */
   setTier(tier: BasketTier): void {
     if (tier === this.tier) return;
     this.tier = tier;
-    this.hitWidth = BASKETS[tier].hitWidth;
-    this.setTexture(BASKETS[tier].texture);
+    this.setTexture(BASKET_TEXTURES[tier]);
     this.updateBody();
     this.x = this.clampX(this.x);
-
-    // Hiệu ứng "pop" khi nâng cấp
     this.scene.tweens.add({
       targets: this,
       scaleX: { from: this.sizeScale * 1.3, to: this.sizeScale },
@@ -57,40 +55,7 @@ export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
     });
   }
 
-  get isSlowed(): boolean {
-    return this.slowTimer !== null;
-  }
-
-  get isFrozen(): boolean {
-    return this.frozenTimer !== null;
-  }
-
-  /** Dính mốc (Moldy Bread): rổ ì, xanh lè và lắc lư trong `duration` ms */
-  applySlow(multiplier: number, duration: number): void {
-    this.speedMultiplier = multiplier;
-
-    this.wobble?.stop();
-    this.wobble = this.scene.tweens.add({
-      targets: this,
-      angle: { from: -PLAYER.slowed.wobbleAngle, to: PLAYER.slowed.wobbleAngle },
-      duration: 160,
-      yoyo: true,
-      repeat: -1,
-    });
-
-    this.slowTimer?.remove();
-    this.slowTimer = this.scene.time.delayedCall(duration, () => {
-      this.speedMultiplier = 1;
-      this.wobble?.stop();
-      this.wobble = null;
-      this.setAngle(0);
-      this.slowTimer = null;
-      this.refreshTint();
-    });
-    this.refreshTint();
-  }
-
-  /** Đóng băng: rổ đứng im hoàn toàn trong `duration` ms (nhân vật brainrot) */
+  /** Đứng im hoàn toàn trong `duration` ms (choáng / đóng băng) */
   freeze(duration: number): void {
     this.frozenTimer?.remove();
     this.frozenTimer = this.scene.time.delayedCall(duration, () => {
@@ -110,7 +75,7 @@ export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
     });
   }
 
-  /** Phóng to / thu nhỏ rổ (TROLL MODE: rổ teo) */
+  /** Phóng to / thu nhỏ rổ (prank rổ teo) */
   setSizeScale(scale: number): void {
     this.sizeScale = scale;
     this.sizeTween?.stop();
@@ -121,7 +86,7 @@ export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
     this.wind = speed;
   }
 
-  /** scaleY 1 → 0.90 → 1.05 → 1 (~150ms) */
+  /** scaleY 1 → 0.90 → 1.05 → 1 (~150ms) khi hứng */
   squash(): void {
     const step = TIMING.basketSquash / 3;
     const s = this.sizeScale;
@@ -135,38 +100,57 @@ export default class PlayerBasket extends Phaser.Physics.Arcade.Image {
     });
   }
 
+  /** Nảy lên ăn mừng khi xong từ */
+  celebrate(): void {
+    this.scene.tweens.add({
+      targets: this,
+      y: this.y - 18,
+      duration: 160,
+      yoyo: true,
+      repeat: 1,
+      ease: 'Quad.easeOut',
+    });
+  }
+
+  /** Lắc nhẹ khi hứng nhầm (plan §13: phản hồi nhẹ nhàng) */
+  shake(): void {
+    this.scene.tweens.add({
+      targets: this,
+      angle: { from: -8, to: 8 },
+      duration: 70,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => this.setAngle(0),
+    });
+  }
+
   move(delta: number, input: InputController): void {
     if (this.isFrozen) return;
     const dt = delta / 1000;
     const direction = input.direction;
-    // Tốc độ cơ bản; khi dính mốc thì cả chuột / cảm ứng cũng bị giới hạn theo nó
-    // (bình thường rổ bám ngón tay gần như tức thì nên nhân % vào đó sẽ không cảm nhận được)
-    const baseSpeed = PLAYER.keyboardSpeed * this.speedMultiplier;
 
     if (direction !== 0) {
-      this.x += direction * baseSpeed * dt;
+      this.x += direction * PLAYER.keyboardSpeed * dt;
     } else if (input.targetX !== null) {
-      const maxSpeed = this.isSlowed ? baseSpeed : PLAYER.pointerMaxSpeed;
-      const maxStep = maxSpeed * dt;
+      const maxStep = PLAYER.pointerMaxSpeed * dt;
       this.x += Phaser.Math.Clamp(input.targetX - this.x, -maxStep, maxStep);
     }
     this.x = this.clampX(this.x + this.wind * dt);
   }
 
-  /** Màu theo trạng thái: đóng băng ưu tiên hơn dính mốc */
   private refreshTint(): void {
     if (this.isFrozen) this.setTint(PLAYER.frozenTint);
-    else if (this.isSlowed) this.setTint(PLAYER.slowed.tint);
     else this.clearTint();
   }
 
   private clampX(x: number): number {
     const half = this.width / 2;
-    return Phaser.Math.Clamp(x, half, this.scene.scale.width - half);
+    return Phaser.Math.Clamp(x, half, view(this.scene).width - half);
   }
 
   private updateBody(): void {
-    this.body.setSize(this.hitWidth, PLAYER.catchZone.height, false);
-    this.body.setOffset((this.width - this.hitWidth) / 2, this.height * PLAYER.catchZone.topRatio);
+    const { width, height, topRatio } = PLAYER.catchZone;
+    this.body.setSize(width, height, false);
+    this.body.setOffset((this.width - width) / 2, this.height * topRatio);
   }
 }

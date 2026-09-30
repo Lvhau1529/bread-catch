@@ -1,9 +1,9 @@
 {
-  "name": "bread-catcher",
-  "version": "1.0.0",
+  "name": "phonics-bread-catcher",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Bread Catcher — cozy pixel-art catching game built with Phaser 3",
+  "description": "Phonics Bread Catcher — classroom phonics game built with Phaser 3 + React",
   "engines": {
     "node": ">=22.12"
   },
@@ -19,8 +19,8 @@
     "assets": "pnpm run assets:sprites && pnpm run assets:audio"
   },
   "dependencies": {
+    "@fontsource/andika": "^5.3.0",
     "@fontsource/baloo-2": "^5.3.0",
-    "@fontsource/pixelify-sans": "^5.3.0",
     "phaser": "^3.90.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

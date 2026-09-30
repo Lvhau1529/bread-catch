@@ -1,5 +1,5 @@
 /**
- * Prank "nhân vật brainrot" của TROLL MODE: nhân vật chạy vào màn hình và phá game.
+ * Prank "nhân vật brainrot" của level HARD: nhân vật chạy vào màn hình và phá game.
  *   Tung Tung Tung Sahur · Lirili Larila · Tralalero Tralala · Bombardiro Crocodilo
  * Mỗi nhân vật tự cập nhật theo event UPDATE của scene; hoàn tác = dọn nhân vật.
  */
@@ -7,6 +7,7 @@ import Phaser from 'phaser';
 import { SFX } from '@/game/config/assets';
 import { DEPTH, THEME } from '@/game/config/gameConfig';
 import { TROLL_PRANKS } from '@/game/config/troll';
+import { view } from '@/game/core/view';
 import { BRAINROT } from '@/game/objects/brainrot';
 import type FallingItem from '@/game/objects/FallingItem';
 import type { Prank, TrollContext } from '@/game/systems/troll/types';
@@ -27,14 +28,13 @@ function everyFrame(scene: Phaser.Scene, handler: UpdateHandler): () => void {
 
 /** Đi từ phía xa rổ hơn để người chơi kịp thấy mà hoảng */
 function entrySide({ scene, basket }: TrollContext): { startX: number; direction: 1 | -1 } {
-  const fromLeft = basket.x > scene.scale.width / 2;
-  return fromLeft
-    ? { startX: -OFFSCREEN, direction: 1 }
-    : { startX: scene.scale.width + OFFSCREEN, direction: -1 };
+  const { width } = view(scene);
+  const fromLeft = basket.x > width / 2;
+  return fromLeft ? { startX: -OFFSCREEN, direction: 1 } : { startX: width + OFFSCREEN, direction: -1 };
 }
 
 const crossingMs = (scene: Phaser.Scene, speed: number) =>
-  ((scene.scale.width + OFFSCREEN * 2) / speed) * 1000;
+  ((view(scene).width + OFFSCREEN * 2) / speed) * 1000;
 
 // ---------------------------------------------------------------------------
 // Tung Tung Tung Sahur: chạy dọc đáy màn hình, BONK văng rổ + làm choáng
@@ -67,7 +67,7 @@ const tungTungTungSahur: Prank = (ctx) => {
     basket.freeze(tungSahur.stunMs);
     effects.shake('strong');
     effects.popup(basket.x, basket.rimY - 30, tungSahur.hitLabel, colors.red);
-    audio.playSfx(SFX.BAD_ITEM);
+    audio.playSfx(SFX.WRONG_LETTER);
     scene.time.delayedCall(250, () => tung.active && tung.play(BRAINROT.tung.walk));
   });
 
@@ -81,14 +81,14 @@ const tungTungTungSahur: Prank = (ctx) => {
 };
 
 // ---------------------------------------------------------------------------
-// Lirili Larila: đi ngang giữa màn hình, TIME STOP đóng băng rổ, ăn vụng đồ rơi
+// Lirili Larila: đi ngang giữa màn hình, TIME STOP đóng băng rổ, ăn vụng chữ rơi
 // ---------------------------------------------------------------------------
 const liriliLarila: Prank = (ctx) => {
   const { scene, basket, spawner, effects, audio } = ctx;
   const { startX, direction } = entrySide(ctx);
 
   const walker = scene.add
-    .sprite(startX, scene.scale.height * 0.55, BRAINROT.lirili.idle)
+    .sprite(startX, view(scene).height * 0.55, BRAINROT.lirili.idle)
     .setDepth(DEPTH.ITEMS + 1)
     .setFlipX(direction < 0)
     .play(BRAINROT.lirili.walk);
@@ -99,7 +99,7 @@ const liriliLarila: Prank = (ctx) => {
   scene.time.delayedCall(lirili.freezeDelayMs, () => {
     if (!walker.active) return;
     basket.freeze(lirili.freezeMs);
-    audio.playSfx(SFX.STAR, { rate: 0.7 });
+    audio.playSfx(SFX.CORRECT_LETTER, { rate: 0.7 });
     effects.popup(basket.x, basket.rimY - 50, lirili.freezeLabel, colors.cream);
     clock = scene.add.image(basket.x, basket.rimY - 30, BRAINROT.clock).setDepth(DEPTH.FX);
     scene.tweens.add({ targets: clock, angle: 360, duration: 900, repeat: -1 });
@@ -130,19 +130,19 @@ const liriliLarila: Prank = (ctx) => {
 };
 
 // ---------------------------------------------------------------------------
-// Tralalero Tralala: lao ngang giữa màn hình, đá văng mọi thứ đang rơi
+// Tralalero Tralala: lao ngang giữa màn hình, đá văng mọi chữ đang rơi
 // ---------------------------------------------------------------------------
 const tralaleroTralala: Prank = (ctx) => {
   const { scene, spawner, effects, audio } = ctx;
   const { startX, direction } = entrySide(ctx);
 
   const shark = scene.add
-    .sprite(startX, scene.scale.height * tralalero.yRatio, BRAINROT.tralalero.idle)
+    .sprite(startX, view(scene).height * tralalero.yRatio, BRAINROT.tralalero.idle)
     .setDepth(DEPTH.ITEMS + 1)
     .setFlipX(direction < 0)
     .play(BRAINROT.tralalero.walk);
   effects.announce(tralalero.label, colors.cream);
-  audio.playSfx(SFX.UI_CONFIRM, { rate: 1.3 });
+  audio.playSfx(SFX.TEAM_SELECTED, { rate: 1.3 });
 
   const kicked = new WeakSet<FallingItem>();
   const stop = everyFrame(scene, (_time, delta) => {
@@ -172,17 +172,16 @@ const tralaleroTralala: Prank = (ctx) => {
 
 // ---------------------------------------------------------------------------
 // Bombardiro Crocodilo: bay ngang phía trên, thả bom
-//   - hứng bom: mất mạng (luật đồ xấu) + nổ
+//   - hứng bom: nổ + rổ choáng (GameScene xử lý theo HAZARDS.bomb)
 //   - bom rơi xuống đất: nổ, rổ ở gần bị hất văng + choáng
 // ---------------------------------------------------------------------------
 /** Chờ thêm để quả bom cuối kịp rơi xuống đất trước khi dọn prank */
 const BOMB_FALL_BUFFER_MS = 3000;
-const BOMB_ID = 'bomb';
 
 const bombardiroCrocodilo: Prank = (ctx) => {
   const { scene, bus, basket, spawner, effects, audio } = ctx;
   const { startX, direction } = entrySide(ctx);
-  const { width, height } = scene.scale;
+  const { width, height } = view(scene);
 
   const plane = scene.add
     .sprite(startX, bombardiro.altitude, BRAINROT.bombardiro.idle)
@@ -207,27 +206,24 @@ const bombardiroCrocodilo: Prank = (ctx) => {
   const explode = (x: number, y: number) => {
     effects.explosion(x, y);
     effects.popup(x, y - 30, bombardiro.blastLabel, colors.red);
-    audio.playSfx(SFX.BAD_ITEM, { rate: 0.6 });
-  };
-  const onCaught = (item: FallingItem) => {
-    if (item.itemId === BOMB_ID) explode(item.x, item.y);
+    audio.playSfx(SFX.WRONG_LETTER, { rate: 0.6 });
   };
   const onMissed = (item: FallingItem) => {
-    if (item.itemId !== BOMB_ID) return;
+    if (item.hazard !== 'bomb') return;
     explode(item.x, height - 12);
     const distance = basket.x - item.x;
     if (Math.abs(distance) > bombardiro.blastRadius) return;
     basket.knock(Math.sign(distance || 1) * bombardiro.knockback);
     basket.freeze(bombardiro.stunMs);
   };
-  bus.on('item-caught', onCaught).on('item-missed', onMissed);
+  bus.on('item-missed', onMissed);
 
   let nextDrop = 0;
   const stop = everyFrame(scene, (_time, delta) => {
     plane.x += (direction * bombardiro.speed * delta) / 1000;
     const passed = (x: number) => (direction > 0 ? plane.x >= x : plane.x <= x);
     while (nextDrop < dropXs.length && passed(dropXs[nextDrop])) {
-      spawner.spawnItem(BOMB_ID, dropXs[nextDrop], {
+      spawner.spawnHazard('bomb', dropXs[nextDrop], {
         y: plane.y + 20,
         speedScale: bombardiro.bombSpeedScale,
       });
@@ -241,7 +237,7 @@ const bombardiroCrocodilo: Prank = (ctx) => {
     undo: () => {
       stop();
       plane.destroy();
-      bus.off('item-caught', onCaught).off('item-missed', onMissed);
+      bus.off('item-missed', onMissed);
     },
   };
 };

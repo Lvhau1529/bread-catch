@@ -1,46 +1,54 @@
 /**
  * Preset chữ dùng chung để UI nhất quán.
+ * Mọi Text được render ở độ phân giải RENDER_SCALE để sắc nét khi camera zoom.
  */
 import type Phaser from 'phaser';
-import { THEME } from '@/game/config/gameConfig';
+import { RENDER_SCALE, THEME } from '@/game/config/gameConfig';
 
-const { colors } = THEME;
+const { colors, fonts } = THEME;
 
 const PRESETS = {
   /** Tiêu đề lớn trên nền ảnh */
   title: {
-    fontSize: '44px',
-    fontStyle: '700',
+    fontSize: '34px',
+    fontStyle: '800',
     color: colors.gold,
     stroke: colors.darkBrown,
     strokeThickness: 8,
   },
   /** Tiêu đề trên panel kem */
-  heading: { fontSize: '28px', fontStyle: '700', color: colors.brown },
+  heading: { fontSize: '26px', fontStyle: '800', color: colors.brown },
   /** Nhãn trên panel kem */
   label: { fontSize: '16px', fontStyle: '700', color: colors.brown },
   /** Chữ có viền, nổi trên nền game */
   outline: {
-    fontSize: '16px',
+    fontSize: '17px',
     fontStyle: '700',
     color: colors.cream,
     stroke: colors.darkBrown,
-    strokeThickness: 4,
+    strokeThickness: 5,
   },
   small: {
-    fontSize: '12px',
-    fontStyle: '400',
+    fontSize: '13px',
+    fontStyle: '600',
     color: colors.cream,
     stroke: colors.darkBrown,
-    strokeThickness: 3,
+    strokeThickness: 4,
   },
-  /** Popup điểm bay lên */
+  /** Popup bay lên */
   popup: {
-    fontSize: '20px',
-    fontStyle: '700',
+    fontSize: '22px',
+    fontStyle: '800',
     color: colors.gold,
     stroke: colors.darkBrown,
-    strokeThickness: 4,
+    strokeThickness: 5,
+  },
+  /** Chữ học (chữ cái / từ) — font Andika */
+  learning: {
+    fontFamily: fonts.learning,
+    fontSize: '30px',
+    fontStyle: '700',
+    color: colors.darkBrown,
   },
 } satisfies Record<string, Phaser.Types.GameObjects.Text.TextStyle>;
 
@@ -55,6 +63,7 @@ export function addText(
   overrides: Phaser.Types.GameObjects.Text.TextStyle = {},
 ): Phaser.GameObjects.Text {
   return scene.add
-    .text(x, y, text, { fontFamily: THEME.fontFamily, align: 'center', ...PRESETS[preset], ...overrides })
+    .text(x, y, text, { fontFamily: fonts.ui, align: 'center', ...PRESETS[preset], ...overrides })
+    .setResolution(RENDER_SCALE)
     .setOrigin(0.5);
 }

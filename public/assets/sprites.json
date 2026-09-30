@@ -1,23 +1,23 @@
 {
-  "bread_01": {
-    "path": "assets/bread/bread_01.png",
-    "width": 48,
-    "height": 40
-  },
-  "bread_02": {
-    "path": "assets/bread/bread_02.png",
-    "width": 64,
-    "height": 57
-  },
-  "bread_03": {
-    "path": "assets/bread/bread_03.png",
-    "width": 54,
-    "height": 48
-  },
-  "bread_04": {
-    "path": "assets/bread/bread_04.png",
-    "width": 60,
+  "letter_bread_01": {
+    "path": "assets/bread/letter_bread_01.png",
+    "width": 66,
     "height": 55
+  },
+  "letter_bread_02": {
+    "path": "assets/bread/letter_bread_02.png",
+    "width": 78,
+    "height": 69
+  },
+  "letter_bread_03": {
+    "path": "assets/bread/letter_bread_03.png",
+    "width": 70,
+    "height": 62
+  },
+  "letter_bread_04": {
+    "path": "assets/bread/letter_bread_04.png",
+    "width": 74,
+    "height": 68
   },
   "basket_01": {
     "path": "assets/basket/basket_01.png",
@@ -39,55 +39,15 @@
     "width": 110,
     "height": 103
   },
-  "butter": {
-    "path": "assets/items/butter.png",
-    "width": 44,
-    "height": 34
-  },
-  "jam": {
-    "path": "assets/items/jam.png",
-    "width": 39,
-    "height": 44
-  },
-  "cheese": {
-    "path": "assets/items/cheese.png",
-    "width": 44,
-    "height": 42
-  },
-  "wheat": {
-    "path": "assets/items/wheat.png",
-    "width": 46,
-    "height": 44
-  },
-  "coin": {
-    "path": "assets/items/coin.png",
-    "width": 36,
-    "height": 38
+  "egg_broken": {
+    "path": "assets/items/egg_broken.png",
+    "width": 52,
+    "height": 31
   },
   "star": {
     "path": "assets/items/star.png",
     "width": 42,
     "height": 42
-  },
-  "heart": {
-    "path": "assets/items/heart.png",
-    "width": 38,
-    "height": 33
-  },
-  "bread_burnt": {
-    "path": "assets/items/bread_burnt.png",
-    "width": 50,
-    "height": 44
-  },
-  "bread_moldy": {
-    "path": "assets/items/bread_moldy.png",
-    "width": 46,
-    "height": 43
-  },
-  "egg_broken": {
-    "path": "assets/items/egg_broken.png",
-    "width": 52,
-    "height": 31
   },
   "sparkle": {
     "path": "assets/fx/sparkle.png",
@@ -99,31 +59,6 @@
     "width": 72,
     "height": 53
   },
-  "btn_play": {
-    "path": "assets/ui/btn_play.png",
-    "width": 200,
-    "height": 91
-  },
-  "btn_pause": {
-    "path": "assets/ui/btn_pause.png",
-    "width": 72,
-    "height": 38
-  },
-  "btn_resume": {
-    "path": "assets/ui/btn_resume.png",
-    "width": 170,
-    "height": 77
-  },
-  "btn_retry": {
-    "path": "assets/ui/btn_retry.png",
-    "width": 140,
-    "height": 80
-  },
-  "btn_home": {
-    "path": "assets/ui/btn_home.png",
-    "width": 140,
-    "height": 51
-  },
   "icon_sound": {
     "path": "assets/ui/icon_sound.png",
     "width": 48,
@@ -134,63 +69,6 @@
     "width": 48,
     "height": 47
   },
-  "panel_score": {
-    "path": "assets/ui/panel_score.png",
-    "width": 150,
-    "height": 71,
-    "anchors": {
-      "value": {
-        "x": 28,
-        "y": 37,
-        "w": 103,
-        "h": 24
-      }
-    }
-  },
-  "panel_best": {
-    "path": "assets/ui/panel_best.png",
-    "width": 170,
-    "height": 92,
-    "anchors": {
-      "value": {
-        "x": 32,
-        "y": 49,
-        "w": 110,
-        "h": 31
-      }
-    }
-  },
-  "panel_level": {
-    "path": "assets/ui/panel_level.png",
-    "width": 88,
-    "height": 62,
-    "anchors": {
-      "value": {
-        "x": 23,
-        "y": 35,
-        "w": 43,
-        "h": 20
-      }
-    }
-  },
-  "level_up": {
-    "path": "assets/ui/level_up.png",
-    "width": 290,
-    "height": 98
-  },
-  "progress_frame": {
-    "path": "assets/ui/progress_frame.png",
-    "width": 220,
-    "height": 34,
-    "anchors": {
-      "inner": {
-        "x": 15,
-        "y": 11,
-        "w": 190,
-        "h": 13
-      }
-    }
-  },
   "panel_large": {
     "path": "assets/ui/panel_large.png",
     "width": 320,
@@ -200,42 +78,6 @@
     "path": "assets/ui/panel_small.png",
     "width": 220,
     "height": 195
-  },
-  "hud_heart": {
-    "path": "assets/ui/hud_heart.png",
-    "width": 26,
-    "height": 23
-  },
-  "hud_coin": {
-    "path": "assets/ui/hud_coin.png",
-    "width": 25,
-    "height": 26
-  },
-  "hud_star": {
-    "path": "assets/ui/hud_star.png",
-    "width": 26,
-    "height": 26
-  },
-  "progress_fill": {
-    "path": "assets/ui/progress_fill.png",
-    "width": 190,
-    "height": 13
-  },
-  "digits": {
-    "path": "assets/ui/digits.png",
-    "width": 130,
-    "height": 18,
-    "cellWidth": 13,
-    "cellHeight": 18,
-    "chars": "0123456789"
-  },
-  "digits_big": {
-    "path": "assets/ui/digits_big.png",
-    "width": 200,
-    "height": 28,
-    "cellWidth": 20,
-    "cellHeight": 28,
-    "chars": "0123456789"
   },
   "bg_bakery_01": {
     "path": "assets/backgrounds/bg_bakery_01.png",
@@ -301,5 +143,90 @@
     "path": "assets/brainrot/bomb.png",
     "width": 46,
     "height": 52
+  },
+  "mascot_lion": {
+    "path": "assets/phonics/mascot_lion.png",
+    "width": 72,
+    "height": 81
+  },
+  "mascot_tiger": {
+    "path": "assets/phonics/mascot_tiger.png",
+    "width": 72,
+    "height": 81
+  },
+  "mascot_panda": {
+    "path": "assets/phonics/mascot_panda.png",
+    "width": 72,
+    "height": 81
+  },
+  "mascot_bunny": {
+    "path": "assets/phonics/mascot_bunny.png",
+    "width": 72,
+    "height": 81
+  },
+  "crown": {
+    "path": "assets/phonics/crown.png",
+    "width": 54,
+    "height": 36
+  },
+  "dice_1": {
+    "path": "assets/phonics/dice_1.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_2": {
+    "path": "assets/phonics/dice_2.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_3": {
+    "path": "assets/phonics/dice_3.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_4": {
+    "path": "assets/phonics/dice_4.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_5": {
+    "path": "assets/phonics/dice_5.png",
+    "width": 64,
+    "height": 64
+  },
+  "dice_6": {
+    "path": "assets/phonics/dice_6.png",
+    "width": 64,
+    "height": 64
+  },
+  "gift_closed_01": {
+    "path": "assets/phonics/gift_closed_01.png",
+    "width": 80,
+    "height": 80
+  },
+  "gift_open_01": {
+    "path": "assets/phonics/gift_open_01.png",
+    "width": 88,
+    "height": 96
+  },
+  "gift_closed_02": {
+    "path": "assets/phonics/gift_closed_02.png",
+    "width": 80,
+    "height": 80
+  },
+  "gift_open_02": {
+    "path": "assets/phonics/gift_open_02.png",
+    "width": 88,
+    "height": 96
+  },
+  "gift_closed_03": {
+    "path": "assets/phonics/gift_closed_03.png",
+    "width": 80,
+    "height": 80
+  },
+  "gift_open_03": {
+    "path": "assets/phonics/gift_open_03.png",
+    "width": 88,
+    "height": 96
   }
 }

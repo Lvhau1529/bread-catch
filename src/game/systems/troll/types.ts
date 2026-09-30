@@ -1,5 +1,5 @@
 /**
- * Kiểu dùng chung cho TROLL MODE.
+ * Kiểu dùng chung cho logic troll (level HARD).
  */
 import type Phaser from 'phaser';
 import type { ItemTrickId } from '@/game/config/troll';
@@ -9,9 +9,7 @@ import type PlayerBasket from '@/game/objects/PlayerBasket';
 import type AudioSystem from '@/game/systems/AudioSystem';
 import type EffectsSystem from '@/game/systems/EffectsSystem';
 import type InputController from '@/game/systems/InputController';
-import type ScoreSystem from '@/game/systems/ScoreSystem';
-import type SpawnSystem from '@/game/systems/SpawnSystem';
-import type LevelUpBanner from '@/game/ui/LevelUpBanner';
+import type LetterSpawnSystem from '@/game/systems/LetterSpawnSystem';
 
 /** Những gì trò troll được phép "động tay" vào */
 export interface TrollContext {
@@ -19,12 +17,9 @@ export interface TrollContext {
   bus: GameEventBus;
   basket: PlayerBasket;
   controls: InputController;
-  spawner: SpawnSystem;
-  score: ScoreSystem;
+  spawner: LetterSpawnSystem;
   effects: EffectsSystem;
-  banner: LevelUpBanner;
   audio: AudioSystem;
-  getLevel: () => number;
 }
 
 // ---------------------------------------------------------------------------
@@ -40,7 +35,7 @@ export interface PrankRun {
 export type Prank = (ctx: TrollContext) => PrankRun;
 
 // ---------------------------------------------------------------------------
-// Trò của từng vật phẩm
+// Trò của từng chữ rơi
 // ---------------------------------------------------------------------------
 /** Trạng thái trò troll gắn trên từng FallingItem */
 export interface ItemTrickState {
@@ -59,6 +54,4 @@ export interface ItemTrick {
   update?: (item: FallingItem, state: ItemTrickState, ctx: TrollContext, delta: number) => void;
   /** Trước khi rổ hứng; trả về true để HUỶ lần hứng này */
   interceptCatch?: (item: FallingItem, state: ItemTrickState, ctx: TrollContext) => boolean;
-  /** Sau khi đã hứng (không huỷ) */
-  onCaught?: (item: FallingItem, ctx: TrollContext) => void;
 }

@@ -4,16 +4,14 @@
  */
 import type Phaser from 'phaser';
 import { REGISTRY } from '@/game/core/keys';
-import SaveSystem from '@/game/systems/SaveSystem';
 import AudioSystem from '@/game/systems/AudioSystem';
 
 export function registerServices(game: Phaser.Game): void {
-  if (game.registry.has(REGISTRY.SAVE)) return;
-  const save = new SaveSystem();
-  game.registry.set(REGISTRY.SAVE, save);
-  game.registry.set(REGISTRY.AUDIO, new AudioSystem(game, save));
+  if (game.registry.has(REGISTRY.AUDIO)) return;
+  game.registry.set(REGISTRY.AUDIO, new AudioSystem(game));
 }
 
-export const getSave = (scene: Phaser.Scene): SaveSystem => scene.registry.get(REGISTRY.SAVE);
-
 export const getAudio = (scene: Phaser.Scene): AudioSystem => scene.registry.get(REGISTRY.AUDIO);
+
+/** Dùng từ ngoài scene (vd: React phát SFX); undefined khi game chưa boot xong */
+export const getGameAudio = (game: Phaser.Game): AudioSystem | undefined => game.registry.get(REGISTRY.AUDIO);

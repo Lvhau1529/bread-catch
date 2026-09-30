@@ -6,7 +6,7 @@ export default function RotateHint() {
   return (
     <div className="rotate-hint" role="alert">
       <div className="rotate-hint__icon">📱</div>
-      <p>Xoay dọc màn hình để chơi</p>
+      <p>Rotate your device to play</p>
     </div>
   );
 }

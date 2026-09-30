@@ -1,21 +1,21 @@
 /**
- * Trò "láo" của từng vật phẩm rơi (TROLL MODE).
+ * Trò "láo" của từng chữ rơi (level HARD).
  * Thông số ở config/troll.ts > TROLL_ITEMS.
  */
 import Phaser from 'phaser';
 import { THEME } from '@/game/config/gameConfig';
-import { ITEMS } from '@/game/config/items';
 import { TROLL_ITEMS, type ItemTrickId } from '@/game/config/troll';
+import { view } from '@/game/core/view';
 import type FallingItem from '@/game/objects/FallingItem';
 import type { ItemTrick, ItemTrickState, TrollContext } from '@/game/systems/troll/types';
 
 const { colors } = THEME;
-/** Giữ vật phẩm cách mép màn hình ít nhất ngần này (px) */
-export const EDGE = 18;
+/** Giữ chữ cách mép màn hình ít nhất ngần này (px) */
+export const EDGE = 36;
 
 /** Đã rơi qua `ratio` chiều cao màn hình và chưa kích hoạt */
 const passed = (item: FallingItem, state: ItemTrickState, ctx: TrollContext, ratio: number) =>
-  !state.triggered && item.y >= ctx.scene.scale.height * ratio;
+  !state.triggered && item.y >= view(ctx.scene).height * ratio;
 
 export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
   /** Né rổ khi rơi tới gần */
@@ -34,8 +34,8 @@ export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
 
       // Né về phía xa rổ; sát mép thì né ngược lại
       let direction = item.x >= basket.x ? 1 : -1;
-      const room = direction > 0 ? scene.scale.width - item.x : item.x;
-      if (room < 70) direction = -direction;
+      const room = direction > 0 ? view(scene).width - item.x : item.x;
+      if (room < 80) direction = -direction;
 
       state.triggered = true;
       state.dashRemaining = config.dashMs;
@@ -48,7 +48,7 @@ export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
   zigzag: {
     assign: (item, { scene }) => {
       const margin = TROLL_ITEMS.zigzag.amplitude + EDGE;
-      item.x = Phaser.Math.Clamp(item.x, margin, scene.scale.width - margin);
+      item.x = Phaser.Math.Clamp(item.x, margin, view(scene).width - margin);
     },
     update: (item, state) => {
       const { amplitude, frequency } = TROLL_ITEMS.zigzag;
@@ -65,19 +65,18 @@ export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
     },
   },
 
-  /** Đồ ngon hoá bánh cháy giữa đường */
-  bait: {
+  /** Chữ cần hứng hoá thành chữ khác giữa đường */
+  swap: {
     update: (item, state, ctx) => {
-      if (!passed(item, state, ctx, TROLL_ITEMS.bait.triggerRatio)) return;
+      if (!passed(item, state, ctx, TROLL_ITEMS.swap.triggerRatio) || !item.letter) return;
       state.triggered = true;
-      const { into, label } = TROLL_ITEMS.bait;
-      item.transformInto(into, ITEMS[into]);
+      item.changeLetter(ctx.spawner.randomDistractor(item.letter));
       ctx.effects.catchBurst(item.x, item.y);
-      ctx.effects.popup(item.x, item.y - 20, label, colors.red);
+      ctx.effects.popup(item.x, item.y - 24, TROLL_ITEMS.swap.label, colors.red);
     },
   },
 
-  /** Đồ xấu bám theo rổ */
+  /** Chữ nhiễu bám theo rổ */
   homing: {
     update: (item, _state, { basket }) => {
       const { maxSpeed } = TROLL_ITEMS.homing;
@@ -95,7 +94,7 @@ export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
       const { basket, effects, scene } = ctx;
       let x = item.x;
       for (let tries = 0; tries < 8; tries += 1) {
-        x = Phaser.Math.Between(EDGE * 2, scene.scale.width - EDGE * 2);
+        x = Phaser.Math.Between(EDGE, view(scene).width - EDGE);
         if (Math.abs(x - basket.x) >= minDistance) break;
       }
       effects.catchBurst(item.x, item.y);
@@ -130,10 +129,16 @@ export const ITEM_TRICKS: Record<ItemTrickId, ItemTrick> = {
     },
   },
 
-  /** Đồ xấu giả dạng bánh mì ngon, hứng rồi mới lộ */
+  /** Chữ nhiễu giả dạng chữ cần hứng, lộ mặt thật giữa đường */
   disguise: {
-    assign: (item) => item.disguiseAs(TROLL_ITEMS.disguise.texture),
-    onCaught: (item, { effects }) =>
-      effects.popup(item.x, item.y - 44, TROLL_ITEMS.disguise.label, colors.red),
+    assign: (item, { spawner }) => {
+      if (spawner.expectedLetter) item.showLetter(spawner.expectedLetter);
+    },
+    update: (item, state, ctx) => {
+      if (!passed(item, state, ctx, TROLL_ITEMS.disguise.revealRatio) || !item.letter) return;
+      state.triggered = true;
+      item.showLetter(item.letter);
+      ctx.effects.popup(item.x, item.y - 24, TROLL_ITEMS.disguise.label, colors.red);
+    },
   },
 };

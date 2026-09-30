@@ -3,20 +3,26 @@
  */
 import Phaser from 'phaser';
 import { GameBridge } from '@/game/bridge';
-import { GAME_WIDTH, THEME, computeGameHeight } from '@/game/config/gameConfig';
+import { GAME_WIDTH, RENDER_SCALE, THEME, computeGameHeight } from '@/game/config/gameConfig';
+import { getGameAudio } from '@/game/core/services';
+import { startSceneDirector } from '@/game/SceneDirector';
 import BootScene from '@/game/scenes/BootScene';
-import GameOverScene from '@/game/scenes/GameOverScene';
 import GameScene from '@/game/scenes/GameScene';
-import MenuScene from '@/game/scenes/MenuScene';
+import GiftScene from '@/game/scenes/GiftScene';
 import PauseScene from '@/game/scenes/PauseScene';
 import PreloadScene from '@/game/scenes/PreloadScene';
+import ShellScene from '@/game/scenes/ShellScene';
+import TurnCompleteScene from '@/game/scenes/TurnCompleteScene';
+import TurnPickerScene from '@/game/scenes/TurnPickerScene';
+import { appStore, sessionActions } from '@/session/sessionStore';
 
 export function createGame(parent: HTMLElement): Phaser.Game {
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent,
-    width: GAME_WIDTH,
-    height: computeGameHeight(),
+    // Canvas lớn gấp RENDER_SCALE lần toạ độ logic (xem core/view.ts)
+    width: GAME_WIDTH * RENDER_SCALE,
+    height: computeGameHeight() * RENDER_SCALE,
     backgroundColor: THEME.backgroundColor,
     pixelArt: true,
     roundPixels: true,
@@ -29,16 +35,32 @@ export function createGame(parent: HTMLElement): Phaser.Game {
       arcade: { gravity: { x: 0, y: 0 }, debug: false },
     },
     input: { activePointers: 2 },
-    scene: [BootScene, PreloadScene, MenuScene, GameScene, PauseScene, GameOverScene],
+    // Thứ tự = thứ tự vẽ: overlay (Pause, Turn Complete) nằm trên GameScene
+    scene: [
+      BootScene,
+      PreloadScene,
+      ShellScene,
+      TurnPickerScene,
+      GameScene,
+      GiftScene,
+      TurnCompleteScene,
+      PauseScene,
+    ],
   });
 
-  // Overlay React đang mở -> khoá input của game (tránh phím Enter bấm PLAY ngầm)
+  startSceneDirector(game);
+
+  // Overlay React đang mở -> khoá input của game (tránh bàn phím / chạm xuyên xuống)
   const applyOverlay = (open: boolean) => {
     game.input.enabled = !open;
     if (game.input.keyboard) game.input.keyboard.enabled = !open;
   };
   const offOverlay = GameBridge.on('overlay-changed', ({ open }) => applyOverlay(open));
-  game.events.once(Phaser.Core.Events.DESTROY, offOverlay);
+  const offSfx = GameBridge.on('play-sfx', ({ key }) => getGameAudio(game)?.playSfx(key));
+  game.events.once(Phaser.Core.Events.DESTROY, () => {
+    offOverlay();
+    offSfx();
+  });
 
   // Báo cho React biết scene nào vừa sẵn sàng
   game.events.once(Phaser.Core.Events.READY, () => {
@@ -50,8 +72,9 @@ export function createGame(parent: HTMLElement): Phaser.Game {
     });
   });
 
-  // Chỉ ở dev: truy cập game từ DevTools để debug (window.__GAME__)
-  if (import.meta.env.DEV) (window as unknown as { __GAME__: Phaser.Game }).__GAME__ = game;
+  // Chỉ ở dev: truy cập game + phiên chơi từ DevTools để debug
+  if (import.meta.env.DEV)
+    Object.assign(window, { __GAME__: game, __SESSION__: { appStore, sessionActions } });
 
   return game;
 }

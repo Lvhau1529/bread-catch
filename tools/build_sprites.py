@@ -3,7 +3,7 @@ Cắt sprite sheet gốc trong `_source/art/` thành từng PNG riêng trong `pu
 
 Chạy:  python tools/build_sprites.py
 
-Mọi toạ độ (box / erase / anchors) tính theo pixel của sprite sheet gốc.
+Mọi toạ độ (box / anchors) tính theo pixel của sprite sheet gốc.
 Mỗi sprite được:
   1. crop theo `box`,
   2. làm sạch alpha (bỏ nhiễu nền bán trong suốt),
@@ -25,6 +25,7 @@ from PIL import Image
 from scipy import ndimage
 
 from brainrot_art import build_brainrot_sprites
+from phonics_art import build_phonics_sprites
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "_source" / "art"
@@ -48,77 +49,36 @@ BG_SIZE = (360, 800)
 # Định nghĩa sprite
 #   box:     (x0, y0, x1, y1) vùng crop trên sheet
 #   width / height / max_side: kích thước đích (chọn 1)
-#   erase:   vùng xoá chữ số in sẵn (tô bằng màu nền của vùng)
 #   anchors: vùng cần quy đổi sang toạ độ ảnh output (ghi vào sprites.json)
 #   largest: chỉ giữ mảng lớn nhất
 #   outline: thêm viền kem "sticker" (vật phẩm rơi)
 # --------------------------------------------------------------------------- #
 GAME_SPRITES = {
-    # Bread
-    "bread/bread_01": dict(box=(40, 100, 304, 324), max_side=44, outline=True),
-    "bread/bread_02": dict(box=(306, 40, 630, 328), max_side=60, largest=True, outline=True),
-    "bread/bread_03": dict(box=(600, 56, 908, 328), max_side=50, largest=True, outline=True),
-    "bread/bread_04": dict(box=(912, 44, 1224, 336), max_side=56, outline=True),
+    # Bánh chữ: 4 kiểu bánh (tròn / baguette / loaf / premium), chữ cái vẽ live trong game
+    "bread/letter_bread_01": dict(box=(40, 100, 304, 324), max_side=62, outline=True),
+    "bread/letter_bread_02": dict(box=(306, 40, 630, 328), max_side=74, largest=True, outline=True),
+    "bread/letter_bread_03": dict(box=(600, 56, 908, 328), max_side=66, largest=True, outline=True),
+    "bread/letter_bread_04": dict(box=(912, 44, 1224, 336), max_side=70, outline=True),
     # Basket
     "basket/basket_01": dict(box=(28, 348, 300, 624), width=84),
     "basket/basket_02": dict(box=(304, 336, 602, 624), width=92),
     "basket/basket_03": dict(box=(602, 344, 928, 624), width=100),
     "basket/basket_04": dict(box=(928, 340, 1240, 632), width=110),
-    # Good items
-    "items/butter": dict(box=(20, 656, 260, 836), max_side=40, outline=True),
-    "items/jam": dict(box=(260, 632, 440, 844), max_side=40, outline=True),
-    "items/cheese": dict(box=(436, 656, 640, 844), max_side=40, outline=True),
-    "items/wheat": dict(box=(636, 628, 892, 868), max_side=42, outline=True),
-    "items/coin": dict(box=(880, 664, 1044, 844), max_side=34, outline=True),
-    "items/star": dict(box=(1048, 652, 1240, 844), max_side=38, outline=True),
-    "items/heart": dict(box=(68, 884, 252, 1044), max_side=34, outline=True),
-    # Bad items
-    "items/bread_burnt": dict(box=(312, 840, 584, 1072), max_side=46, outline=True),
-    "items/bread_moldy": dict(box=(620, 864, 828, 1060), max_side=42, outline=True),
+    # Vật cản (level HARD) + ngôi sao cho hiệu ứng
     "items/egg_broken": dict(box=(896, 880, 1200, 1060), max_side=48, outline=True),
+    "items/star": dict(box=(1048, 652, 1240, 844), max_side=38, outline=True),
     # FX
     "fx/sparkle": dict(box=(72, 1064, 204, 1204), max_side=24, largest=True),
     "fx/catch_flash": dict(box=(500, 1056, 736, 1240), max_side=72),
 }
 
+# Chỉ dùng khung / icon KHÔNG có chữ in sẵn — nhãn nút, điểm, tên đội vẽ live trong game
 UI_SPRITES = {
-    "ui/btn_play": dict(box=(28, 18, 450, 214), width=200),
-    "ui/btn_pause": dict(box=(448, 18, 814, 214), width=72),
-    "ui/btn_resume": dict(box=(28, 18, 450, 214), width=170),
-    "ui/btn_retry": dict(box=(814, 18, 1232, 258), width=140),
-    "ui/btn_home": dict(box=(100, 212, 620, 408), width=140),
     "ui/icon_sound": dict(box=(28, 408, 196, 576), max_side=48),
     "ui/icon_sound_off": dict(box=(200, 408, 368, 576), max_side=48),
-    "ui/panel_score": dict(
-        box=(32, 572, 488, 788), width=150,
-        erase=(118, 688, 428, 752), anchors={"value": (118, 684, 428, 756)},
-    ),
-    "ui/panel_best": dict(
-        box=(500, 572, 904, 792), width=170,
-        erase=(578, 692, 836, 756), anchors={"value": (578, 688, 836, 760)},
-    ),
-    "ui/panel_level": dict(
-        box=(912, 572, 1228, 796), width=88,
-        erase=(1000, 700, 1142, 766), anchors={"value": (996, 698, 1146, 770)},
-    ),
-    "ui/level_up": dict(box=(24, 784, 588, 980), width=290),
-    "ui/progress_frame": dict(
-        box=(620, 800, 1220, 900), width=220,
-        anchors={"inner": (664, 834, 1178, 870)},
-    ),
     "ui/panel_large": dict(box=(20, 972, 384, 1224), width=320),
     "ui/panel_small": dict(box=(384, 1000, 640, 1228), width=220),
-    "ui/hud_heart": dict(box=(640, 1012, 756, 1116), max_side=26),
-    "ui/hud_coin": dict(box=(756, 1012, 860, 1116), max_side=26),
-    "ui/hud_star": dict(box=(858, 1012, 962, 1116), max_side=26),
 }
-
-# Thanh fill hồng: cắt phần sọc, stretch vừa `inner` của progress_frame
-PROGRESS_FILL_BOX = (678, 931, 1074, 967)
-
-# Hàng số 0-9 -> RetroFont (ô cố định), xuất nhiều cỡ: tên -> chiều cao px
-DIGITS_BOX = (648, 1124, 1232, 1216)
-DIGIT_FONTS = {"digits": 18, "digits_big": 28}
 
 # Background: (tên file, tâm crop theo tỉ lệ ngang của panel 0..1)
 BACKGROUNDS = [
@@ -147,19 +107,6 @@ def clean_alpha(arr: np.ndarray) -> np.ndarray:
     alpha[alpha >= ALPHA_SOLID] = 255
     out[alpha == 0] = 0
     return out
-
-
-def erase_region(sheet: np.ndarray, rect: tuple[int, int, int, int]) -> None:
-    """Tô vùng chữ số in sẵn bằng màu nền (median của pixel sáng) — in-place."""
-    x0, y0, x1, y1 = rect
-    region = sheet[y0:y1, x0:x1, :3].astype(int)
-    lum = region.mean(axis=2)
-    bg = np.median(region[lum > np.percentile(lum, 60)], axis=0)
-    diff = np.abs(region - bg).sum(axis=2)
-    mask = diff > 36
-    mask = ndimage.binary_dilation(mask, iterations=2)
-    region[mask] = bg
-    sheet[y0:y1, x0:x1, :3] = region.astype(np.uint8)
 
 
 def drop_fragments(arr: np.ndarray, largest_only: bool) -> np.ndarray:
@@ -267,48 +214,6 @@ def build_sprite(sheet: np.ndarray, name: str, spec: dict) -> dict:
     return meta
 
 
-def build_progress_fill(sheet: np.ndarray, frame_meta: dict) -> dict:
-    inner = frame_meta["anchors"]["inner"]
-    x0, y0, x1, y1 = PROGRESS_FILL_BOX
-    img = Image.fromarray(sheet[y0:y1, x0:x1].copy())
-    img = resize_rgba(img, (inner["w"], inner["h"]))
-    save(img, "ui/progress_fill")
-    return {"width": inner["w"], "height": inner["h"]}
-
-
-def build_digits(sheet: np.ndarray, name: str, height: int) -> dict:
-    x0, y0, x1, y1 = DIGITS_BOX
-    crop = clean_alpha(sheet[y0:y1, x0:x1])
-    cols = crop[..., 3].sum(axis=0) > 0
-    # Tách glyph theo các cột trống
-    glyphs, start = [], None
-    for x, filled in enumerate(list(cols) + [False]):
-        if filled and start is None:
-            start = x
-        elif not filled and start is not None:
-            if x - start > 8:
-                glyphs.append((start, x))
-            start = None
-    if len(glyphs) != 10:
-        raise RuntimeError(f"Expected 10 digit glyphs, found {len(glyphs)}")
-
-    ys = np.nonzero(crop[..., 3].sum(axis=1))[0]
-    top, bottom = ys.min(), ys.max() + 1
-    scale = height / (bottom - top)
-    images = []
-    for gx0, gx1 in glyphs:
-        g = Image.fromarray(crop[top:bottom, gx0:gx1])
-        images.append(resize_rgba(g, (max(1, round((gx1 - gx0) * scale)), height)))
-
-    cell_w = max(im.width for im in images) + 1
-    sheet_img = Image.new("RGBA", (cell_w * 10, height), (0, 0, 0, 0))
-    for i, im in enumerate(images):
-        sheet_img.alpha_composite(im, (i * cell_w + (cell_w - im.width) // 2, 0))
-    save(sheet_img, f"ui/{name}")
-    return {"width": sheet_img.width, "height": height, "cellWidth": cell_w,
-            "cellHeight": height, "chars": "0123456789"}
-
-
 def build_backgrounds() -> dict:
     img = Image.open(BG_SHEET).convert("RGB")
     arr = np.array(img).astype(int)
@@ -338,7 +243,7 @@ def build_backgrounds() -> dict:
 
 def build_app_icons(game_sheet: np.ndarray) -> None:
     """Icon PWA / favicon: bánh mì trên nền vuông (an toàn cho cả 'maskable')."""
-    x0, y0, x1, y1 = GAME_SPRITES["bread/bread_01"]["box"]
+    x0, y0, x1, y1 = GAME_SPRITES["bread/letter_bread_01"]["box"]
     crop = clean_alpha(game_sheet[y0:y1, x0:x1])
     bx0, by0, bx1, by1 = tight_bbox(crop)
     bread = Image.fromarray(crop[by0:by1, bx0:bx1])
@@ -363,16 +268,11 @@ def main() -> None:
         meta[name] = build_sprite(game, name, spec)
 
     for name, spec in UI_SPRITES.items():
-        sheet = ui.copy() if "erase" in spec else ui
-        if "erase" in spec:
-            erase_region(sheet, spec["erase"])
-        meta[name] = build_sprite(sheet, name, spec)
+        meta[name] = build_sprite(ui, name, spec)
 
-    meta["ui/progress_fill"] = build_progress_fill(ui, meta["ui/progress_frame"])
-    for name, height in DIGIT_FONTS.items():
-        meta[f"ui/{name}"] = build_digits(ui, name, height)
     meta.update(build_backgrounds())
-    for name, img in build_brainrot_sprites().items():
+    procedural = {**build_brainrot_sprites(), **build_phonics_sprites()}
+    for name, img in procedural.items():
         save(img, name)
         meta[name] = {"width": img.width, "height": img.height}
     build_app_icons(game)

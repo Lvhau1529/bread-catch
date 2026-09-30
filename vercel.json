@@ -46,7 +46,7 @@
       ]
     },
     {
-      "source": "/assets/(audio|backgrounds|basket|bread|brainrot|fx|items|ui)/(.*)",
+      "source": "/assets/(audio|backgrounds|basket|bread|brainrot|fx|items|phonics|ui)/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
