@@ -265,7 +265,7 @@ export default function GuideDialog() {
                 <p>
                   3 đội thi đua (để trống tên sẽ là LIONS / TIGERS / PANDAS). <b>Xúc xắc</b> chọn đội chơi
                   trước; thứ tự đã được xáo sẵn từ đầu nên mỗi đội chơi đúng 1 lượt, cùng cấp độ và thời gian
-                  → công bằng.
+                  → công bằng. Lượt cuối chỉ còn một đội nên không cần đổ xúc xắc.
                 </p>
                 <p>
                   Hết 3 lượt: bảng <b>FINAL RESULTS</b>, đội thắng được <b>mở hộp quà</b>. Điểm các buổi được
@@ -400,8 +400,8 @@ export default function GuideDialog() {
           <Section id="parents" title="Dành cho phụ huynh">
             <ul className="guide__list">
               <li>
-                Bấm <b>PLAY</b>, chọn <b>SOLO MODE</b>, gói <b>EARLY BLENDING</b> hoặc <b>BLENDING WORDS</b>, cấp{' '}
-                <b>GENTLE</b> hoặc <b>EASY</b>.
+                Bấm <b>PLAY</b>, chọn <b>SOLO MODE</b>, gói <b>EARLY BLENDING</b> hoặc <b>BLENDING WORDS</b>,
+                cấp <b>GENTLE</b> hoặc <b>EASY</b>.
               </li>
               <li>
                 Trước khi hứng, cùng con <b>đọc từng âm</b> rồi ghép lại, ví dụ: /m/ – /a/ – /p/ → "map". Bấm

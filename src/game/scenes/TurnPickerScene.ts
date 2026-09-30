@@ -3,6 +3,7 @@
  *
  * Công bằng: thứ tự lượt đã được xáo MỘT LẦN khi bắt đầu buổi (sessionStore.turnOrder);
  * xúc xắc chỉ "hé lộ" đội kế tiếp trong thứ tự đó nên mỗi đội chơi đúng 1 lần.
+ * Còn đúng 1 đội thì không cần đổ: hiện luôn "LAST TEAM" + đội đó + START.
  */
 import Phaser from 'phaser';
 import { MUSIC, SFX, mascotTexture } from '@/game/config/assets';
@@ -38,7 +39,8 @@ export default class TurnPickerScene extends Phaser.Scene {
   private session!: ActiveSession;
   private tokens: Token[] = [];
   private dice!: Phaser.GameObjects.Image;
-  private actionButton!: TextButton;
+  /** Nút chính: ROLL THE DICE! rồi START (Enter / Space cũng bấm được) */
+  private actionButton?: TextButton;
   private rolling = false;
 
   constructor() {
@@ -51,10 +53,13 @@ export default class TurnPickerScene extends Phaser.Scene {
     if (!session) return;
     this.session = session;
     this.rolling = false;
+    this.actionButton = undefined;
 
     addStageBackground(this, STAGE_BACKGROUNDS[0], 0x8a7a6a);
     const isFirst = session.results.length === 0;
-    addText(this, width / 2, height * 0.12, isFirst ? UI_TEXT.whoGoesFirst : UI_TEXT.nextTeam, 'title');
+    const isLast = session.teams.length - session.results.length === 1;
+    const title = isLast ? UI_TEXT.lastTeam : isFirst ? UI_TEXT.whoGoesFirst : UI_TEXT.nextTeam;
+    addText(this, width / 2, height * 0.12, title, 'title');
     addText(
       this,
       width / 2,
@@ -62,6 +67,19 @@ export default class TurnPickerScene extends Phaser.Scene {
       `${UI_TEXT.turn} ${session.results.length + 1} / ${session.teams.length}`,
       'outline',
     );
+
+    this.createTokens(height * 0.62);
+    new IconButton(this, 30, 30, 'back', () => this.confirmLeave()).setDepth(DEPTH.HUD);
+    this.input.keyboard?.on('keydown-ENTER', () => this.actionButton?.trigger());
+    this.input.keyboard?.on('keydown-SPACE', () => this.actionButton?.trigger());
+    getAudio(this).playMusic(MUSIC.TURN_PICKER);
+    this.cameras.main.fadeIn(250);
+
+    if (isLast) {
+      const team = currentTeam(session);
+      if (team) this.reveal(team, height * DICE_Y);
+      return;
+    }
 
     // Xúc xắc + bóng
     this.add.ellipse(width / 2, DICE_Y * height + 58, 110, 22, 0x000000, 0.3);
@@ -75,19 +93,12 @@ export default class TurnPickerScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
     });
 
-    this.createTokens(height * 0.62);
     this.actionButton = new TextButton(this, width / 2, height * 0.83, UI_TEXT.rollDice, () => this.roll(), {
       color: 'orange',
       width: 250,
       fontSize: 22,
       sfx: null,
     });
-    new IconButton(this, 30, 30, 'back', () => this.confirmLeave()).setDepth(DEPTH.HUD);
-
-    this.input.keyboard?.on('keydown-ENTER', () => this.actionButton.trigger());
-    this.input.keyboard?.on('keydown-SPACE', () => this.actionButton.trigger());
-    getAudio(this).playMusic(MUSIC.TURN_PICKER);
-    this.cameras.main.fadeIn(250);
   }
 
   private createTokens(y: number): void {
@@ -133,7 +144,7 @@ export default class TurnPickerScene extends Phaser.Scene {
     const selected = currentTeam(this.session);
     if (!selected) return;
     this.rolling = true;
-    this.actionButton.setVisible(false);
+    this.actionButton?.setVisible(false);
 
     const audio = getAudio(this);
     audio.playSfx(SFX.DICE_ROLL);
@@ -164,10 +175,12 @@ export default class TurnPickerScene extends Phaser.Scene {
     });
   }
 
-  private reveal(team: Team): void {
+  /** Hiện đội được chọn + nút START; `bannerY` = chỗ ghi tên đội (mặc định phía trên xúc xắc) */
+  private reveal(team: Team, bannerY = view(this).height * DICE_Y - 80): void {
     const { width, height } = view(this);
     this.rolling = false;
     const token = this.tokens.find((t) => t.team.id === team.id);
+    if (token) this.highlight(token);
     getAudio(this).playSfx(SFX.TEAM_SELECTED);
     this.cameras.main.flash(200, 255, 240, 200);
 
@@ -189,7 +202,7 @@ export default class TurnPickerScene extends Phaser.Scene {
       });
     }
     const banner = fitText(
-      addText(this, width / 2, height * DICE_Y - 80, `${team.name}!`, 'title', {
+      addText(this, width / 2, bannerY, `${team.name}!`, 'title', {
         fontSize: '38px',
         color: THEME.colors.cream,
       }),
@@ -198,7 +211,7 @@ export default class TurnPickerScene extends Phaser.Scene {
     );
     this.tweens.add({ targets: banner, scale: { from: 0, to: 1 }, duration: 350, ease: 'Back.easeOut' });
 
-    this.actionButton.destroy();
+    this.actionButton?.destroy();
     this.actionButton = new TextButton(
       this,
       width / 2,

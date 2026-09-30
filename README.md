@@ -42,7 +42,7 @@ pnpm format       # Prettier
   cấp độ, thời gian (AUTO / 45–120s, hoặc **tự nhập** 15–600 giây ở ô CUSTOM), tên đội
   (bỏ trống = LIONS / TIGERS / PANDAS). Lựa chọn được nhớ cho lần sau.
 - **Magic Dice** (Class): thứ tự lượt được xáo **một lần** đầu buổi, xúc xắc chỉ hé lộ đội kế tiếp
-  → mỗi đội chơi đúng 1 lần.
+  → mỗi đội chơi đúng 1 lần. Lượt cuối chỉ còn 1 đội nên không đổ: hiện luôn `LAST TEAM` + `START`.
 - **Một lượt:** `GET READY! 3-2-1-GO!` → tối đa **5 từ**. Hứng đúng lần lượt từng chữ; hứng nhầm
   **một** chữ là sang từ khác (từ sai được giữ lại để luyện sau). Đúng cả từ **+100**.
   Hết giờ thì lượt kết thúc ngay.
