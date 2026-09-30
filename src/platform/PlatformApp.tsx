@@ -58,11 +58,20 @@ class LoadErrorBoundary extends Component<{ children: ReactNode }, { failed: boo
     return { failed: true };
   }
 
+  /** Ghi lỗi thật ra console để còn biết nguyên nhân (màn lỗi chỉ hiện câu chung chung) */
+  override componentDidCatch(error: unknown): void {
+    console.error('[Phonics Arcade] Game failed to load:', error);
+  }
+
   override render(): ReactNode {
     if (!this.state.failed) return this.props.children;
     return (
       <div className="app-loading">
         <p>Oops! The game could not load.</p>
+        {/* Tải lại trang: lấy lại file mới (vd sau khi deploy bản mới, file cũ đã bị xoá) */}
+        <Button color="green" onClick={() => window.location.reload()}>
+          TRY AGAIN
+        </Button>
         <Button color="blue" onClick={() => platformActions.exitToHub()}>
           BACK TO GAMES
         </Button>
