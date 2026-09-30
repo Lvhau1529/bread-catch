@@ -24,7 +24,8 @@
     "@vercel/analytics": "^2.0.1",
     "phaser": "^3.90.0",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "workbox-window": "^7.4.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
