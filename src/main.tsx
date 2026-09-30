@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Analytics } from '@vercel/analytics/react';
 // Chỉ nạp subset cần dùng để bản build (và cache offline của PWA) nhẹ hơn
 // Baloo 2: chữ giao diện
 import '@fontsource/baloo-2/latin-600.css';
@@ -17,5 +18,7 @@ import App from '@/app/App';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    {/* Vercel Web Analytics: chỉ gửi dữ liệu khi chạy trên Vercel (bật Analytics trong dashboard) */}
+    <Analytics />
   </StrictMode>,
 );
