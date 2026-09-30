@@ -79,5 +79,7 @@
   "resetScores": "RESET SCORES",
   "resetScoresQuestion": "RESET ALL TEAM SCORES?",
   "reset": "RESET",
-  "noScoresYet": "No team scores yet. Play a class game to start the leaderboard!"
+  "noScoresYet": "No team scores yet. Play a class game to start the leaderboard!",
+  "guide": "GUIDE",
+  "letters": "letters"
 }

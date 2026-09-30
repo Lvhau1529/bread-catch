@@ -1082,6 +1082,266 @@ input {
 }
 
 /* =========================================================================
+   Hướng dẫn (tiếng Việt) cho giáo viên / phụ huynh
+   ========================================================================= */
+.guide-link {
+  align-self: center;
+  justify-self: center;
+  min-height: 44px;
+  padding: 6px 20px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  box-shadow: 0 4px 0 var(--tan);
+  color: var(--brown);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.guide-link:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--tan);
+}
+
+.field__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field__help {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 2px solid var(--orange-edge);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--orange-edge);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Vùng chạm lớn hơn nút nhìn thấy */
+.field__help::after {
+  content: '';
+  position: absolute;
+  width: 44px;
+  height: 44px;
+}
+
+.guide-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  background: rgba(30, 12, 4, 0.7);
+  animation: screen-in 0.2s ease-out;
+}
+
+.guide {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 820px;
+  max-height: 100%;
+  overflow: hidden;
+  border: 4px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--cream);
+  color: var(--brown);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+  touch-action: pan-y;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.guide__header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 8px 16px;
+}
+
+.guide__header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--orange-edge);
+}
+
+.icon-btn--close {
+  background: var(--red);
+  box-shadow: 0 4px 0 var(--red-edge);
+  font-size: 20px;
+}
+
+.guide__nav {
+  flex: none;
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 10px;
+  overflow-x: auto;
+  border-bottom: 3px solid var(--tan);
+}
+
+.guide__nav button {
+  flex: none;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 2px solid var(--tan);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brown);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guide__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 16px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.guide__section {
+  scroll-margin-top: 8px;
+  padding-top: 12px;
+}
+
+.guide__section h2 {
+  margin: 4px 0 8px;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.guide__section p {
+  margin: 0 0 8px;
+}
+
+.guide__note {
+  padding: 8px 12px;
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  background: #fff8dc;
+  font-size: 15px;
+}
+
+.guide__steps,
+.guide__list {
+  margin: 0 0 8px;
+  padding-left: 22px;
+}
+
+.guide__steps li,
+.guide__list li {
+  margin-bottom: 6px;
+}
+
+.guide__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.guide-card {
+  padding: 10px 12px;
+  border: 3px solid var(--tan);
+  border-left-width: 8px;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 15px;
+}
+
+.guide-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.guide-card__mascots {
+  display: flex;
+}
+
+.guide-card__mascots img {
+  image-rendering: pixelated;
+}
+
+.guide-card__lead {
+  font-weight: 700;
+}
+
+.guide-card__use {
+  color: var(--orange-edge);
+}
+
+.guide-card--gentle {
+  border-left-color: var(--teal);
+}
+.guide-card--easy {
+  border-left-color: var(--green);
+}
+.guide-card--normal {
+  border-left-color: var(--blue);
+}
+.guide-card--fast {
+  border-left-color: var(--orange);
+}
+.guide-card--hard {
+  border-left-color: var(--red);
+}
+
+.guide__table-wrap {
+  overflow-x: auto;
+}
+
+.guide__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.guide__table th,
+.guide__table td {
+  padding: 8px 10px;
+  border: 2px solid var(--tan);
+  text-align: left;
+  vertical-align: top;
+}
+
+.guide__table th {
+  background: var(--orange);
+  color: #fff;
+  font-weight: 800;
+}
+
+.guide__table td:first-child {
+  font-weight: 700;
+}
+
+/* =========================================================================
    Bố cục ngang (máy chiếu lớp học / máy tính / tablet nằm ngang)
    .app--landscape do App.tsx gắn theo cùng quy tắc với game Phaser
    ========================================================================= */
@@ -1096,6 +1356,7 @@ input {
     'logo actions'
     'mascots actions'
     'mascots toggles'
+    'mascots guide'
     'credit credit';
   align-content: center;
   gap: 18px 48px;
@@ -1119,6 +1380,9 @@ input {
 }
 .app--landscape .credit {
   grid-area: credit;
+}
+.app--landscape .guide-link {
+  grid-area: guide;
 }
 
 /* Chia 2 cột kiểu báo: MODE · PACK · LEVEL | TIME · TEAMS */

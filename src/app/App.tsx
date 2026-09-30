@@ -9,6 +9,7 @@
 import { useEffect, useState, type ComponentType } from 'react';
 import PhaserGame from '@/app/PhaserGame';
 import RotateHint from '@/app/RotateHint';
+import GuideDialog from '@/app/guide/GuideDialog';
 import { useAppState } from '@/app/hooks/useStore';
 import HomeScreen from '@/app/screens/HomeScreen';
 import ResultsScreen from '@/app/screens/ResultsScreen';
@@ -56,6 +57,7 @@ export default function App() {
           <Overlay />
         </div>
       )}
+      <GuideDialog />
       <RotateHint />
     </main>
   );

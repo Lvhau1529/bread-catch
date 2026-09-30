@@ -5,6 +5,8 @@
  */
 import type { ReactNode } from 'react';
 import { mascotUrl } from '@/app/assets';
+import type { GuideSectionId } from '@/app/guide/guideContent';
+import { openGuide } from '@/app/guide/guideStore';
 import Button from '@/app/components/Button';
 import OptionGroup, { type Option } from '@/app/components/OptionGroup';
 import TimeInput from '@/app/components/TimeInput';
@@ -82,7 +84,7 @@ export default function SetupScreen() {
       </header>
 
       <div className="card setup__form">
-        <Field label={UI_TEXT.gameMode}>
+        <Field label={UI_TEXT.gameMode} guide="modes">
           <OptionGroup
             label={UI_TEXT.gameMode}
             options={MODE_OPTIONS}
@@ -91,7 +93,7 @@ export default function SetupScreen() {
           />
         </Field>
 
-        <Field label={UI_TEXT.phonicsPack}>
+        <Field label={UI_TEXT.phonicsPack} guide="packs">
           <OptionGroup
             label={UI_TEXT.phonicsPack}
             options={PACK_OPTIONS}
@@ -99,9 +101,10 @@ export default function SetupScreen() {
             onChange={(packId) => update({ packId })}
             columns={2}
           />
+          <p className="field__hint">{packSummary(draft.packId)}</p>
         </Field>
 
-        <Field label={UI_TEXT.level}>
+        <Field label={UI_TEXT.level} guide="levels">
           <OptionGroup
             label={UI_TEXT.level}
             options={LEVEL_OPTIONS}
@@ -112,7 +115,7 @@ export default function SetupScreen() {
           <p className={`field__hint ${level.troll ? 'field__hint--hard' : ''}`}>{level.hint}</p>
         </Field>
 
-        <Field label={UI_TEXT.time}>
+        <Field label={UI_TEXT.time} guide="time">
           <OptionGroup
             label={UI_TEXT.time}
             options={timeOptions}
@@ -165,13 +168,43 @@ export default function SetupScreen() {
   );
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+interface FieldProps {
+  label: string;
+  /** Phần Hướng dẫn (tiếng Việt) mở khi bấm "?" */
+  guide?: GuideSectionId;
+  children: ReactNode;
+}
+
+function Field({ label, guide, children }: FieldProps) {
   return (
     <fieldset className="field">
-      <legend className="field__label">{label}</legend>
+      <legend className="field__label">
+        {label}
+        {guide && (
+          <button
+            type="button"
+            className="field__help"
+            aria-label={`${UI_TEXT.guide}: ${label}`}
+            onClick={() => {
+              GameBridge.playSfx(SFX.UI_CLICK);
+              openGuide(guide);
+            }}
+          >
+            ?
+          </button>
+        )}
+      </legend>
       {children}
     </fieldset>
   );
+}
+
+/** "45 words · 3–4 letters" */
+function packSummary(id: PackId): string {
+  const lengths = PACKS[id].words.map((word) => word.length);
+  const min = Math.min(...lengths);
+  const max = Math.max(...lengths);
+  return `${PACKS[id].words.length} ${UI_TEXT.words.toLowerCase()} · ${min === max ? min : `${min}–${max}`} ${UI_TEXT.letters}`;
 }
 
 interface NameInputProps {

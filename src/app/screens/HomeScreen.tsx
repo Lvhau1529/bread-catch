@@ -1,9 +1,11 @@
 /**
- * Main menu (plan §3): chọn Class Mode / Solo Mode, bật tắt âm thanh.
+ * Main menu (plan §3): chọn Class Mode / Solo Mode, bật tắt âm thanh, mở Hướng dẫn.
  */
 import { mascotUrl } from '@/app/assets';
 import AudioToggles from '@/app/components/AudioToggles';
 import Button from '@/app/components/Button';
+import { openGuide } from '@/app/guide/guideStore';
+import { GameBridge } from '@/game/bridge';
 import { SFX } from '@/game/config/assets';
 import { sessionActions } from '@/session/sessionStore';
 import { SOLO_MASCOT, TEAM_MASCOTS } from '@/session/teams';
@@ -44,6 +46,16 @@ export default function HomeScreen() {
       </div>
 
       <AudioToggles />
+      <button
+        type="button"
+        className="guide-link"
+        onClick={() => {
+          GameBridge.playSfx(SFX.UI_CLICK);
+          openGuide();
+        }}
+      >
+        ? {UI_TEXT.guide}
+      </button>
       <p className="credit">{UI_TEXT.madeBy}</p>
     </div>
   );

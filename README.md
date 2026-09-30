@@ -3,7 +3,8 @@
 Game phonics cho lớp mẫu giáo (~5 tuổi): bánh chữ rơi xuống, di chuyển rổ để **hứng đúng thứ tự
 các chữ** ghép thành từ mục tiêu. Chạy trên web, cài được như app nhờ PWA; bố cục **dọc** cho điện thoại
 và **ngang** cho máy chiếu lớp học / máy tính / tablet.
-Giao diện trong game hoàn toàn bằng tiếng Anh.
+Giao diện trong game hoàn toàn bằng tiếng Anh; riêng phần **Hướng dẫn** (nút GUIDE ở màn chính, nút "?"
+cạnh từng mục ở Setup) viết bằng tiếng Việt cho giáo viên / phụ huynh — nội dung ở `src/app/guide/guideContent.ts`.
 
 Thiết kế chi tiết: [Phonics_Bread_Catcher_Game_Plan.md](Phonics_Bread_Catcher_Game_Plan.md)
 (từ *Phonics Bread Catcher Full Resource Pack*).
