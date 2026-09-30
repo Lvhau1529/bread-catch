@@ -37,7 +37,7 @@ pnpm format       # Prettier
 
 ## Cách chơi
 
-- **Home:** `PLAY CLASS MODE` (3 đội) hoặc `PLAY SOLO MODE` (1 người) + bật/tắt SOUND · MUSIC · VOICE.
+- **Home:** `PLAY` (vào Setup, chọn CLASS MODE 3 đội hoặc SOLO MODE 1 người) + bật/tắt SOUND · MUSIC · VOICE.
 - **Setup:** chế độ, gói từ (Blending Words / Early Blending / Picture Vocabulary / Mixed Review),
   cấp độ, thời gian (AUTO / 45–120s, hoặc **tự nhập** 15–600 giây ở ô CUSTOM), tên đội
   (bỏ trống = LIONS / TIGERS / PANDAS). Lựa chọn được nhớ cho lần sau.

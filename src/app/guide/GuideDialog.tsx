@@ -400,7 +400,7 @@ export default function GuideDialog() {
           <Section id="parents" title="Dành cho phụ huynh">
             <ul className="guide__list">
               <li>
-                Chọn <b>PLAY SOLO MODE</b>, gói <b>EARLY BLENDING</b> hoặc <b>BLENDING WORDS</b>, cấp{' '}
+                Bấm <b>PLAY</b>, chọn <b>SOLO MODE</b>, gói <b>EARLY BLENDING</b> hoặc <b>BLENDING WORDS</b>, cấp{' '}
                 <b>GENTLE</b> hoặc <b>EASY</b>.
               </li>
               <li>

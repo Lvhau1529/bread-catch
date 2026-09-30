@@ -404,6 +404,13 @@ input {
   gap: 16px;
 }
 
+/* Nút chính duy nhất của màn Home — to, dễ bấm cho bé */
+.home__play {
+  min-height: 80px;
+  font-size: 34px;
+  letter-spacing: 2px;
+}
+
 @keyframes letter-bob {
   50% {
     transform: translateY(-5px);

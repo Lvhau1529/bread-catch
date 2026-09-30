@@ -1,5 +1,5 @@
 /**
- * Main menu (plan §3): chọn Class Mode / Solo Mode, bật tắt âm thanh, mở Hướng dẫn,
+ * Main menu (plan §3): nút PLAY vào Setup, bật tắt âm thanh, mở Hướng dẫn,
  * cập nhật khi có bản mới.
  */
 import { mascotUrl } from '@/app/assets';
@@ -40,11 +40,15 @@ export default function HomeScreen() {
       </div>
 
       <div className="home__actions">
-        <Button color="orange" size="lg" sfx={SFX.UI_START} onClick={() => sessionActions.openSetup('class')}>
-          {UI_TEXT.playClassMode}
-        </Button>
-        <Button color="blue" size="lg" sfx={SFX.UI_START} onClick={() => sessionActions.openSetup('solo')}>
-          {UI_TEXT.playSoloMode}
+        {/* Chọn Class / Solo ở GAME MODE trong Setup (nhớ lựa chọn lần trước) */}
+        <Button
+          color="orange"
+          size="lg"
+          className="home__play"
+          sfx={SFX.UI_START}
+          onClick={() => sessionActions.openSetup()}
+        >
+          <span aria-hidden="true">▶</span> {UI_TEXT.play}
         </Button>
       </div>
 
