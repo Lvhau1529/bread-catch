@@ -26,10 +26,16 @@ const TITLE = 'PHONICS';
 
 preloadSfx([SFX.UI_CLICK, SFX.UI_START, SFX.UI_OPEN, SFX.UI_CLOSE, SFX.GEM_COUNT, SFX.GEM_COLLECT]);
 
-/** Ảnh nền (đường dẫn tương đối với trang) truyền qua biến CSS — CSS chọn bản dọc / ngang */
+/**
+ * Ảnh nền truyền qua biến CSS — CSS chọn bản dọc / ngang.
+ * Phải là URL tuyệt đối: url() tương đối trong biến CSS được tính theo file CSS dùng biến
+ * (bản build: /static/…css -> /static/assets/… không tồn tại), không theo trang.
+ */
+const absoluteUrl = (path: string): string => new URL(path, document.baseURI).href;
+
 const BACKGROUND_STYLE = {
-  '--hub-bg-portrait': `url(${HUB_BACKGROUND.portrait})`,
-  '--hub-bg-landscape': `url(${HUB_BACKGROUND.landscape})`,
+  '--hub-bg-portrait': `url(${absoluteUrl(HUB_BACKGROUND.portrait)})`,
+  '--hub-bg-landscape': `url(${absoluteUrl(HUB_BACKGROUND.landscape)})`,
 } as CSSProperties;
 
 interface HubScreenProps {
