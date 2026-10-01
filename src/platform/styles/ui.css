@@ -25,11 +25,18 @@
     box-shadow 0.06s;
 }
 
-.btn:active {
+.btn:active:not(:disabled) {
   transform: translateY(5px);
   box-shadow:
     0 0 0 var(--btn-edge),
     0 2px 0 var(--ink);
+}
+
+/* Nền vẫn đặc (nút sticky không bị nhìn xuyên), chỉ chuyển xám */
+.btn:disabled {
+  --btn: #b8ab98;
+  --btn-edge: #8c7f6c;
+  cursor: not-allowed;
 }
 
 .btn:focus-visible,

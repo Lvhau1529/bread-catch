@@ -92,10 +92,11 @@ vào build. Script Python sinh file dùng trong game ở `public/assets/`:
 
 ```bash
 pip install -r tools/requirements.txt
-pnpm assets:bread         # Bread Catcher: cắt sprite + vẽ pixel-art bằng code -> public/assets/bread-catcher + icon PWA
+pnpm assets:bread         # Bread Catcher: cắt sprite + vẽ pixel-art bằng code -> public/assets/bread-catcher
 pnpm assets:food-stream   # Food Stream: cắt art board -> public/assets/food-stream + src/games/food-stream/sprites.json
 pnpm assets:audio         # mọi WAV master -> .ogg + .mp3 (SFX chung -> public/assets/shared/sfx)
-pnpm assets               # chạy cả ba
+pnpm assets:icons         # icon PWA / favicon "Ab" (font Baloo 2, màu màn chọn game) -> public/icons
+pnpm assets               # chạy cả bốn
 ```
 
 - `tools/common/`: xử lý ảnh dùng chung (làm sạch alpha, cắt sát, resize, viền sticker), đường dẫn.
@@ -103,6 +104,7 @@ pnpm assets               # chạy cả ba
 - `tools/food_stream/build_sprites.py`: toạ độ cắt nhân vật / món ăn / đạo cụ / tranh, huy hiệu che chữ in sẵn,
   frame cắn, ảnh bìa.
 - `tools/build_audio.py`: bảng nguồn -> đích cho mọi game (đã mix sẵn, không normalize lại).
+- `tools/build_app_icons.py`: icon app của cả Phonics Arcade (cần `pnpm install` trước để có font Baloo 2).
 - Chỉ dùng khung / icon **không có chữ in sẵn** (hoặc che chữ in sẵn) — chữ cái, tên đội, nhãn nút vẽ live.
 
 ## Deploy (Vercel)

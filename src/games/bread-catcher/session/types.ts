@@ -8,7 +8,11 @@ export type GameMode = 'class' | 'solo';
 /** HARD = logic troll cũ (prank + chữ cái "láo") */
 export type LevelId = 'gentle' | 'easy' | 'normal' | 'fast' | 'hard';
 
-export type PackId = 'early_blending' | 'blending_core' | 'picture_vocab' | 'mixed_review';
+/** Gói từ có sẵn (lấy từ resource pack) */
+export type BuiltinPackId = 'early_blending' | 'blending_core' | 'picture_vocab' | 'mixed_review';
+
+/** 'custom' = MY WORDS: giáo viên tự nhập từ ở màn Setup */
+export type PackId = BuiltinPackId | 'custom';
 
 /** 'auto' = theo level, hoặc số giây (có sẵn 45–120 hoặc giáo viên tự nhập) */
 export type TimeOption = 'auto' | number;
@@ -31,10 +35,14 @@ export interface SessionSettings {
   packId: PackId;
   levelId: LevelId;
   time: TimeOption;
+  /** Từ tự nhập đã chuẩn hoá (viết hoa, bỏ trùng) — chỉ dùng khi packId = 'custom' */
+  customWords: string[];
 }
 
 /** Nội dung form Setup (được nhớ lại cho lần sau) */
-export interface SetupDraft extends SessionSettings {
+export interface SetupDraft extends Omit<SessionSettings, 'customWords'> {
+  /** Ô MY WORDS, giữ nguyên như giáo viên gõ (tách thành từ lúc bấm START) */
+  customText: string;
   teamNames: [string, string, string];
   playerName: string;
 }

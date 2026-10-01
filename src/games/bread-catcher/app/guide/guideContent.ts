@@ -4,9 +4,9 @@
  * Trong game, chữ cho trẻ vẫn là tiếng Anh (plan §30); phần này dành cho người lớn
  * nên viết tiếng Việt. Số liệu (tốc độ, số từ...) lấy thẳng từ cấu hình để luôn khớp với game.
  */
-import { PACKS } from '@/games/bread-catcher/session/content';
+import { CUSTOM_WORD_LETTERS, PACKS, wordLengthRange } from '@/games/bread-catcher/session/content';
 import { CUSTOM_TIME, LEVELS, RULES } from '@/games/bread-catcher/session/settings';
-import type { LevelId, PackId } from '@/games/bread-catcher/session/types';
+import type { BuiltinPackId, LevelId } from '@/games/bread-catcher/session/types';
 
 export type GuideSectionId =
   'about' | 'howto' | 'modes' | 'packs' | 'levels' | 'time' | 'combos' | 'teacher' | 'parents';
@@ -34,16 +34,14 @@ export interface PackGuide {
   whenToUse: string;
 }
 
-const wordLengths = (id: PackId) => {
-  const lengths = PACKS[id].words.map((word) => word.length);
-  const min = Math.min(...lengths);
-  const max = Math.max(...lengths);
+const wordLengths = (id: BuiltinPackId) => {
+  const { min, max } = wordLengthRange(PACKS[id].words);
   return min === max ? `${min} chữ cái` : `${min}–${max} chữ cái`;
 };
 
-const packStats = (id: PackId) => `${PACKS[id].words.length} từ · ${wordLengths(id)}`;
+const packStats = (id: BuiltinPackId) => `${PACKS[id].words.length} từ · ${wordLengths(id)}`;
 
-export const PACK_GUIDE: Record<PackId, PackGuide> = {
+export const PACK_GUIDE: Record<BuiltinPackId, PackGuide> = {
   blending_core: {
     short: `${packStats('blending_core')} — ghép vần ngắn như map, sit, cat, hop.`,
     detail:
@@ -67,6 +65,21 @@ export const PACK_GUIDE: Record<PackId, PackGuide> = {
     detail: 'Gộp cả ba gói trên (bỏ từ trùng): lúc thì từ ngắn dễ, lúc thì từ tranh dài.',
     whenToUse: 'Ôn tập tổng hợp cuối chủ đề / cuối tuần.',
   },
+};
+
+/** MY WORDS — giáo viên tự nhập từ */
+export const CUSTOM_PACK_GUIDE: PackGuide & { rules: string[] } = {
+  short: 'Tự gõ / dán bộ từ riêng cho buổi chơi — ví dụ đúng các từ của bài học hôm nay.',
+  detail:
+    'Chọn MY WORDS rồi gõ các từ vào ô bên dưới, cách nhau bằng dấu cách, dấu phẩy hoặc xuống dòng (dán cả danh sách từ Word / Zalo cũng được). Các từ hợp lệ hiện ngay thành thẻ bên dưới ô — bấm vào thẻ để nghe máy đọc thử, kiểm tra trước khi cho bé chơi. Bộ từ được nhớ cho lần sau; muốn đổi bài thì sửa hoặc bấm CLEAR.',
+  whenToUse:
+    'Khi muốn bé luyện đúng từ vừa học trên lớp, từ trong sách, hoặc ôn lại những từ bé hay sai. Nên nhập từ 5 từ trở lên để các từ không lặp quá nhiều.',
+  rules: [
+    'Chỉ nhận chữ cái tiếng Anh a–z: từ có số, dấu nháy (don’t), dấu cách bên trong hay chữ có dấu tiếng Việt sẽ bị bỏ qua và được liệt kê màu đỏ.',
+    `Mỗi từ dài ${CUSTOM_WORD_LETTERS.min}–${CUSTOM_WORD_LETTERS.max} chữ cái. Từ trùng chỉ tính một lần; chữ hoa / thường đều được (trong game luôn in HOA).`,
+    'Chữ "gây nhiễu" lấy từ chính các chữ cái trong bộ từ; nếu bộ từ quá ít chữ cái khác nhau, game bù thêm vài chữ trong bảng Phonics (M A S P T I N C O D).',
+    'Cấp độ NORMAL / FAST đọc to từ bằng giọng máy — nên bấm thử thẻ từ để chắc máy đọc đúng.',
+  ],
 };
 
 // ---------------------------------------------------------------------------
@@ -152,5 +165,6 @@ export const COMBOS: { stage: string; pack: string; level: string }[] = [
   { stage: 'Luyện nghe – ghép âm', pack: 'BLENDING WORDS', level: 'NORMAL / FAST' },
   { stage: 'Ôn từ vựng theo tranh', pack: 'PICTURE VOCABULARY', level: 'GENTLE / EASY, 90–120 giây' },
   { stage: 'Ôn tổng hợp', pack: 'MIXED REVIEW', level: 'EASY / NORMAL' },
+  { stage: 'Luyện từ của bài hôm nay', pack: 'MY WORDS (tự nhập)', level: 'EASY → NORMAL' },
   { stage: 'Giải trí cuối tiết', pack: 'BLENDING WORDS', level: 'HARD' },
 ];

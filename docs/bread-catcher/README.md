@@ -7,7 +7,8 @@ Code: `src/games/bread-catcher/` — khung chung (màn chọn game, âm thanh, n
 ## Cách chơi
 
 - **Home:** `PLAY` (vào Setup, chọn CLASS MODE 3 đội hoặc SOLO MODE 1 người) + bật/tắt SOUND · MUSIC · VOICE.
-- **Setup:** chế độ, gói từ (Blending Words / Early Blending / Picture Vocabulary / Mixed Review),
+- **Setup:** chế độ, gói từ (Blending Words / Early Blending / Picture Vocabulary / Mixed Review /
+  **My Words** tự nhập),
   cấp độ, thời gian (AUTO / 45–120s, hoặc **tự nhập** 15–600 giây ở ô CUSTOM), tên đội
   (bỏ trống = LIONS / TIGERS / PANDAS). Lựa chọn được nhớ cho lần sau.
 - **Magic Dice** (Class): thứ tự lượt được xáo **một lần** đầu buổi, xúc xắc chỉ hé lộ đội kế tiếp
@@ -40,8 +41,17 @@ phần ESL của bảng không dùng.
 | EARLY BLENDING     | am, at, it, in, on, ma                                            |
 | PICTURE VOCABULARY | 68 từ tranh theo chữ cái (monkey, alligator, astronaut, dinosaur…) |
 | MIXED REVIEW       | tất cả các gói trên                                               |
+| MY WORDS           | giáo viên tự gõ / dán bộ từ cho buổi chơi (xem dưới)              |
 
 Từ dài (tới 9 chữ) tự thu nhỏ ô chữ cho vừa màn hình; nên chọn thời gian dài hơn cho gói từ tranh.
+
+**MY WORDS (tự nhập):** chọn gói này ở Setup rồi gõ / dán từ vào ô bên dưới (cách nhau bằng dấu cách,
+dấu phẩy, chấm phẩy, gạch chéo hoặc xuống dòng). Từ hợp lệ hiện thành thẻ — bấm để nghe giọng đọc thử.
+Chỉ nhận chữ a–z, 2–10 chữ cái mỗi từ; từ trùng tính một lần; phần bị bỏ qua (số, dấu nháy, chữ có dấu
+tiếng Việt…) được liệt kê màu đỏ. Chưa có từ hợp lệ thì nút START bị khoá. Nội dung ô được nhớ cùng form
+Setup. Chữ nhiễu lấy từ chính bộ từ; nếu ít hơn 6 chữ cái khác nhau thì bù thêm chữ của bảng Phonics.
+Code: `session/content.ts` (`parseCustomWords`, `sessionWords`, `sessionLetters`),
+`app/components/CustomWordsInput.tsx`.
 
 ### Bố cục ngang (máy chiếu lớp học)
 
@@ -112,7 +122,7 @@ src/games/bread-catcher/
 | Muốn…                               | Sửa                                              |
 | ----------------------------------- | ------------------------------------------------ |
 | Tốc độ / nhịp / thời gian mỗi level | `data/game_config.json`, HARD ở `session/settings.ts` |
-| Thêm / sửa từ vựng                  | `data/phonics_word_bank.json`, gói ở `session/content.ts` |
+| Thêm / sửa từ vựng                  | `data/phonics_word_bank.json`, gói ở `session/content.ts` (luật MY WORDS cũng ở đây) |
 | Chữ hiển thị                        | `data/ui_text.en.json`                           |
 | Phần thưởng trong hộp quà           | `session/rewards.ts`                             |
 | Nhịp rơi chữ cần hứng / chữ nhiễu   | `game/config/gameConfig.ts` (`SPAWN`)            |

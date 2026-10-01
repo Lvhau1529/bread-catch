@@ -1,5 +1,5 @@
 /**
- * Game Setup (plan §3–§5): chế độ, gói từ, cấp độ, thời gian, tên đội.
+ * Game Setup (plan §3–§5): chế độ, gói từ (có sẵn hoặc MY WORDS tự nhập), cấp độ, thời gian, tên đội.
  * Class Mode hiện 3 ô tên đội; Solo Mode chỉ 1 ô tên người chơi.
  * Lựa chọn được nhớ cho lần sau (session/storage.ts).
  */
@@ -8,12 +8,20 @@ import Button from '@/platform/ui/Button';
 import Field from '@/platform/ui/Field';
 import NameInput from '@/platform/ui/NameInput';
 import OptionGroup, { type Option } from '@/platform/ui/OptionGroup';
+import CustomWordsInput from '@/games/bread-catcher/app/components/CustomWordsInput';
 import TimeInput from '@/games/bread-catcher/app/components/TimeInput';
 import { TeamTotalsCard } from '@/games/bread-catcher/app/components/Leaderboard';
 import { useAppState, useTeamTotals } from '@/games/bread-catcher/app/hooks';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
-import { PACK_ORDER, PACKS, packPreview } from '@/games/bread-catcher/session/content';
+import {
+  CUSTOM_PACK_LABEL,
+  PACK_ORDER,
+  PACKS,
+  packPreview,
+  parseCustomWords,
+  wordLengthRange,
+} from '@/games/bread-catcher/session/content';
 import { sessionActions } from '@/games/bread-catcher/session/sessionStore';
 import { LEVEL_ORDER, LEVELS, TIME_OPTIONS, timeLimitSeconds } from '@/games/bread-catcher/session/settings';
 import {
@@ -35,7 +43,7 @@ const MODE_OPTIONS: Option<GameMode>[] = [
 const PACK_OPTIONS: Option<PackId>[] = PACK_ORDER.map((id) => ({
   value: id,
   label: PACKS[id].label,
-  sub: packPreview(id, 3),
+  sub: packPreview(PACKS[id].words, 3),
 }));
 
 const LEVEL_OPTIONS: Option<LevelId>[] = LEVEL_ORDER.map((id) => ({
@@ -49,6 +57,17 @@ export default function SetupScreen() {
   const hasTotals = useTeamTotals().length > 0;
   const update = (patch: Partial<SetupDraft>) => sessionActions.updateDraft(patch);
   const level = LEVELS[draft.levelId];
+  const custom = parseCustomWords(draft.customText);
+  const canStart = draft.packId !== 'custom' || custom.words.length > 0;
+
+  const packOptions: Option<PackId>[] = [
+    ...PACK_OPTIONS,
+    {
+      value: 'custom',
+      label: CUSTOM_PACK_LABEL,
+      sub: custom.words.length > 0 ? packPreview(custom.words, 3) : UI_TEXT.typeYourOwn,
+    },
+  ];
 
   const timeOptions: Option<TimeOption>[] = TIME_OPTIONS.map((time) =>
     time === 'auto'
@@ -93,14 +112,25 @@ export default function SetupScreen() {
         </Field>
 
         <Field label={UI_TEXT.phonicsPack} guide="packs">
-          <OptionGroup
-            label={UI_TEXT.phonicsPack}
-            options={PACK_OPTIONS}
-            value={draft.packId}
-            onChange={(packId) => update({ packId })}
-            columns={2}
-          />
-          <p className="field__hint">{packSummary(draft.packId)}</p>
+          <div className="setup__packs">
+            <OptionGroup
+              label={UI_TEXT.phonicsPack}
+              options={packOptions}
+              value={draft.packId}
+              onChange={(packId) => update({ packId })}
+              columns={2}
+            />
+          </div>
+          {draft.packId === 'custom' ? (
+            <CustomWordsInput
+              value={draft.customText}
+              parsed={custom}
+              summary={custom.words.length > 0 ? wordsSummary(custom.words) : ''}
+              onChange={(customText) => update({ customText })}
+            />
+          ) : (
+            <p className="field__hint">{wordsSummary(PACKS[draft.packId].words)}</p>
+          )}
         </Field>
 
         <Field label={UI_TEXT.level} guide="levels">
@@ -162,7 +192,14 @@ export default function SetupScreen() {
       {/* Tổng điểm các đội từ các buổi trước (có nút reset) */}
       {draft.mode === 'class' && hasTotals && <TeamTotalsCard />}
 
-      <Button color="green" size="lg" sfx={null} className="setup__start" onClick={start}>
+      <Button
+        color="green"
+        size="lg"
+        sfx={null}
+        className="setup__start"
+        disabled={!canStart}
+        onClick={start}
+      >
         {UI_TEXT.start}
       </Button>
     </div>
@@ -170,9 +207,7 @@ export default function SetupScreen() {
 }
 
 /** "45 words · 3–4 letters" */
-function packSummary(id: PackId): string {
-  const lengths = PACKS[id].words.map((word) => word.length);
-  const min = Math.min(...lengths);
-  const max = Math.max(...lengths);
-  return `${PACKS[id].words.length} ${UI_TEXT.words.toLowerCase()} · ${min === max ? min : `${min}–${max}`} ${UI_TEXT.letters}`;
+function wordsSummary(words: readonly string[]): string {
+  const { min, max } = wordLengthRange(words);
+  return `${words.length} ${UI_TEXT.words.toLowerCase()} · ${min === max ? min : `${min}–${max}`} ${UI_TEXT.letters}`;
 }

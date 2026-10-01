@@ -78,5 +78,14 @@
   "noScoresYet": "No team scores yet. Play a class game to start the leaderboard!",
   "guide": "GUIDE",
   "letters": "letters",
-  "allGames": "ALL GAMES"
+  "allGames": "ALL GAMES",
+  "myWords": "MY WORDS",
+  "typeYourOwn": "type your own",
+  "myWordsPlaceholder": "Type or paste words: cat, dog, sun…",
+  "clear": "CLEAR",
+  "noWordsYet": "Type at least one word to start.",
+  "skipped": "Skipped",
+  "skippedRule": "letters a–z only",
+  "fewWordsTip": "Tip: 5 or more words repeat less.",
+  "tapToHear": "Tap a word to hear it."
 }

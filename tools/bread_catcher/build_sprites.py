@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from common.imaging import (  # noqa: E402
     add_outline, clean_alpha, drop_fragments, load_rgba, resize_rgba, save_png, target_size, tight_bbox,
 )
-from common.paths import PUBLIC_ASSETS, ROOT, SHARED_ASSETS, SOURCE  # noqa: E402
+from common.paths import PUBLIC_ASSETS, SHARED_ASSETS, SOURCE  # noqa: E402
 
 from brainrot_art import build_brainrot_sprites  # noqa: E402
 from phonics_art import build_phonics_sprites  # noqa: E402
@@ -98,11 +98,6 @@ BACKGROUNDS = [
     ("backgrounds/bg_bakery_02", 0.45),
     ("backgrounds/bg_bakery_03", 0.5),
 ]
-
-
-# Icon PWA / favicon (ghi vào public/icons/)
-APP_ICONS = {"icon-192.png": 192, "icon-512.png": 512, "apple-touch-icon.png": 180, "favicon.png": 64}
-ICON_BACKGROUND = (255, 210, 120, 255)
 
 
 def save(img: Image.Image, name: str, root: Path = OUT) -> Path:
@@ -180,24 +175,6 @@ def build_backgrounds() -> dict:
     return meta
 
 
-def build_app_icons(game_sheet: np.ndarray) -> None:
-    """Icon PWA / favicon: bánh mì trên nền vuông (an toàn cho cả 'maskable')."""
-    x0, y0, x1, y1 = GAME_SPRITES["bread/letter_bread_01"]["box"]
-    crop = clean_alpha(game_sheet[y0:y1, x0:x1])
-    bx0, by0, bx1, by1 = tight_bbox(crop)
-    bread = Image.fromarray(crop[by0:by1, bx0:bx1])
-
-    icons_dir = ROOT / "public" / "icons"
-    icons_dir.mkdir(parents=True, exist_ok=True)
-    for filename, size in APP_ICONS.items():
-        icon = Image.new("RGBA", (size, size), ICON_BACKGROUND)
-        inner = round(size * 0.6)  # vùng an toàn của maskable icon là 80%
-        scale = inner / max(bread.size)
-        sprite = resize_rgba(bread, (round(bread.width * scale), round(bread.height * scale)))
-        icon.alpha_composite(sprite, ((size - sprite.width) // 2, (size - sprite.height) // 2))
-        icon.save(icons_dir / filename, optimize=True)
-
-
 # Ảnh bìa ở màn chọn game (16:9): tiệm bánh + rổ + bánh rơi + mascot
 COVER_SIZE = (480, 270)
 
@@ -237,7 +214,6 @@ def main() -> None:
     for name, img in procedural.items():
         save(img, name)
         meta[name] = {"width": img.width, "height": img.height}
-    build_app_icons(game)
     build_cover()
 
     # Key trong game = tên file (vd "bread_01"), path = đường dẫn tương đối

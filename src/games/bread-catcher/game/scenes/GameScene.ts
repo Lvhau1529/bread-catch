@@ -34,7 +34,7 @@ import { playCountdown } from '@/games/bread-catcher/game/ui/Countdown';
 import Hud from '@/games/bread-catcher/game/ui/Hud';
 import { hudLayout } from '@/games/bread-catcher/game/ui/layout';
 import TargetPanel from '@/games/bread-catcher/game/ui/TargetPanel';
-import { packLetters } from '@/games/bread-catcher/session/content';
+import { sessionLetters } from '@/games/bread-catcher/session/content';
 import {
   appStore,
   currentTeam,
@@ -127,7 +127,7 @@ export default class GameScene extends Phaser.Scene {
       this,
       this.bus,
       this.level,
-      packLetters(session.settings.packId),
+      sessionLetters(session.settings),
       hudLayout(this).playTop,
     );
     this.timer = new TurnTimer(this.bus, timeLimitSeconds(session.settings) * 1000, () => this.timeUp());

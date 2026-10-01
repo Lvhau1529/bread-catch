@@ -5,6 +5,7 @@
 import { mascotUrl } from '@/games/bread-catcher/app/assets';
 import {
   COMBOS,
+  CUSTOM_PACK_GUIDE,
   GUIDE_SECTIONS,
   HARD_TRICKS,
   LEVEL_GUIDE,
@@ -12,7 +13,7 @@ import {
   TIME_GUIDE,
   type GuideSectionId,
 } from '@/games/bread-catcher/app/guide/guideContent';
-import { PACK_ORDER, PACKS } from '@/games/bread-catcher/session/content';
+import { CUSTOM_PACK_LABEL, PACK_ORDER, PACKS } from '@/games/bread-catcher/session/content';
 import { LEVEL_ORDER, LEVELS, RULES } from '@/games/bread-catcher/session/settings';
 import { TEAM_MASCOTS } from '@/games/bread-catcher/session/teams';
 import type { GuideSection } from '@/platform/ui/guide/GuideDialog';
@@ -118,6 +119,19 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
               </p>
             </article>
           ))}
+          <article className="guide-card">
+            <h3>{CUSTOM_PACK_LABEL} — tự nhập từ</h3>
+            <p className="guide-card__lead">{CUSTOM_PACK_GUIDE.short}</p>
+            <p>{CUSTOM_PACK_GUIDE.detail}</p>
+            <ul className="guide__list">
+              {CUSTOM_PACK_GUIDE.rules.map((rule) => (
+                <li key={rule}>{rule}</li>
+              ))}
+            </ul>
+            <p className="guide-card__use">
+              <b>Nên dùng:</b> {CUSTOM_PACK_GUIDE.whenToUse}
+            </p>
+          </article>
         </div>
       </>
     ),

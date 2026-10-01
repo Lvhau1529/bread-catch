@@ -10,7 +10,7 @@
  */
 import { createStore } from '@/shared/createStore';
 import { shuffle } from '@/shared/random';
-import { PACKS } from '@/games/bread-catcher/session/content';
+import { PACKS, parseCustomWords, sessionWords } from '@/games/bread-catcher/session/content';
 import { DEFAULT_SETTINGS, isValidTime, LEVELS, RULES } from '@/games/bread-catcher/session/settings';
 import {
   addSession,
@@ -62,14 +62,20 @@ export interface AppState {
 
 /** Form Setup: lần chơi trước (nếu còn hợp lệ) hoặc mặc định */
 function initialDraft(): SetupDraft {
-  const fallback: SetupDraft = { ...DEFAULT_SETTINGS, teamNames: ['', '', ''], playerName: '' };
+  const fallback: SetupDraft = {
+    ...DEFAULT_SETTINGS,
+    customText: '',
+    teamNames: ['', '', ''],
+    playerName: '',
+  };
   const saved = loadLastSetup();
   if (!saved) return fallback;
   return {
     mode: saved.mode === 'solo' ? 'solo' : 'class',
-    packId: saved.packId in PACKS ? saved.packId : fallback.packId,
+    packId: saved.packId === 'custom' || saved.packId in PACKS ? saved.packId : fallback.packId,
     levelId: saved.levelId in LEVELS ? saved.levelId : fallback.levelId,
     time: isValidTime(saved.time) ? saved.time : fallback.time,
+    customText: String(saved.customText ?? ''),
     teamNames: [0, 1, 2].map((i) => String(saved.teamNames?.[i] ?? '')) as SetupDraft['teamNames'],
     playerName: String(saved.playerName ?? ''),
   };
@@ -90,7 +96,7 @@ function update(patch: Partial<AppState>): void {
 }
 
 function createSession(settings: SessionSettings, teams: Team[]): ActiveSession {
-  wordPool = new WordPool(PACKS[settings.packId].words, RULES.wordPool);
+  wordPool = new WordPool(sessionWords(settings), RULES.wordPool);
   return {
     id: nextSessionId++,
     settings,
@@ -156,9 +162,12 @@ export const sessionActions = {
 
   startSession(): void {
     const { draft } = appStore.get();
+    const { mode, packId, levelId, time, customText } = draft;
+    const customWords = packId === 'custom' ? parseCustomWords(customText).words : [];
+    if (packId === 'custom' && customWords.length === 0) return; // nút START đang bị khoá
     saveLastSetup(draft);
-    const { mode, packId, levelId, time } = draft;
-    update({ screen: 'play', session: createSession({ mode, packId, levelId, time }, buildTeams(draft)) });
+    const settings = { mode, packId, levelId, time, customWords };
+    update({ screen: 'play', session: createSession(settings, buildTeams(draft)) });
   },
 
   /** Chơi lại với cùng cài đặt và đội (xáo lại thứ tự, word pool mới) */

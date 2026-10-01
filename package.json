@@ -17,7 +17,8 @@
     "assets:bread": "python tools/bread_catcher/build_sprites.py",
     "assets:food-stream": "python tools/food_stream/build_sprites.py",
     "assets:audio": "python tools/build_audio.py",
-    "assets": "pnpm run assets:bread && pnpm run assets:food-stream && pnpm run assets:audio"
+    "assets:icons": "python tools/build_app_icons.py",
+    "assets": "pnpm run assets:bread && pnpm run assets:food-stream && pnpm run assets:audio && pnpm run assets:icons"
   },
   "dependencies": {
     "@fontsource/andika": "^5.3.0",

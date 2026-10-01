@@ -102,17 +102,17 @@ export const RULES = {
   pauseOverlayOpacity: gameConfig.pause.overlayOpacity,
 } as const;
 
-export const DEFAULT_SETTINGS: SessionSettings = {
+export const DEFAULT_SETTINGS: Omit<SessionSettings, 'customWords'> = {
   mode: 'class',
   packId: gameConfig.defaults.contentPack as PackId,
   levelId: gameConfig.defaults.difficulty as LevelId,
   time: gameConfig.defaults.timeLimitSeconds,
 };
 
-export function timeLimitSeconds(settings: SessionSettings): number {
+export function timeLimitSeconds(settings: Pick<SessionSettings, 'time' | 'levelId'>): number {
   return settings.time === 'auto' ? LEVELS[settings.levelId].suggestedTime : settings.time;
 }
 
-export function wordsPerTurn(settings: SessionSettings): number {
+export function wordsPerTurn(settings: Pick<SessionSettings, 'mode'>): number {
   return settings.mode === 'solo' ? RULES.soloWordsPerTurn : RULES.wordsPerTurn;
 }

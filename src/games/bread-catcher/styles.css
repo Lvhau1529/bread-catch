@@ -130,6 +130,107 @@
   font-size: 26px;
 }
 
+/* 5 gói, 2 cột: MY WORDS chiếm trọn hàng cuối */
+.setup__packs .option:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* Ô MY WORDS: gõ / dán từ + chip các từ sẽ rơi (bấm để nghe) */
+.custom-words {
+  margin-top: 8px;
+}
+
+.custom-words__box {
+  position: relative;
+}
+
+.custom-words textarea {
+  display: block;
+  width: 100%;
+  min-height: 84px;
+  padding: 8px 10px;
+  border: 3px solid var(--orange);
+  border-radius: 14px;
+  outline: none;
+  background: #fff;
+  color: var(--brown);
+  font-family: var(--font-learning);
+  /* ≥ 16px: iOS không tự zoom khi focus */
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  resize: vertical;
+  user-select: text;
+}
+
+.custom-words.is-empty textarea {
+  border-style: dashed;
+}
+
+.custom-words textarea:focus {
+  box-shadow: 0 0 0 3px var(--gold);
+}
+
+.custom-words textarea::placeholder {
+  color: #c4a883;
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+
+/* Chừa chỗ cho nút CLEAR ở góc dưới */
+.custom-words__box:has(.custom-words__clear) textarea {
+  padding-bottom: 40px;
+}
+
+.custom-words__clear {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  min-height: 30px;
+  padding: 2px 10px;
+  color: var(--orange-edge);
+}
+
+.custom-words__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 132px;
+  margin: 8px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.custom-words__chip {
+  min-height: 34px;
+  padding: 2px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--gold);
+  box-shadow: 0 3px 0 var(--orange-edge);
+  color: var(--ink);
+  font-family: var(--font-learning);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.custom-words__chip:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--orange-edge);
+}
+
+.custom-words__chip:disabled {
+  cursor: default;
+}
+
+.custom-words__skipped {
+  font-weight: 800;
+  word-break: break-word;
+}
+
 /* =========================================================================
    Results
    ========================================================================= */
