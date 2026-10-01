@@ -17,12 +17,13 @@ import { DEFAULT_TEAM_NAMES, MAX_NAME_LENGTH, TEAM_STREAMERS } from '@/games/foo
 import type { GameMode, SetupDraft, StreamerId } from '@/games/food-stream/session/types';
 import { TEXT } from '@/games/food-stream/text';
 import { SFX } from '@/platform/audio/sfx';
-import BackButton from '@/platform/ui/BackButton';
 import Button from '@/platform/ui/Button';
-import Field from '@/platform/ui/Field';
+import Field, { FieldHint } from '@/platform/ui/Field';
 import NameInput from '@/platform/ui/NameInput';
 import OptionGroup, { type Option } from '@/platform/ui/OptionGroup';
+import ScreenHeader from '@/platform/ui/ScreenHeader';
 import { speech } from '@/shared/speech';
+import styles from '@/games/food-stream/app/screens/SetupScreen.module.scss';
 
 const MODE_OPTIONS: Option<GameMode>[] = [
   { value: 'solo', label: TEXT.solo, sub: TEXT.soloSub },
@@ -85,13 +86,10 @@ export default function SetupScreen() {
   };
 
   return (
-    <div className="screen fs-setup">
-      <header className="screen__header">
-        <BackButton label={TEXT.back} onClick={() => foodStreamActions.goHome()} />
-        <h1>{TEXT.setup}</h1>
-      </header>
+    <div className={styles.setup}>
+      <ScreenHeader title={TEXT.setup} backLabel={TEXT.back} onBack={() => foodStreamActions.goHome()} />
 
-      <div className="card fs-setup__form">
+      <div className={styles.form}>
         <Field label={TEXT.mode} guide="modes">
           <OptionGroup
             label={TEXT.mode}
@@ -119,10 +117,10 @@ export default function SetupScreen() {
             onChange={(levelId) => update({ levelId })}
             columns={2}
           />
-          <p className="field__hint">
+          <FieldHint>
             {level.hint}
             {level.timeLimitSec ? ` (${level.timeLimitSec} ${TEXT.seconds})` : ''}
-          </p>
+          </FieldHint>
         </Field>
 
         {solo ? (
@@ -137,7 +135,7 @@ export default function SetupScreen() {
         ) : (
           <>
             <Field label={TEXT.teams} guide="modes">
-              <div className="teams">
+              <div className="flex flex-col gap-2">
                 {TEAM_STREAMERS.map((streamer, index) => (
                   <NameInput
                     key={streamer}
@@ -179,7 +177,7 @@ export default function SetupScreen() {
         )}
       </div>
 
-      <Button color="pink" size="lg" sfx={SFX.UI_START} className="fs-setup__start" onClick={start}>
+      <Button color="pink" size="lg" sfx={SFX.UI_START} className={styles.start} onClick={start}>
         {TEXT.goLive}
       </Button>
     </div>

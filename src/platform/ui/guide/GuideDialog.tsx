@@ -6,11 +6,14 @@
  *   - điện thoại: thanh [‹] Tên phần ▾ [›], bấm tên mở bảng chọn 3 cột
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import clsx from 'clsx';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import { useStore } from '@/platform/hooks/useStore';
 import { closeGuide, guideStore } from '@/platform/ui/guide/guideStore';
 import Icon from '@/platform/ui/Icon';
+import iconButton from '@/platform/ui/IconButton.module.scss';
+import styles from '@/platform/ui/guide/GuideDialog.module.scss';
 
 export interface GuideSection {
   id: string;
@@ -20,6 +23,7 @@ export interface GuideSection {
   short: string;
   /** Tiêu đề trong nội dung (mặc định = title) */
   heading?: string;
+  /** Dựng bằng các class trong guideContent.module.scss + GuideCard */
   content: ReactNode;
 }
 
@@ -120,43 +124,48 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
   };
 
   return (
-    <div className="guide-backdrop" onClick={close}>
+    <div className={styles.backdrop} onClick={close}>
       <div
-        className="guide"
+        className={styles.guide}
         role="dialog"
         aria-modal="true"
         aria-label="Hướng dẫn"
         lang="vi"
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="guide__header">
+        <header className={styles.header}>
           <h1>{title}</h1>
-          <button type="button" className="icon-btn icon-btn--close" aria-label="Đóng" onClick={close}>
+          <button
+            type="button"
+            className={clsx(iconButton.iconBtn, iconButton.close)}
+            aria-label="Đóng"
+            onClick={close}
+          >
             <Icon name="close" size={22} />
           </button>
         </header>
 
         {/* Màn rộng: cột mục lục bên trái */}
-        <nav className="guide__nav" aria-label="Mục lục">
+        <nav className={styles.nav} aria-label="Mục lục">
           {sections.map((item, index) => (
             <button
               key={item.id}
               type="button"
-              className={item.id === active ? 'is-active' : undefined}
+              className={item.id === active ? styles.active : undefined}
               aria-current={item.id === active ? 'true' : undefined}
               onClick={() => goTo(index)}
             >
-              <span className="guide__nav-index">{index + 1}</span>
+              <span className={styles.navIndex}>{index + 1}</span>
               {item.title}
             </button>
           ))}
         </nav>
 
         {/* Điện thoại: phần đang đọc + trước / sau + bảng chọn nhanh */}
-        <div className="guide__picker">
+        <div className={styles.picker}>
           <button
             type="button"
-            className="guide__step"
+            className={styles.step}
             aria-label="Phần trước"
             disabled={activeIndex <= 0}
             onClick={() => goTo(activeIndex - 1)}
@@ -165,22 +174,22 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
           </button>
           <button
             type="button"
-            className="guide__current"
+            className={styles.current}
             aria-expanded={menuOpen}
             aria-haspopup="true"
             onClick={() => setMenuOpen((value) => !value)}
           >
-            <span className="guide__current-index">
+            <span className={styles.currentIndex}>
               {activeIndex + 1}/{sections.length}
             </span>
-            <span className="guide__current-title">{activeItem?.title}</span>
-            <span className="guide__caret" aria-hidden="true">
+            <span className={styles.currentTitle}>{activeItem?.title}</span>
+            <span className={styles.caret} aria-hidden="true">
               ▾
             </span>
           </button>
           <button
             type="button"
-            className="guide__step"
+            className={styles.step}
             aria-label="Phần sau"
             disabled={activeIndex >= sections.length - 1}
             onClick={() => goTo(activeIndex + 1)}
@@ -189,12 +198,12 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
           </button>
 
           {menuOpen && (
-            <div className="guide__menu" aria-label="Chọn phần">
+            <div className={styles.menu} aria-label="Chọn phần">
               {sections.map((item, index) => (
                 <button
                   key={item.id}
                   type="button"
-                  className={item.id === active ? 'is-active' : undefined}
+                  className={item.id === active ? styles.active : undefined}
                   aria-current={item.id === active ? 'true' : undefined}
                   onClick={() => goTo(index)}
                 >
@@ -206,18 +215,18 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
         </div>
 
         <div
-          className="guide__body"
+          className={styles.body}
           ref={bodyRef}
           onScroll={updateActive}
           onPointerDown={() => setMenuOpen(false)}
         >
           {sections.map((item) => (
-            <section key={item.id} className="guide__section" id={`guide-${item.id}`}>
+            <section key={item.id} className={styles.section} id={`guide-${item.id}`}>
               <h2>{item.heading ?? item.title}</h2>
               {item.content}
             </section>
           ))}
-          <p className="guide__build">Phiên bản: {__BUILD_ID__}</p>
+          <p className={styles.build}>Phiên bản: {__BUILD_ID__}</p>
         </div>
       </div>
     </div>

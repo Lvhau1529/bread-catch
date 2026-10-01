@@ -6,7 +6,9 @@ import { streamerUrl } from '@/games/food-stream/app/images';
 import { LEVELS } from '@/games/food-stream/content/levels';
 import { PACKS, packPreview } from '@/games/food-stream/content/packs';
 import { SCORING } from '@/games/food-stream/session/scoring';
+import GuideCard from '@/platform/ui/guide/GuideCard';
 import type { GuideSection } from '@/platform/ui/guide/GuideDialog';
+import guide from '@/platform/ui/guide/guideContent.module.scss';
 
 export const GUIDE_TITLE = 'Hướng dẫn Food Stream cho giáo viên & phụ huynh';
 
@@ -43,7 +45,7 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
           "livestream ăn uống": bé nghe âm / từ, chọn đúng món ăn mang chữ cái hoặc tranh để{' '}
           <b>cho streamer ăn</b>. Mỗi câu đúng được thêm người xem, tim và bình luận khen ngợi.
         </p>
-        <p className="guide__note">
+        <p className={guide.note}>
           Người xem, tim, bình luận chỉ là phần thưởng hình ảnh: trò chơi không có mạng xã hội, không có chat
           thật, không quảng cáo và không thu thập tên học sinh.
         </p>
@@ -56,7 +58,7 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
     heading: 'Cách chơi (hướng dẫn cho bé)',
     short: 'Cách chơi',
     content: (
-      <ol className="guide__steps">
+      <ol className={guide.steps}>
         <li>
           Nghe máy đọc âm / từ (bấm <b>nút loa đỏ</b> hoặc phím cách để nghe lại).
         </li>
@@ -81,10 +83,10 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
     title: 'Chế độ chơi',
     short: 'Chế độ',
     content: (
-      <div className="guide__cards">
-        <article className="guide-card">
+      <div className={guide.cards}>
+        <GuideCard>
           <h3>
-            <span className="guide-card__mascots">
+            <span className={guide.mascots}>
               <img src={streamerUrl('girl')} alt="" width={30} height={37} />
             </span>
             SOLO — Một mình
@@ -94,10 +96,10 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
             lệ trả lời đúng ngay lần đầu; sao cao nhất của từng cấp được lưu trên máy. Có nút{' '}
             <b>NEXT LEVEL</b> để lên cấp.
           </p>
-        </article>
-        <article className="guide-card">
+        </GuideCard>
+        <GuideCard>
           <h3>
-            <span className="guide-card__mascots">
+            <span className={guide.mascots}>
               <img src={streamerUrl('girl')} alt="" width={30} height={37} />
               <img src={streamerUrl('boy')} alt="" width={30} height={37} />
             </span>
@@ -111,7 +113,7 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
             Kết thúc: màn ăn mừng đội thắng (hoặc hoà), hiện điểm cả hai đội — không có hình phạt cho đội
             thua.
           </p>
-        </article>
+        </GuideCard>
       </div>
     ),
   },
@@ -121,13 +123,13 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
     heading: 'Gói từ (WORD PACK)',
     short: 'Gói từ',
     content: (
-      <div className="guide__cards">
+      <div className={guide.cards}>
         {PACKS.map((pack) => (
-          <article key={pack.id} className="guide-card">
+          <GuideCard key={pack.id}>
             <h3>{pack.title}</h3>
-            <p className="guide-card__lead">{packPreview(pack, 5)}</p>
+            <p className={guide.lead}>{packPreview(pack, 5)}</p>
             <p>{PACK_GUIDE[pack.id]}</p>
-          </article>
+          </GuideCard>
         ))}
       </div>
     ),
@@ -143,21 +145,21 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
           Cấp chỉ hiện nếu gói từ có đủ nội dung (vd gói CVC WORDS không có "Hear &amp; Tap"). Nên đi lần lượt
           từ cấp 1: cấp đầu không tính giờ để bé không bị áp lực.
         </p>
-        <div className="guide__cards">
+        <div className={guide.cards}>
           {LEVELS.map((level) => (
-            <article key={level.id} className="guide-card">
+            <GuideCard key={level.id}>
               <h3>
                 {level.number}. {level.title}
               </h3>
               <p>{LEVEL_GUIDE[level.id]}</p>
-              <p className="guide-card__use">
+              <p className={guide.use}>
                 Solo: {level.questions} câu · {level.choices} lựa chọn
                 {level.timeLimitSec ? ` · ${level.timeLimitSec} giây` : ' · không tính giờ'}
               </p>
-            </article>
+            </GuideCard>
           ))}
         </div>
-        <p className="guide__note">
+        <p className={guide.note}>
           Máy không đọc được (hoặc đã tắt VOICE) thì trò chơi tự hiện ký hiệu âm / tranh / chữ thay cho giọng
           đọc để bé vẫn chơi được.
         </p>
@@ -169,7 +171,7 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
     title: 'Dành cho giáo viên',
     short: 'Giáo viên',
     content: (
-      <ul className="guide__list">
+      <ul className={guide.list}>
         <li>
           <b>QUESTIONS PER TEAM</b>: 5 / 10 / 15 câu cho mỗi đội.
         </li>
@@ -193,7 +195,7 @@ export const FOOD_STREAM_GUIDE_SECTIONS: GuideSection[] = [
     title: 'Dành cho phụ huynh',
     short: 'Phụ huynh',
     content: (
-      <ul className="guide__list">
+      <ul className={guide.list}>
         <li>
           Chọn <b>SOLO</b>, gói <b>LETTER D</b>, bắt đầu từ cấp <b>1. HEAR &amp; TAP</b>; khi được 3 sao thì
           bấm NEXT LEVEL.

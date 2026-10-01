@@ -1,0 +1,4 @@
+// Giá trị SCSS dùng lúc biên dịch (màu theme thì dùng biến CSS --color-* ở tailwind.css).
+
+/// Bầu trời tím của Phonics Arcade (màn chọn game, màn đang tải) — lót dưới ảnh nền
+$arcade-sky: radial-gradient(ellipse at 50% 0%, #7a3bb8 0%, #3d1c6e 55%, #1d0d38 100%);

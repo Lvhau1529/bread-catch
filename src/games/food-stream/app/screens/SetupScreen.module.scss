@@ -1,0 +1,39 @@
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  .setup {
+    @include screen;
+  }
+
+  .form {
+    @include card;
+    // Dòng phụ của lựa chọn (chữ cái, từ của gói) dùng chữ học — xem OptionGroup.module.scss
+    --option-sub-font: var(--font-learning);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    // Chia 2 cột kiểu báo
+    @include app-landscape {
+      display: block;
+      columns: 2;
+      column-gap: 28px;
+
+      > * {
+        break-inside: avoid;
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+  .start {
+    position: sticky;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    font-size: 26px;
+
+    @include app-landscape {
+      align-self: center;
+      width: min(100%, 420px);
+    }
+  }
+}

@@ -1,16 +1,19 @@
 /**
  * Nhóm lựa chọn dạng chip (radio group) cho màn Setup của các game. Chip cao tối thiểu 48px.
  */
+import clsx from 'clsx';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
+import { toneVars, type ToneColor } from '@/platform/ui/tone';
+import styles from '@/platform/ui/OptionGroup.module.scss';
 
 export interface Option<T> {
   value: T;
   label: string;
   /** Dòng phụ nhỏ bên dưới nhãn */
   sub?: string;
-  /** Màu riêng khi được chọn (vd: màu theo level) */
-  tone?: string;
+  /** Màu riêng khi được chọn (vd: màu theo level); mặc định cam */
+  tone?: ToneColor;
   /** Ảnh minh hoạ phía trên nhãn */
   icon?: string;
 }
@@ -32,7 +35,7 @@ export default function OptionGroup<T extends string | number>({
 }: OptionGroupProps<T>) {
   return (
     <div
-      className="options"
+      className={styles.options}
       role="radiogroup"
       aria-label={label}
       style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
@@ -45,16 +48,17 @@ export default function OptionGroup<T extends string | number>({
             type="button"
             role="radio"
             aria-checked={selected}
-            className={`option ${option.tone ? `option--${option.tone}` : ''} ${selected ? 'is-selected' : ''}`}
+            className={clsx(styles.option, selected && styles.selected)}
+            style={option.tone && toneVars(option.tone)}
             onClick={() => {
               if (selected) return;
               playSfx(SFX.UI_CLICK);
               onChange(option.value);
             }}
           >
-            {option.icon && <img className="option__icon" src={option.icon} alt="" />}
-            <span className="option__label">{option.label}</span>
-            {option.sub && <span className="option__sub">{option.sub}</span>}
+            {option.icon && <img className={styles.icon} src={option.icon} alt="" />}
+            <span className={styles.label}>{option.label}</span>
+            {option.sub && <span className={styles.sub}>{option.sub}</span>}
           </button>
         );
       })}

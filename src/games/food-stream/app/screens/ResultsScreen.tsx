@@ -3,6 +3,7 @@
  *   Solo      — LIVE COMPLETE! + sao, điểm, người xem, tim, từ đã học, sang cấp tiếp theo
  *   Classroom — đội thắng / hoà, điểm cả hai đội, không có phản ứng tiêu cực cho đội thua
  */
+import clsx from 'clsx';
 import { useFoodStream } from '@/games/food-stream/app/hooks';
 import { imageUrl, streamerUrl } from '@/games/food-stream/app/images';
 import { getLevel } from '@/games/food-stream/content/levels';
@@ -19,13 +20,14 @@ import Button from '@/platform/ui/Button';
 import GemReward from '@/platform/ui/GemReward';
 import Icon from '@/platform/ui/Icon';
 import { compactNumber } from '@/shared/format';
+import styles from '@/games/food-stream/app/screens/ResultsScreen.module.scss';
 
 export default function ResultsScreen() {
   const session = useFoodStream((state) => state.session);
   const outcome = useFoodStream((state) => state.outcome);
   if (!session || !outcome) return null;
   return (
-    <div className="screen fs-results">
+    <div className={styles.results}>
       {session.settings.mode === 'solo' ? (
         <SoloResults session={session} outcome={outcome} />
       ) : (
@@ -45,21 +47,21 @@ function SoloResults({ session, outcome }: { session: ActiveSession; outcome: Se
   const level = getLevel(session.settings.levelId);
   return (
     <>
-      <h1 className="fs-results__title">{result.perfect ? TEXT.perfect : TEXT.liveComplete}</h1>
-      <div className="card fs-solo">
-        <img className="fs-solo__streamer" src={streamerUrl(session.teams[0].streamer)} alt="" />
-        <p className="fs-solo__level">
+      <h1 className={styles.title}>{result.perfect ? TEXT.perfect : TEXT.liveComplete}</h1>
+      <div className={styles.solo}>
+        <img className={styles.streamer} src={streamerUrl(session.teams[0].streamer)} alt="" />
+        <p className={styles.level}>
           {getPack(session.settings.packId).title} · {level.number}. {level.title}
         </p>
         <Stars count={result.stars} />
-        {isNewBest && <p className="fs-solo__best">{TEXT.newBest}</p>}
-        <dl className="fs-stats">
+        {isNewBest && <p className={styles.best}>{TEXT.newBest}</p>}
+        <dl className={styles.stats}>
           <Stat label={TEXT.score} value={String(score)} />
           <Stat label={TEXT.viewers} value={compactNumber(result.viewers)} />
           <Stat label={TEXT.hearts} value={compactNumber(result.hearts)} />
           <Stat label={TEXT.bestStreak} value={String(result.teams[0]?.bestStreak ?? 0)} />
         </dl>
-        <p className="fs-solo__total">
+        <p className={styles.total}>
           {TEXT.totalViewers}: <b>{compactNumber(outcome.totalViewers)}</b>
         </p>
       </div>
@@ -74,9 +76,9 @@ function ClassroomResults({ outcome }: { outcome: SessionOutcome }) {
   const title = winners.length === 1 ? `${winners[0].team.name} ${TEXT.teamWins}` : TEXT.tie;
   return (
     <>
-      <h1 className="fs-results__title">{title}</h1>
-      <p className="fs-results__subtitle">{TEXT.greatTeamwork}</p>
-      <ul className="fs-teams">
+      <h1 className={styles.title}>{title}</h1>
+      <p className={styles.subtitle}>{TEXT.greatTeamwork}</p>
+      <ul className={styles.teams}>
         {teams.map((team) => (
           <TeamCard key={team.team.id} score={team} winner={winners.length === 1 && winners[0] === team} />
         ))}
@@ -87,16 +89,16 @@ function ClassroomResults({ outcome }: { outcome: SessionOutcome }) {
 
 function TeamCard({ score, winner }: { score: TeamScore; winner: boolean }) {
   return (
-    <li className={`fs-team fs-team--${score.team.id === 0 ? 'a' : 'b'} ${winner ? 'is-winner' : ''}`}>
-      {winner && <img className="fs-team__crown" src={imageUrl('ui.crown')} alt="" />}
+    <li className={clsx(styles.team, score.team.id !== 0 && styles.teamB, winner && styles.winner)}>
+      {winner && <img className={styles.crown} src={imageUrl('ui.crown')} alt="" />}
       <img
-        className="fs-team__streamer"
+        className={styles.teamStreamer}
         src={streamerUrl(score.team.streamer, winner ? 'wow' : 'happy')}
         alt=""
       />
-      <span className="fs-team__name">{score.team.name}</span>
-      <span className="fs-team__score">{score.score}</span>
-      <dl className="fs-stats fs-stats--compact">
+      <span className={styles.teamName}>{score.team.name}</span>
+      <span className={styles.teamScore}>{score.score}</span>
+      <dl className={clsx(styles.stats, styles.compact)}>
         <Stat label={TEXT.correct} value={String(score.correct)} />
         <Stat label={TEXT.bestStreak} value={String(score.bestStreak)} />
       </dl>
@@ -116,11 +118,11 @@ function WordsLearned({ records }: { records: readonly QuestionRecord[] }) {
     });
   if (unique.size === 0) return null;
   return (
-    <section className="card fs-words">
+    <section className={styles.words}>
       <h2>{TEXT.wordsLearned}</h2>
       <ul>
         {[...unique.values()].map((record) => (
-          <li key={record.label} className={record.firstTry ? 'is-first-try' : undefined}>
+          <li key={record.label} className={record.firstTry ? styles.firstTry : undefined}>
             {record.picture && <img src={imageUrl(record.picture)} alt="" />}
             <span>{record.label}</span>
           </li>
@@ -133,13 +135,13 @@ function WordsLearned({ records }: { records: readonly QuestionRecord[] }) {
 function Actions({ session }: { session: ActiveSession }) {
   const next = session.settings.mode === 'solo' ? nextLevelId(session.settings) : undefined;
   return (
-    <div className="fs-results__actions">
+    <div className={styles.actions}>
       {next && (
         <Button color="pink" size="lg" onClick={() => foodStreamActions.playNextLevel()}>
           {TEXT.nextLevel} <Icon name="next" size={24} />
         </Button>
       )}
-      <div className="fs-results__row">
+      <div className={styles.row}>
         <Button color="green" onClick={() => foodStreamActions.playAgain()}>
           {TEXT.playAgain}
         </Button>
@@ -153,13 +155,13 @@ function Actions({ session }: { session: ActiveSession }) {
 
 function Stars({ count }: { count: number }) {
   return (
-    <div className="fs-stars" aria-label={`${count} / 3`}>
+    <div className={styles.stars} aria-label={`${count} / 3`}>
       {[0, 1, 2].map((index) => (
         <img
           key={index}
           src={imageUrl('ui.star')}
           alt=""
-          className={index < count ? 'is-earned' : undefined}
+          className={index < count ? styles.earned : undefined}
           style={{ animationDelay: `${0.25 + index * 0.3}s` }}
         />
       ))}
@@ -169,7 +171,7 @@ function Stars({ count }: { count: number }) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="fs-stats__item">
+    <div className={styles.statsItem}>
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>

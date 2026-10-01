@@ -10,25 +10,22 @@ import AudioToggles from '@/platform/ui/AudioToggles';
 import BackButton from '@/platform/ui/BackButton';
 import Button from '@/platform/ui/Button';
 import Icon from '@/platform/ui/Icon';
-import { openGuide } from '@/platform/ui/guide/guideStore';
+import GuideButton from '@/platform/ui/guide/GuideButton';
+import styles from '@/games/food-stream/app/screens/HomeScreen.module.scss';
 
 export default function HomeScreen() {
   return (
-    <div className="screen fs-home">
-      <BackButton
-        className="fs-home__exit"
-        label={TEXT.allGames}
-        onClick={() => platformActions.exitToHub()}
-      />
+    <div className={styles.home}>
+      <BackButton className={styles.exit} label={TEXT.allGames} onClick={() => platformActions.exitToHub()} />
 
-      <h1 className="fs-logo" aria-label={`${TEXT.titleTop} ${TEXT.titleBottom}`}>
-        <span className="fs-logo__live" aria-hidden="true">
+      <h1 className={styles.logo} aria-label={`${TEXT.titleTop} ${TEXT.titleBottom}`}>
+        <span className={styles.live} aria-hidden="true">
           ● LIVE
         </span>
-        <span className="fs-logo__top" aria-hidden="true">
+        <span className={styles.logoTop} aria-hidden="true">
           {TEXT.titleTop}
         </span>
-        <span className="fs-logo__bottom" aria-hidden="true">
+        <span className={styles.logoBottom} aria-hidden="true">
           {TEXT.titleBottom}
         </span>
       </h1>
@@ -36,17 +33,15 @@ export default function HomeScreen() {
       <Button
         color="pink"
         size="lg"
-        className="fs-home__play"
+        className={styles.play}
         sfx={SFX.UI_START}
         onClick={() => foodStreamActions.openSetup()}
       >
         <Icon name="play" size={26} /> {TEXT.play}
       </Button>
 
-      <AudioToggles />
-      <button type="button" className="guide-link" onClick={() => openGuide()}>
-        ? {TEXT.guide}
-      </button>
+      <AudioToggles className={styles.toggles} />
+      <GuideButton label={TEXT.guide} className={styles.guide} />
     </div>
   );
 }

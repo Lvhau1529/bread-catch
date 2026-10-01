@@ -1,0 +1,12 @@
+@layer components {
+  .host {
+    width: 100%;
+    // dvh: không bị thanh địa chỉ mobile che
+    height: 100vh;
+    height: 100dvh;
+
+    canvas {
+      display: block;
+    }
+  }
+}

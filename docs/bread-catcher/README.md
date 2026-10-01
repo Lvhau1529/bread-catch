@@ -96,7 +96,6 @@ Thông số ở `game/config/troll.ts`, logic ở `game/systems/troll/`.
 src/games/bread-catcher/
 ├── manifest.ts              # thẻ game ở màn chọn game + import động
 ├── BreadCatcherGame.tsx     # root: Phaser + màn React phủ lên
-├── styles.css
 ├── data/                    # JSON từ resource pack: game_config, phonics_word_bank, ui_text.en
 ├── session/                 # logic buổi học, KHÔNG phụ thuộc React/Phaser
 │   ├── sessionStore.ts      #   màn hiện tại + phiên chơi (React và Phaser cùng đọc)
@@ -106,6 +105,7 @@ src/games/bread-catcher/
 │   ├── ranking.ts           #   xếp hạng + tie-breaker, đội thắng
 │   ├── leaderboard.ts, teams.ts, rewards.ts, storage.ts, text.ts, types.ts
 ├── app/                     # React: Home / Setup / Results, Leaderboard, TimeInput, nội dung Hướng dẫn
+│                            #   (mỗi component một *.module.scss cạnh nó; màu cấp độ: levelTone.ts)
 └── game/                    # Phaser
     ├── createGame.ts, SceneDirector.ts
     ├── config/              #   gameConfig, assets (nhạc), stages, hazards, troll

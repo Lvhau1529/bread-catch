@@ -1,0 +1,39 @@
+@layer components {
+  .nameInput {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 10px 4px 6px;
+    border: 3px solid var(--color-tan);
+    border-radius: 14px;
+    background: #fff;
+
+    &:focus-within {
+      border-color: var(--color-orange);
+    }
+
+    img {
+      image-rendering: pixelated;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      min-height: 44px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--color-brown);
+      // ≥ 16px: iOS không tự zoom khi focus
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      user-select: text;
+      -webkit-user-select: text;
+
+      &::placeholder {
+        color: #c4a883;
+      }
+    }
+  }
+}

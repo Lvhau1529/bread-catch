@@ -1,6 +1,8 @@
 /**
  * Ô nhập tên đội / người chơi kèm ảnh đại diện (lưu ngay khi gõ — game tự xử lý `onChange`).
  */
+import styles from '@/platform/ui/NameInput.module.scss';
+
 interface NameInputProps {
   /** Ảnh đại diện (mascot / nhân vật) */
   image: string;
@@ -13,9 +15,9 @@ interface NameInputProps {
 
 export default function NameInput({ image, label, placeholder, value, maxLength, onChange }: NameInputProps) {
   return (
-    <label className="name-input">
+    <label className={styles.nameInput}>
       <img src={image} alt="" width={40} height={45} />
-      <span className="visually-hidden">{label}</span>
+      <span className="sr-only">{label}</span>
       <input
         type="text"
         value={value}

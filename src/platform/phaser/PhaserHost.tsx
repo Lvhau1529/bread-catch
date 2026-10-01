@@ -7,6 +7,7 @@
  */
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
+import styles from '@/platform/phaser/PhaserHost.module.scss';
 
 interface PhaserHostProps {
   /** Hàm tạo game — nên là hàm ổn định (khai báo ở module), đổi hàm là dựng lại game */
@@ -48,5 +49,5 @@ export default function PhaserHost({ create, inputLocked = false }: PhaserHostPr
     if (gameRef.current) applyInputLock(gameRef.current, inputLocked);
   }, [inputLocked]);
 
-  return <div ref={containerRef} className="phaser-container" />;
+  return <div ref={containerRef} className={styles.host} />;
 }

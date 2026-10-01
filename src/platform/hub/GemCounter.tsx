@@ -3,11 +3,13 @@
  * (tiếng tách tách), kèm bong bóng "+N"; bấm vào mở hộp động viên (HubDialogs › GemsDialog).
  */
 import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import { takePendingGain, walletStore } from '@/platform/gems/wallet';
 import { useStore } from '@/platform/hooks/useStore';
 import Icon from '@/platform/ui/Icon';
+import styles from '@/platform/hub/GemCounter.module.scss';
 
 /** Chờ màn chọn game hiện xong rồi mới đếm */
 const START_DELAY_MS = 500;
@@ -54,14 +56,14 @@ export default function GemCounter({ onOpen }: { onOpen: () => void }) {
   return (
     <button
       type="button"
-      className={`gem-counter ${counting !== null ? 'is-counting' : ''}`}
+      className={clsx(styles.counter, counting !== null && styles.counting)}
       aria-label={`${gems} gems`}
       onClick={onOpen}
     >
-      <Icon name="gem" size={34} className="gem-counter__icon" />
-      <span className="gem-counter__value">{counting ?? gems}</span>
+      <Icon name="gem" size={34} className={styles.icon} />
+      <span className={styles.value}>{counting ?? gems}</span>
       {bubble && (
-        <span className="gem-counter__bubble" aria-hidden="true">
+        <span className={styles.bubble} aria-hidden="true">
           +{gain}
         </span>
       )}

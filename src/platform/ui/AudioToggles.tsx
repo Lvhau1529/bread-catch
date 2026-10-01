@@ -2,6 +2,7 @@
  * Bật/tắt SOUND · MUSIC · VOICE — dùng chung cho mọi game, lưu localStorage,
  * game Phaser đang chạy cập nhật ngay (prefsStore). Mỗi nút một icon riêng (loa / nốt nhạc / miệng).
  */
+import clsx from 'clsx';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import { usePrefs } from '@/platform/hooks/useStore';
@@ -9,6 +10,7 @@ import { setPref, type Prefs } from '@/platform/prefs';
 import Icon from '@/platform/ui/Icon';
 import type { IconName } from '@/platform/ui/icons';
 import { speech } from '@/shared/speech';
+import styles from '@/platform/ui/AudioToggles.module.scss';
 
 const TOGGLES: { key: keyof Prefs; label: string; on: IconName; off: IconName }[] = [
   { key: 'sfx', label: 'SOUND', on: 'soundOn', off: 'soundOff' },
@@ -16,12 +18,13 @@ const TOGGLES: { key: keyof Prefs; label: string; on: IconName; off: IconName }[
   { key: 'voice', label: 'VOICE', on: 'voiceOn', off: 'voiceOff' },
 ];
 
-export default function AudioToggles() {
+/** `className`: màn chứa đặt vị trí (vd ô lưới ở bố cục ngang) */
+export default function AudioToggles({ className }: { className?: string }) {
   const prefs = usePrefs();
   const toggles = speech.supported ? TOGGLES : TOGGLES.filter((toggle) => toggle.key !== 'voice');
 
   return (
-    <div className="toggles">
+    <div className={clsx(styles.toggles, className)}>
       {toggles.map(({ key, label, on: iconOn, off: iconOff }) => {
         const on = prefs[key];
         const toggle = () => setPref(key, !on);
@@ -29,7 +32,7 @@ export default function AudioToggles() {
           <button
             key={key}
             type="button"
-            className={`toggle ${on ? '' : 'is-off'}`}
+            className={clsx(styles.toggle, !on && styles.off)}
             aria-pressed={on}
             onClick={() => {
               // Tắt SOUND: phát tiếng "tắt" trước khi im; bật lại SOUND: nghe ngay tiếng "bật"

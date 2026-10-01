@@ -1,0 +1,88 @@
+/* =========================================================================
+   Tailwind CSS v4 — import ĐẦU TIÊN trong main.tsx.
+
+   Thứ tự layer (thấp -> cao): theme < base < components < utilities
+     theme       token thiết kế (biến CSS) — khai báo ở @theme bên dưới
+     base        reset + phần tử gốc (global.scss)
+     components  style của từng component (*.module.scss, bọc trong `@layer components`)
+     utilities   class Tailwind -> luôn thắng style component khi gắn thêm vào cùng phần tử
+
+   Không dùng Preflight của Tailwind: reset riêng của dự án nằm ở global.scss
+   (Preflight xoá kiểu danh sách, cỡ chữ tiêu đề... -> vỡ giao diện cũ).
+   Tailwind v4 không chạy qua Sass nên file này là CSS thuần.
+   ========================================================================= */
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+/* Chỉ quét component React (.tsx) để sinh class — code Phaser / dữ liệu (.ts, .json) có nhiều chữ
+   trùng tên class (static, container...) sẽ sinh CSS thừa */
+@source '../../**/*.tsx';
+
+/*
+ * Token thiết kế — NGUỒN DUY NHẤT cho màu / font / bo góc của mọi game.
+ *   - Tailwind: bg-orange, text-ink, border-tan, font-learning, rounded-card...
+ *   - SCSS / CSS: var(--color-orange), var(--font-ui), var(--radius-card)...
+ * `static`: luôn xuất biến ra :root (SCSS dùng biến mà Tailwind không thấy).
+ * Game đổi theme bằng cách ghi đè biến trên phần tử gốc của nó (vd FoodStreamGame.module.scss > .theme).
+ * Màu lấy từ _source/platform/phonics_arcade_theme.json + concept board của từng game.
+ */
+@theme static {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-bg: #3b1a0b;
+  --color-ink: #3b1a0b;
+  --color-brown: #5a2a12;
+  --color-cream: #fff4dc;
+  --color-paper: #fffaf0;
+  --color-tan: #d9b98a;
+  --color-gold: #ffd23f;
+  --color-orange: #ffa62b;
+  --color-orange-edge: #c26a10;
+  --color-green: #5ccf4a;
+  --color-green-edge: #2f8f2a;
+  --color-blue: #3f8cff;
+  --color-blue-edge: #2458b8;
+  --color-red: #ff4d5e;
+  --color-red-edge: #b8283a;
+  --color-pink: #ff6f9c;
+  --color-pink-edge: #d9446f;
+  --color-teal: #20b8a6;
+  --color-teal-edge: #137e72;
+  /* Phonics Arcade (màn chọn game, kim cương) */
+  --color-purple: #7a3bb8;
+  --color-purple-edge: #3d1c6e;
+  --color-arcade-ink: #24123f;
+  --color-gem: #3ee6f0;
+  --color-gem-edge: #1a9fb0;
+
+  --font-ui: 'Baloo 2', 'Arial Rounded MT Bold', sans-serif;
+  /* Chữ học (chữ cái, từ vựng) — font cho trẻ tập đọc */
+  --font-learning: 'Andika', 'Comic Sans MS', sans-serif;
+
+  --radius-card: 18px;
+
+  /* Màn rộng (mục lục Hướng dẫn thành cột, game xếp cạnh nhau ở màn chọn game) -> `wide:` */
+  --breakpoint-wide: 760px;
+}
+
+/* ---- Biến thể riêng của dự án (khớp với mixin trong styles/abstracts/_breakpoints.scss) ---- */
+
+/* Bố cục ngang của game (.app--landscape do root của game gắn, cùng quy tắc với Phaser) */
+@custom-variant app-landscape (&:where(.app--landscape *));
+/* Máy chiếu / TV: màn hình lớn -> phóng to UI */
+@custom-variant projector (@media (min-width: 1280px) and (min-height: 700px));
+
+/* ---- Utility riêng ---- */
+
+/* Viền chữ đậm kiểu game (biến --outline ở global.scss, đổi màu theo --color-ink của theme) */
+@utility text-outline {
+  text-shadow: var(--outline);
+}
+
+@utility text-outline-thick {
+  text-shadow: var(--outline-thick);
+}

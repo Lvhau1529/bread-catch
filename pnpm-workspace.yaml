@@ -1,0 +1,4 @@
+# Cài đặt pnpm của dự án (pnpm 11+ đọc ở đây).
+# @parcel/watcher (phụ thuộc của Sass) có sẵn bản dựng cho từng hệ điều hành: không cần chạy build script.
+allowBuilds:
+  '@parcel/watcher': false

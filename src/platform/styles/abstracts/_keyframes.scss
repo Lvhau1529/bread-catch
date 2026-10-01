@@ -1,0 +1,31 @@
+// Keyframes dùng chung, dạng mixin: CSS Modules đổi tên keyframes theo từng file, nên file nào dùng
+// animation thì `@include` keyframes ngay trong file đó (tên ngắn, không đụng file khác).
+
+/// Màn / hộp thoại trượt nhẹ lên khi xuất hiện
+@mixin keyframes-screen-in($name: screen-in) {
+  @keyframes #{$name} {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+}
+
+/// Nhún lên xuống (chữ logo, linh vật, nút ▶)
+@mixin keyframes-bob($name: bob, $distance: -5px) {
+  @keyframes #{$name} {
+    50% {
+      transform: translateY($distance);
+    }
+  }
+}
+
+/// Bật ra (hộp thoại, phần thưởng)
+@mixin keyframes-pop($name: pop) {
+  @keyframes #{$name} {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+}

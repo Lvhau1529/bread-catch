@@ -3,6 +3,7 @@
  * Tách từ ngay khi gõ, hiện các từ sẽ rơi trong game (bấm để nghe đọc) và phần bị bỏ qua.
  * Nội dung ô được lưu cùng form Setup nên lần sau mở lại vẫn còn.
  */
+import clsx from 'clsx';
 import { CUSTOM_WORD_LETTERS, type ParsedWords } from '@/games/bread-catcher/session/content';
 import { RULES } from '@/games/bread-catcher/session/settings';
 import { UI_TEXT } from '@/games/bread-catcher/session/text';
@@ -10,7 +11,9 @@ import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import { useStore } from '@/platform/hooks/useStore';
 import { prefsStore } from '@/platform/prefs';
+import { FieldHint } from '@/platform/ui/Field';
 import { speech } from '@/shared/speech';
+import styles from '@/games/bread-catcher/app/components/CustomWordsInput.module.scss';
 
 const MAX_TEXT_LENGTH = 2000;
 
@@ -27,8 +30,8 @@ export default function CustomWordsInput({ value, parsed, summary, onChange }: C
   const { words, skipped } = parsed;
 
   return (
-    <div className={`custom-words ${words.length === 0 ? 'is-empty' : ''}`}>
-      <div className="custom-words__box">
+    <div className={clsx(styles.customWords, words.length === 0 && styles.empty)}>
+      <div className={styles.box}>
         <textarea
           value={value}
           rows={3}
@@ -43,7 +46,7 @@ export default function CustomWordsInput({ value, parsed, summary, onChange }: C
         {value && (
           <button
             type="button"
-            className="text-btn custom-words__clear"
+            className={styles.clear}
             onClick={() => {
               playSfx(SFX.UI_CLICK);
               onChange('');
@@ -55,12 +58,12 @@ export default function CustomWordsInput({ value, parsed, summary, onChange }: C
       </div>
 
       {words.length > 0 ? (
-        <ul className="custom-words__chips" aria-label={UI_TEXT.words}>
+        <ul className={styles.chips} aria-label={UI_TEXT.words}>
           {words.map((word) => (
             <li key={word}>
               <button
                 type="button"
-                className="custom-words__chip"
+                className={styles.chip}
                 disabled={!canHear}
                 aria-label={canHear ? `${word.toLowerCase()} 🔊` : undefined}
                 onClick={() => speech.say(word)}
@@ -71,17 +74,17 @@ export default function CustomWordsInput({ value, parsed, summary, onChange }: C
           ))}
         </ul>
       ) : (
-        <p className="field__hint field__hint--hard">{UI_TEXT.noWordsYet}</p>
+        <FieldHint hard>{UI_TEXT.noWordsYet}</FieldHint>
       )}
 
       {skipped.length > 0 && (
-        <p className="field__hint field__hint--hard">
+        <FieldHint hard>
           {UI_TEXT.skipped} ({UI_TEXT.skippedRule}, {CUSTOM_WORD_LETTERS.min}–{CUSTOM_WORD_LETTERS.max}{' '}
-          {UI_TEXT.letters}): <span className="custom-words__skipped">{skipped.join(', ')}</span>
-        </p>
+          {UI_TEXT.letters}): <span className={styles.skipped}>{skipped.join(', ')}</span>
+        </FieldHint>
       )}
       {words.length > 0 && (
-        <p className="field__hint">
+        <FieldHint>
           {[
             `${summary}.`,
             canHear && UI_TEXT.tapToHear,
@@ -89,7 +92,7 @@ export default function CustomWordsInput({ value, parsed, summary, onChange }: C
           ]
             .filter(Boolean)
             .join(' ')}
-        </p>
+        </FieldHint>
       )}
     </div>
   );

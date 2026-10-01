@@ -1,0 +1,55 @@
+@layer components {
+  // Nút nhỏ ở góc dưới bên phải màn chọn game
+  .badge {
+    position: fixed;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 6;
+    min-height: 36px;
+    padding: 4px 14px;
+    border: 2px solid rgba(255, 244, 220, 0.5);
+    border-radius: 999px;
+    background: rgba(36, 18, 63, 0.75);
+    color: var(--color-cream);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+  }
+
+  // Popup dùng hộp thoại chung (platform/ui/Dialog), chỉ thêm kiểu cho danh sách
+  .popup {
+    dl {
+      margin: 0;
+    }
+
+    dt {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      opacity: 0.65;
+    }
+
+    dd {
+      margin: 0 0 12px;
+      color: var(--color-ink);
+      font-size: 22px;
+      font-weight: 800;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    a {
+      color: var(--color-blue);
+      text-decoration: none;
+    }
+  }
+}

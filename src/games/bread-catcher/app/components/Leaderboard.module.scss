@@ -1,0 +1,219 @@
+// CLASS LEADERBOARD — tổng điểm các đội qua nhiều buổi
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  @keyframes rank-up-pop {
+    40% {
+      box-shadow: 0 0 0 6px rgba(92, 207, 74, 0.45);
+    }
+  }
+
+  @keyframes badge-in {
+    from {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+  }
+
+  .leaderboard {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    h2 {
+      margin: 0;
+      color: var(--color-orange-edge);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .reset {
+    @include text-button;
+    color: var(--color-red-edge);
+  }
+
+  // Xác nhận reset: câu hỏi 1 dòng, 2 nút cạnh nhau, chiếm trọn chiều ngang header
+  .confirm {
+    display: grid;
+    flex-basis: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px;
+    border: 3px dashed var(--color-red);
+    border-radius: 14px;
+    background: #fff1f1;
+    color: var(--color-red-edge);
+    font-size: 15px;
+    font-weight: 800;
+
+    > span {
+      grid-column: 1 / -1;
+      text-align: center;
+    }
+
+    // Nút chung (platform/ui/Button) cỡ nhỏ hơn
+    button {
+      min-height: 44px;
+      padding: 4px 14px 6px;
+      font-size: 15px;
+    }
+  }
+
+  .list {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Hàng đặt tuyệt đối, vị trí = translateY (Leaderboard.tsx, ROW_STEP) -> đổi hạng là tự trượt
+  .row {
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 58px;
+    padding: 0 12px 0 8px;
+    border: 3px solid var(--color-tan);
+    border-radius: 14px;
+    background: #fff;
+    transition:
+      transform 0.8s cubic-bezier(0.34, 1.3, 0.64, 1),
+      border-color 0.3s,
+      background 0.3s;
+  }
+
+  // Bảng tĩnh (Setup, vừa reset): hàng xếp chồng bình thường
+  .stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .row {
+      position: static;
+    }
+  }
+
+  // Hạng 1–3
+  .place1 {
+    border-color: var(--color-gold);
+    background: #fff8dc;
+  }
+
+  .row.rankUp {
+    z-index: 1;
+    border-color: var(--color-green);
+    background: #eaffe4;
+    animation: rank-up-pop 0.8s ease-out;
+  }
+
+  .place {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--color-ink);
+    border-radius: 50%;
+    background: #cdbfae;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+
+    .place1 & {
+      background: var(--color-gold);
+      color: var(--color-ink);
+    }
+
+    .place2 & {
+      background: #b9c4d0;
+      color: var(--color-ink);
+    }
+
+    .place3 & {
+      background: #d98c4a;
+    }
+  }
+
+  .mascot {
+    flex: none;
+    image-rendering: pixelated;
+  }
+
+  // Tên + dòng phụ (RANK UP! / +điểm)
+  .info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    line-height: 1.15;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .name {
+    min-width: 0;
+    font-size: 17px;
+    font-weight: 800;
+    @include ellipsis;
+  }
+
+  .badge {
+    flex: none;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--color-green);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    animation: badge-in 0.5s cubic-bezier(0.34, 1.6, 0.64, 1) both 0.5s;
+  }
+
+  .gained {
+    flex: none;
+    color: var(--color-green-edge);
+    font-size: 13px;
+    font-weight: 800;
+    animation: badge-in 0.4s ease-out both;
+  }
+
+  .games {
+    flex: none;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.7;
+  }
+
+  .total {
+    flex: none;
+    min-width: 56px;
+    color: var(--color-blue);
+    font-size: 22px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .empty {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}

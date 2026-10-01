@@ -23,11 +23,12 @@ nút "?" cạnh từng mục ở Setup) viết bằng tiếng Việt cho giáo v
 | Game engine   | Phaser 3 (WebGL / Canvas, Arcade Physics, Sound Manager + Web Audio)   |
 | Ngôn ngữ      | TypeScript (strict)                                                    |
 | App shell     | React 19 — màn chọn game + màn Home / Setup / Results của từng game    |
+| Styling       | SCSS Modules (Sass) cho component + Tailwind CSS v4 cho utility / token — xem [Styling](#styling) |
 | Bundler / dev | Vite (mỗi game một chunk tải động)                                     |
 | PWA           | vite-plugin-pwa (manifest + service worker, chơi offline)              |
 | Nội dung      | JSON + Zod (kiểm tra gói nội dung của Food Stream)                     |
 | Giọng đọc     | Web Speech API (đọc âm / từ, không cần file ghi âm)                    |
-| Format code   | Prettier + EditorConfig                                                |
+| Format code   | Prettier (+ plugin sắp xếp class Tailwind) + EditorConfig             |
 | Lưu dữ liệu   | localStorage (`phonics-arcade:prefs`, `phonics-arcade:wallet`, `phonics-arcade:<game-id>`) |
 | Asset         | PNG (hình), OGG + MP3 fallback (audio) — sinh bằng script Python        |
 | Font          | Baloo 2 (giao diện), Andika (chữ cái / từ vựng — font cho trẻ tập đọc) |
@@ -50,7 +51,7 @@ màn chọn game).
 
 ```text
 src/
-├── main.tsx                 # font, CSS chung, <PlatformApp games={GAMES} />
+├── main.tsx                 # Tailwind (nạp đầu tiên), font, global.scss, <PlatformApp games={GAMES} />
 ├── shared/                  # tiện ích thuần TS: createStore, random, speech (Web Speech), format
 ├── platform/                # KHUNG DÙNG CHUNG — không biết gì về từng game
 │   ├── PlatformApp.tsx      #   màn chọn game ↔ game đang mở (React.lazy, báo lỗi khi tải hỏng)
@@ -63,9 +64,10 @@ src/
 │   ├── phaser/              #   PhaserHost (mount / khoá input), createPhaserGame, viewport + view
 │   │                        #   (toạ độ logic, render ×2), AudioSystem (nhạc + duck), font, chữ sắc nét
 │   ├── ui/                  #   Button, BackButton, Icon (+ icons.ts), Dialog, GemReward, OptionGroup, Field,
-│   │                        #   NameInput, AudioToggles, RotateHint, GuideDialog
+│   │                        #   NameInput, AudioToggles, RotateHint, ScreenLayer, ScreenHeader, tone.ts,
+│   │                        #   guide/ (GuideDialog, GuideButton, GuideCard, guideContent.module.scss)
 │   ├── pwa/                 #   nút cập nhật khi có bản deploy mới
-│   └── styles/              #   CSS chung (theme bằng biến CSS, game ghi đè trên class gốc)
+│   └── styles/              #   tailwind.css (token + Tailwind), global.scss (reset), abstracts/ (mixin SCSS)
 └── games/
     ├── index.ts             # danh sách game ở màn chọn game
     ├── bread-catcher/       # xem docs/bread-catcher
@@ -73,8 +75,8 @@ src/
 ```
 
 Mỗi game tự chứa: `manifest.ts` (thẻ game + `load: () => import(root)`), root component (Phaser + màn React),
-store / luật chơi thuần TS (`session/`), màn React (`app/`), Phaser (`game/`), CSS riêng (class có tiền tố
-của game), nội dung, dữ liệu lưu riêng. React và Phaser của một game chỉ nói chuyện qua store của game đó.
+store / luật chơi thuần TS (`session/`), màn React (`app/`, mỗi component một `*.module.scss`), Phaser (`game/`),
+nội dung, dữ liệu lưu riêng. React và Phaser của một game chỉ nói chuyện qua store của game đó.
 
 **Độ phân giải:** toạ độ game là 360 × (640–800) khi dọc, (720–960) × 540 khi ngang, canvas render gấp đôi
 (`RENDER_SCALE`) qua camera zoom → chữ học sắc nét. Code layout luôn dùng `view(scene)` / `isLandscape(scene)`
@@ -86,13 +88,45 @@ của game), nội dung, dữ liệu lưu riêng. React và Phaser của một g
 ### Thêm một game mới
 
 1. Tạo `src/games/<id>/` với root component (dùng `PhaserHost` + `createPhaserGame`, `useGameOrientation`,
-   `GuideDialog`...) và `manifest.ts` (`id` dùng cho URL và key lưu trữ — không đổi sau khi phát hành).
+   `ScreenLayer`, `GuideDialog`...) và `manifest.ts` (`id` dùng cho URL và key lưu trữ — không đổi sau khi phát
+   hành). Phần tử gốc: `` <main className={clsx('app', `app--${orientation}`, styles.theme)}> `` — theme riêng
+   (nếu có) ghi đè token `--color-*` trong `<Root>.module.scss` (xem Food Stream).
 2. Thêm manifest vào `src/games/index.ts` (bỏ thẻ COMING SOON tương ứng trong `UPCOMING`). Muốn bé dùng
    kim cương mở khoá thì đặt `price` trong manifest; bỏ trống = miễn phí.
 3. Asset vào `public/assets/<id>/` (script sinh ở `tools/<id>/`), ảnh bìa 16:9 `public/assets/<id>/cover.png`.
 4. Lưu dữ liệu bằng `gameStorageKey('<id>')`; âm thanh / giọng đọc theo `prefsStore` chung.
 5. Chơi xong ván gọi `awardGems(sốCâuĐúng)` (platform/gems/wallet.ts) và hiện `<GemReward amount={…} />`
    ở màn kết quả. Nút / icon dùng bộ chung (`BackButton`, `Icon`, `Dialog`) cho thống nhất.
+
+## Styling
+
+**SCSS Modules** cho style của component + **Tailwind CSS v4** cho utility nhỏ và token thiết kế.
+
+| Ở đâu | Dùng cho |
+| --- | --- |
+| `src/platform/styles/tailwind.css` | **Token** màu / font / bo góc (`@theme`) — nguồn duy nhất: `bg-orange`, `text-ink`, `font-learning` trong JSX hoặc `var(--color-orange)`, `var(--font-ui)`, `var(--radius-card)` trong SCSS. Biến thể `app-landscape:`, `projector:`, `wide:`; utility `text-outline`. |
+| `src/platform/styles/global.scss` | Reset, `html / body / #root`, `.app`, biến `--outline`. Không thêm style component vào đây. |
+| `src/platform/styles/abstracts/` | Mixin / biến SCSS (không sinh CSS khi chỉ `@use`): `screen`, `card`, `text-button`, `focus-ring`, `ellipsis`, `candy-scrollbar`, `app-landscape`, `projector`, `wide`, `phone-landscape`, keyframes (`keyframes-bob`, `keyframes-screen-in`, `keyframes-pop`). |
+| `Component.module.scss` cạnh `Component.tsx` | Style của component: tên class tự đổi thành duy nhất (`Button_btn_x7Gk` khi dev, `_x7GkQ2` khi build) nên không đụng nhau giữa các game. |
+
+Quy ước:
+
+- File module bắt đầu bằng `@use '@/platform/styles/abstracts' as *;` và bọc toàn bộ trong
+  `@layer components { … }`. Tên class camelCase (`styles.logoTop`), ghép nhiều class bằng `clsx`.
+- Thứ tự layer: `theme < base < components < utilities` → class Tailwind gắn thêm vào phần tử **luôn thắng**
+  style của module (vd `<Button className="mt-4">`). Không dùng Preflight của Tailwind (reset riêng ở
+  `global.scss`).
+- Tailwind cho bố cục / tinh chỉnh một lần ngay trong JSX (`flex flex-col gap-2`, `sr-only`); thứ gì có trạng
+  thái, animation, pseudo-element, nhiều dòng → SCSS module. Prettier tự sắp xếp class Tailwind.
+- Màn cha chỉnh component con qua prop `className` (vị trí trong lưới, cỡ nút...). Import file `.module.scss`
+  **cuối cùng** trong danh sách import để CSS của màn nạp sau CSS của component con.
+- Màu theo dữ liệu: prop `tone` (`OptionGroup`, `GuideCard accent`) → biến CSS, không tạo class cho từng màu.
+- Bố cục ngang của game theo class `.app--landscape` trên phần tử gốc (mixin `app-landscape` / biến thể
+  `app-landscape:`), không theo media query — đang chơi dở thì giữ bố cục cũ.
+- Keyframes khai báo trong chính file module dùng nó (dùng mixin keyframes có sẵn): CSS Modules đổi tên
+  keyframes theo từng file.
+- Theme của game: ghi đè `--color-*` (và `--screen-layer-bg`, `--guide-backdrop-bg`) trên phần tử gốc — component
+  chung và class Tailwind bên trong tự đổi màu theo.
 
 ## Asset pipeline
 
@@ -126,6 +160,8 @@ Cấu hình sẵn trong `vercel.json`: cài bằng `pnpm install --frozen-lockfi
 
 - Dùng **pnpm** (chỉ giữ `pnpm-lock.yaml`). Thêm / đổi package xong nhớ commit lại `pnpm-lock.yaml`,
   nếu không Vercel báo `ERR_PNPM_OUTDATED_LOCKFILE`.
+- `pnpm-workspace.yaml` > `allowBuilds`: package có build script phải được cho phép / chặn rõ ràng
+  (pnpm 11+ coi script bị bỏ qua là lỗi khi cài).
 - Vercel không chạy Python: ảnh / âm thanh trong `public/assets/` phải được sinh sẵn
   (`pnpm assets`) và commit lên.
 - Cache: bundle JS/CSS/font có hash ở `/static` (cache 1 năm); ảnh / SFX ở `/assets` (1 ngày),

@@ -4,18 +4,19 @@
 import { useState } from 'react';
 import { AUTHOR } from '@/platform/about';
 import Dialog from '@/platform/ui/Dialog';
+import styles from '@/platform/hub/AuthorBadge.module.scss';
 
 export default function AuthorBadge() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button type="button" className="author-badge" aria-haspopup="dialog" onClick={() => setOpen(true)}>
+      <button type="button" className={styles.badge} aria-haspopup="dialog" onClick={() => setOpen(true)}>
         <span aria-hidden="true">ⓘ</span> AUTHOR
       </button>
 
       {open && (
-        <Dialog title="AUTHOR" className="author-popup" onClose={() => setOpen(false)}>
+        <Dialog title="AUTHOR" className={styles.popup} onClose={() => setOpen(false)}>
           <dl>
             <dt>NAME</dt>
             <dd lang="vi">{AUTHOR.name}</dd>

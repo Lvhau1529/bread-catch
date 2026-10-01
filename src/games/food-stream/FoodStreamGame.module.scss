@@ -1,0 +1,22 @@
+// Theme kẹo hồng / tím của Food Stream: ghi đè token màu (styles/tailwind.css) trên phần tử gốc của game —
+// mọi component chung (nút, form, hướng dẫn...) và class Tailwind bên trong tự đổi màu theo.
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  .theme {
+    --color-bg: #2b1740;
+    --color-ink: #3a2350;
+    --color-brown: #5b3a70;
+    --color-cream: #fff4f8;
+    --color-paper: #fffafc;
+    --color-tan: #f5c2d4;
+    --color-orange: #ff6f9c;
+    --color-orange-edge: #d9446f;
+    // Viền chữ tính theo --color-ink nên khai báo lại sau khi đổi mực
+    @include text-outline-vars;
+    // Nền tím cho lớp màn React và lớp nền Hướng dẫn
+    --screen-layer-bg: radial-gradient(ellipse at center, rgba(43, 23, 64, 0.2), rgba(43, 23, 64, 0.6));
+    --guide-backdrop-bg: rgba(43, 23, 64, 0.75);
+    background: var(--color-bg);
+  }
+}

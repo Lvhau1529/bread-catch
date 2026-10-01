@@ -50,7 +50,8 @@ Máy không đọc được (hoặc tắt VOICE) thì tự hiện ký hiệu âm
 
 ```text
 src/games/food-stream/
-├── manifest.ts, FoodStreamGame.tsx, styles.css, text.ts
+├── manifest.ts, FoodStreamGame.tsx, text.ts
+├── FoodStreamGame.module.scss  # theme kẹo hồng / tím: ghi đè token --color-* trên phần tử gốc
 ├── sprites.json / sprites.ts   # manifest ảnh (sinh bởi tool) — React và Phaser cùng dùng
 ├── content/                    # gói nội dung (JSON + schema), cấp độ
 ├── session/                    # KHÔNG phụ thuộc React/Phaser

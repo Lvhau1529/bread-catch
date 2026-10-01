@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import Icon from '@/platform/ui/Icon';
+import styles from '@/platform/ui/GemReward.module.scss';
 
 export default function GemReward({ amount }: { amount: number }) {
   useEffect(() => {
@@ -14,8 +15,8 @@ export default function GemReward({ amount }: { amount: number }) {
 
   if (amount <= 0) return null;
   return (
-    <p className="gem-reward" role="status">
-      <Icon name="gem" size={38} className="gem-reward__icon" />
+    <p className={styles.reward} role="status">
+      <Icon name="gem" size={38} className={styles.icon} />
       <b>+{amount}</b> {amount === 1 ? 'GEM' : 'GEMS'}
     </p>
   );

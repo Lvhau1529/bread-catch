@@ -1,0 +1,329 @@
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  @include keyframes-bob;
+
+  .results {
+    @include screen;
+    gap: 14px;
+
+    // Solo: hàng nút cùng cỡ với thẻ kết quả
+    @include app-landscape {
+      > .row {
+        width: min(100%, 560px);
+        align-self: center;
+      }
+    }
+  }
+
+  .title {
+    margin: 4px 0 0;
+    color: var(--color-gold);
+    font-size: 34px;
+    font-weight: 800;
+    text-align: center;
+    text-shadow: var(--outline);
+  }
+
+  // ---- Class Mode: đội thắng + bảng xếp hạng ----
+  .winner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border: 4px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    background: linear-gradient(var(--color-gold), var(--color-orange));
+    color: var(--color-ink);
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    animation: bob 1.4s ease-in-out infinite;
+
+    img {
+      flex: none;
+      image-rendering: pixelated;
+    }
+  }
+
+  .winnerLabel {
+    flex: none;
+  }
+
+  // Nhiều đội đồng hạng: mỗi tên một dòng con, tên quá dài thì "…"
+  .winnerNames {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 8px;
+    min-width: 0;
+  }
+
+  .winnerName {
+    max-width: 100%;
+    @include ellipsis;
+  }
+
+  .standings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include app-landscape {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .standing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 4px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    background: var(--color-cream);
+    color: var(--color-brown);
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+
+    @include app-landscape {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  // Hạng 1–3 (hạng 4 trở đi dùng màu mặc định)
+  .place1 {
+    background: #fff3c4;
+  }
+
+  .place {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--color-ink);
+    border-radius: 50%;
+    background: #cdbfae;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 800;
+
+    .place1 & {
+      background: var(--color-gold);
+      color: var(--color-ink);
+    }
+
+    .place2 & {
+      background: #b9c4d0;
+      color: var(--color-ink);
+    }
+
+    .place3 & {
+      background: #d98c4a;
+    }
+  }
+
+  .standingMascot {
+    flex: none;
+    image-rendering: pixelated;
+  }
+
+  .standingBody {
+    flex: 1;
+    min-width: 0;
+
+    @include app-landscape {
+      width: 100%;
+    }
+  }
+
+  .standingHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+
+    @include app-landscape {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .standingName {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 20px;
+    font-weight: 800;
+    @include ellipsis;
+  }
+
+  .standingScore {
+    color: var(--color-blue);
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  // ---- Thống kê lượt chơi (CORRECT · WRONG · ACCURACY · TIME LEFT) ----
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin: 8px 0 0;
+
+    dt {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      opacity: 0.7;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+    }
+  }
+
+  .statsItem {
+    padding: 4px 2px;
+    border-radius: 10px;
+    background: #fff;
+    text-align: center;
+  }
+
+  // Trong hàng xếp hạng
+  .compact {
+    margin-top: 4px;
+
+    dt {
+      font-size: 9px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    dd {
+      font-size: 14px;
+    }
+
+    @include app-landscape {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: auto;
+
+    @include app-landscape {
+      flex-direction: row;
+      align-items: stretch;
+
+      > * {
+        flex: 1;
+      }
+    }
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  // ---- Solo: thành tích cá nhân ----
+  .soloCard {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
+
+    .stats {
+      width: 100%;
+    }
+
+    .best {
+      margin-top: 4px;
+      color: var(--color-orange-edge);
+      font-size: 15px;
+      font-weight: 800;
+
+      &.newBest {
+        color: var(--color-red);
+        animation: bob 1s ease-in-out infinite;
+      }
+    }
+
+    @include app-landscape {
+      width: min(100%, 560px);
+      align-self: center;
+    }
+  }
+
+  .soloMascot {
+    image-rendering: pixelated;
+  }
+
+  .soloName {
+    max-width: 100%;
+    font-size: 24px;
+    font-weight: 800;
+    @include ellipsis;
+  }
+
+  .soloScore {
+    color: var(--color-blue);
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+
+    small {
+      font-size: 18px;
+    }
+  }
+
+  // Các từ đã chơi: đúng (xanh) / sai (xám)
+  .wordList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-family: var(--font-learning);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .correct {
+      background: #dff7d8;
+      color: var(--color-green-edge);
+    }
+
+    .wrong {
+      background: #efe6e1;
+      color: #8a7c74;
+    }
+  }
+}

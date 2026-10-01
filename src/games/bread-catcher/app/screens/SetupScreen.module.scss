@@ -1,0 +1,42 @@
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  .setup {
+    @include screen;
+  }
+
+  .form {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    // Chia 2 cột kiểu báo: MODE · PACK · LEVEL | TIME · TEAMS
+    @include app-landscape {
+      display: block;
+      columns: 2;
+      column-gap: 28px;
+
+      > * {
+        break-inside: avoid;
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+  // 5 gói, 2 cột: MY WORDS chiếm trọn hàng cuối
+  .packs [role='radio']:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .start {
+    position: sticky;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    font-size: 26px;
+
+    @include app-landscape {
+      align-self: center;
+      width: min(100%, 420px);
+    }
+  }
+}

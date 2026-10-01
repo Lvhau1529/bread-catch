@@ -3,12 +3,14 @@
  * Gõ số hợp lệ là áp dụng ngay; rời ô thì tự kẹp về khoảng cho phép.
  */
 import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import { CUSTOM_TIME } from '@/games/bread-catcher/session/settings';
 import { UI_TEXT } from '@/games/bread-catcher/session/text';
 import type { TimeOption } from '@/games/bread-catcher/session/types';
 import { formatTime } from '@/shared/format';
+import styles from '@/games/bread-catcher/app/components/TimeInput.module.scss';
 
 const STEP = 5;
 
@@ -39,9 +41,9 @@ export default function TimeInput({ value, effectiveSeconds, onChange }: TimeInp
   };
 
   return (
-    <div className={`time-input ${value === 'auto' ? '' : 'is-custom'}`}>
-      <span className="time-input__label">{UI_TEXT.custom}</span>
-      <button type="button" className="time-input__step" aria-label="-5 sec" onClick={() => step(-1)}>
+    <div className={clsx(styles.timeInput, value !== 'auto' && styles.custom)}>
+      <span className={styles.label}>{UI_TEXT.custom}</span>
+      <button type="button" className={styles.step} aria-label="-5 sec" onClick={() => step(-1)}>
         −
       </button>
       <input
@@ -64,10 +66,10 @@ export default function TimeInput({ value, effectiveSeconds, onChange }: TimeInp
           if (event.key === 'Enter') event.currentTarget.blur();
         }}
       />
-      <button type="button" className="time-input__step" aria-label="+5 sec" onClick={() => step(1)}>
+      <button type="button" className={styles.step} aria-label="+5 sec" onClick={() => step(1)}>
         +
       </button>
-      <span className="time-input__unit">
+      <span className={styles.unit}>
         {UI_TEXT.seconds} · {formatTime(effectiveSeconds * 1000)}
       </span>
     </div>

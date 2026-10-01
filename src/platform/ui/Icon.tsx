@@ -2,7 +2,9 @@
  * Icon ảnh dùng chung (src/platform/ui/icons.ts) — trang trí, nên `alt` rỗng:
  * nút chứa icon phải tự có `aria-label`.
  */
+import clsx from 'clsx';
 import { ICONS, type IconName } from '@/platform/ui/icons';
+import styles from '@/platform/ui/Icon.module.scss';
 
 interface IconProps {
   name: IconName;
@@ -11,10 +13,10 @@ interface IconProps {
   className?: string;
 }
 
-export default function Icon({ name, size = 28, className = '' }: IconProps) {
+export default function Icon({ name, size = 28, className }: IconProps) {
   return (
     <img
-      className={`icon ${className}`}
+      className={clsx(styles.icon, className)}
       src={ICONS[name]}
       alt=""
       width={size}

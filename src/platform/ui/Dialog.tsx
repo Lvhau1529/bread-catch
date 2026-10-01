@@ -4,9 +4,12 @@
  * Mở thì phát tiếng `openSfx` (mặc định UI_OPEN), đóng phát UI_CLOSE.
  */
 import { useEffect, useId, type ReactNode } from 'react';
+import clsx from 'clsx';
 import { SFX, type SfxKey } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import Icon from '@/platform/ui/Icon';
+import iconButton from '@/platform/ui/IconButton.module.scss';
+import styles from '@/platform/ui/Dialog.module.scss';
 
 interface DialogProps {
   title: string;
@@ -15,6 +18,8 @@ interface DialogProps {
   image?: string;
   /** Tiếng khi mở; `null` = im lặng */
   openSfx?: SfxKey | null;
+  /** Pip nhảy ăn mừng thay vì nhún nhẹ (vd vừa mở khoá game) */
+  celebrate?: boolean;
   className?: string;
   children: ReactNode;
   /** Hàng nút cuối hộp */
@@ -26,7 +31,8 @@ export default function Dialog({
   onClose,
   image,
   openSfx = SFX.UI_OPEN,
-  className = '',
+  celebrate = false,
+  className,
   children,
   actions,
 }: DialogProps) {
@@ -54,9 +60,9 @@ export default function Dialog({
   }, [onClose]);
 
   return (
-    <div className="dialog-backdrop" onClick={close}>
+    <div className={styles.backdrop} onClick={close}>
       <div
-        className={`dialog ${image ? 'dialog--with-image' : ''} ${className}`}
+        className={clsx(styles.dialog, image && styles.withImage, celebrate && styles.celebrate, className)}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -64,18 +70,18 @@ export default function Dialog({
       >
         <button
           type="button"
-          className="icon-btn icon-btn--close dialog__close"
+          className={clsx(iconButton.iconBtn, iconButton.close, styles.close)}
           aria-label="Close"
           onClick={close}
         >
           <Icon name="close" size={22} />
         </button>
-        {image && <img className="dialog__image" src={image} alt="" draggable={false} />}
-        <h2 id={titleId} className="dialog__title">
+        {image && <img className={styles.image} src={image} alt="" draggable={false} />}
+        <h2 id={titleId} className={styles.title}>
           {title}
         </h2>
-        <div className="dialog__body">{children}</div>
-        {actions && <div className="dialog__actions">{actions}</div>}
+        <div className={styles.body}>{children}</div>
+        {actions && <div className={styles.actions}>{actions}</div>}
       </div>
     </div>
   );

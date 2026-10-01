@@ -7,6 +7,7 @@
  * React và Phaser chỉ nói chuyện qua `foodStreamStore` (session/store.ts).
  */
 import { useEffect, type ComponentType } from 'react';
+import clsx from 'clsx';
 import { FOOD_STREAM_GUIDE_SECTIONS, GUIDE_TITLE } from '@/games/food-stream/app/guideSections';
 import { useFoodStream } from '@/games/food-stream/app/hooks';
 import HomeScreen from '@/games/food-stream/app/screens/HomeScreen';
@@ -17,7 +18,8 @@ import { foodStreamActions, type Screen } from '@/games/food-stream/session/stor
 import PhaserHost from '@/platform/phaser/PhaserHost';
 import { useGameOrientation } from '@/platform/phaser/useGameOrientation';
 import GuideDialog from '@/platform/ui/guide/GuideDialog';
-import '@/games/food-stream/styles.css';
+import ScreenLayer from '@/platform/ui/ScreenLayer';
+import styles from '@/games/food-stream/FoodStreamGame.module.scss';
 
 const REACT_SCREENS: Partial<Record<Screen, ComponentType>> = {
   home: HomeScreen,
@@ -35,12 +37,12 @@ export default function FoodStreamGame() {
   useEffect(() => () => foodStreamActions.goHome(), []);
 
   return (
-    <main className={`app app--${orientation} theme-food-stream`}>
+    <main className={clsx('app', `app--${orientation}`, styles.theme)}>
       <PhaserHost key={orientation} create={createGame} inputLocked={Overlay !== undefined} />
       {Overlay && (
-        <div className="screen-layer" key={screen}>
+        <ScreenLayer key={screen}>
           <Overlay />
-        </div>
+        </ScreenLayer>
       )}
       <GuideDialog title={GUIDE_TITLE} sections={FOOD_STREAM_GUIDE_SECTIONS} />
     </main>

@@ -1,6 +1,9 @@
 import { execSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { basename, relative } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -21,7 +24,21 @@ function commitSha(): string {
   }
 }
 
-export default defineConfig({
+const ROOT = fileURLToPath(new URL('.', import.meta.url));
+
+/**
+ * Tên class của CSS Modules (*.module.scss): hash theo đường dẫn file + tên class (giống nhau ở mọi máy).
+ * Dev: `Button_btn_x7Gk` — đọc được trong DevTools; build: `_x7GkQ2` — ngắn.
+ */
+function scopedClassName(isBuild: boolean) {
+  return (local: string, filename: string): string => {
+    const file = relative(ROOT, filename.split('?')[0]).replaceAll('\\', '/');
+    const hash = createHash('sha256').update(`${file}:${local}`).digest('base64url').slice(0, 6);
+    return isBuild ? `_${hash}` : `${basename(file).split('.')[0]}_${local}_${hash.slice(0, 4)}`;
+  };
+}
+
+export default defineConfig(({ command }) => ({
   // Đường dẫn tương đối để deploy được ở bất kỳ thư mục con nào (itch.io, GitHub Pages...)
   base: './',
   resolve: {
@@ -32,7 +49,16 @@ export default defineConfig({
     // Hiện trong Hướng dẫn để biết máy đang chạy bản nào (so với `git log`)
     __BUILD_ID__: JSON.stringify(`${version} · ${commitSha()}`),
   },
+  css: {
+    // Xem được file .scss gốc trong DevTools khi dev
+    devSourcemap: true,
+    modules: { generateScopedName: scopedClassName(command === 'build') },
+  },
   plugins: [
+    // Tailwind v4: xử lý file CSS có @import 'tailwindcss/…' (src/platform/styles/tailwind.css);
+    // *.scss vẫn đi qua Sass như thường
+
+    tailwindcss(),
     react(),
     VitePWA({
       // Có bản mới thì hỏi người dùng (nút ở màn Home) thay vì tự reload giữa ván — src/app/pwa
@@ -91,4 +117,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

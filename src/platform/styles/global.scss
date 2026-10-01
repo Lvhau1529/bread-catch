@@ -1,0 +1,67 @@
+// =========================================================================
+// Phonics Arcade — CSS toàn cục (layer `base`): reset, phần tử gốc, biến dùng chung.
+// Mobile-first: full màn hình, nút lớn (≥ 48px), chữ dễ đọc cho lớp mẫu giáo.
+//
+// Token màu / font / bo góc: styles/tailwind.css (@theme). Style của component: *.module.scss
+// cạnh component. Ở đây chỉ để những gì thật sự toàn cục.
+// =========================================================================
+@use 'abstracts' as *;
+
+@layer base {
+  :root {
+    @include text-outline-vars;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+
+  body {
+    position: fixed;
+    inset: 0;
+    overscroll-behavior: none;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: var(--font-ui);
+    color: var(--color-cream);
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  // Phần tử gốc của mỗi game: <main class="app app--portrait|app--landscape …">.
+  // `.app--landscape` là class toàn cục duy nhất mà style component dựa vào
+  // (mixin `app-landscape` / biến thể Tailwind `app-landscape:`).
+  .app {
+    width: 100%;
+    // dvh: không bị thanh địa chỉ mobile che
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+    }
+  }
+}

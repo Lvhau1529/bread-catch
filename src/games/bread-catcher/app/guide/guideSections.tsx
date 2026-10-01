@@ -3,6 +3,7 @@
  * Số liệu (tốc độ, số từ...) lấy thẳng từ cấu hình để luôn khớp với game.
  */
 import { mascotUrl } from '@/games/bread-catcher/app/assets';
+import { LEVEL_TONE } from '@/games/bread-catcher/app/levelTone';
 import {
   COMBOS,
   CUSTOM_PACK_GUIDE,
@@ -16,7 +17,9 @@ import {
 import { CUSTOM_PACK_LABEL, PACK_ORDER, PACKS } from '@/games/bread-catcher/session/content';
 import { LEVEL_ORDER, LEVELS, RULES } from '@/games/bread-catcher/session/settings';
 import { TEAM_MASCOTS } from '@/games/bread-catcher/session/teams';
+import GuideCard from '@/platform/ui/guide/GuideCard';
 import type { GuideSection } from '@/platform/ui/guide/GuideDialog';
+import guide from '@/platform/ui/guide/guideContent.module.scss';
 
 export const GUIDE_TITLE = 'Hướng dẫn cho giáo viên & phụ huynh';
 
@@ -31,7 +34,7 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
           <b>hứng đúng từng chữ theo thứ tự</b> và ghép thành từ.
         </p>
         <p>Bé được luyện: nhận diện chữ cái, nghe âm và ghép âm thành từ, đọc từ ngắn, phản xạ tay – mắt.</p>
-        <p className="guide__note">
+        <p className={guide.note}>
           Chữ trong trò chơi là tiếng Anh (đúng như khi học). Phần hướng dẫn này dành cho người lớn.
         </p>
       </>
@@ -41,7 +44,7 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     heading: 'Cách chơi (hướng dẫn cho bé)',
     content: (
       <>
-        <ol className="guide__steps">
+        <ol className={guide.steps}>
           <li>
             Nhìn ô từ phía trên (hoặc <b>nghe</b> máy đọc từ — bấm nút loa xanh để nghe lại).
           </li>
@@ -62,7 +65,7 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
             từ hoặc tới khi hết giờ.
           </li>
         </ol>
-        <p className="guide__note">
+        <p className={guide.note}>
           Mẹo cho bé: đừng vội — chờ chữ cần hứng rơi tới gần rồi mới di chuyển rổ, tránh những chữ khác.
         </p>
       </>
@@ -72,10 +75,10 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     heading: 'Chế độ chơi',
     content: (
       <>
-        <div className="guide__cards">
-          <article className="guide-card">
+        <div className={guide.cards}>
+          <GuideCard>
             <h3>
-              <span className="guide-card__mascots">
+              <span className={guide.mascots}>
                 {TEAM_MASCOTS.map((mascot) => (
                   <img key={mascot} src={mascotUrl(mascot)} alt="" width={28} height={32} />
                 ))}
@@ -91,14 +94,14 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
               Hết 3 lượt: bảng <b>FINAL RESULTS</b>, đội thắng được <b>mở hộp quà</b>. Điểm các buổi được cộng
               dồn vào <b>CLASS LEADERBOARD</b>.
             </p>
-          </article>
-          <article className="guide-card">
+          </GuideCard>
+          <GuideCard>
             <h3>SOLO MODE — Một mình</h3>
             <p>
               Một bé chơi (phụ huynh chơi cùng con ở nhà). Không có xúc xắc, cuối lượt xem điểm, độ chính xác,
               danh sách từ đúng/sai và <b>điểm cao nhất</b> theo từng cấp độ.
             </p>
-          </article>
+          </GuideCard>
         </div>
       </>
     ),
@@ -108,30 +111,30 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     content: (
       <>
         <p>Chọn nhóm từ sẽ xuất hiện. Từ càng dài càng khó, vì phải hứng đúng nhiều chữ liên tiếp.</p>
-        <div className="guide__cards">
+        <div className={guide.cards}>
           {PACK_ORDER.map((id) => (
-            <article key={id} className="guide-card">
+            <GuideCard key={id}>
               <h3>{PACKS[id].label}</h3>
-              <p className="guide-card__lead">{PACK_GUIDE[id].short}</p>
+              <p className={guide.lead}>{PACK_GUIDE[id].short}</p>
               <p>{PACK_GUIDE[id].detail}</p>
-              <p className="guide-card__use">
+              <p className={guide.use}>
                 <b>Nên dùng:</b> {PACK_GUIDE[id].whenToUse}
               </p>
-            </article>
+            </GuideCard>
           ))}
-          <article className="guide-card">
+          <GuideCard>
             <h3>{CUSTOM_PACK_LABEL} — tự nhập từ</h3>
-            <p className="guide-card__lead">{CUSTOM_PACK_GUIDE.short}</p>
+            <p className={guide.lead}>{CUSTOM_PACK_GUIDE.short}</p>
             <p>{CUSTOM_PACK_GUIDE.detail}</p>
-            <ul className="guide__list">
+            <ul className={guide.list}>
               {CUSTOM_PACK_GUIDE.rules.map((rule) => (
                 <li key={rule}>{rule}</li>
               ))}
             </ul>
-            <p className="guide-card__use">
+            <p className={guide.use}>
               <b>Nên dùng:</b> {CUSTOM_PACK_GUIDE.whenToUse}
             </p>
-          </article>
+          </GuideCard>
         </div>
       </>
     ),
@@ -144,31 +147,31 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
           Cấp độ quyết định <b>tốc độ chữ rơi</b> và <b>mức gợi ý</b> trong ô từ. Từ GENTLE đến FAST, gợi ý
           giảm dần: từ "nhìn chữ mà hứng" sang "nghe âm rồi tự ghép chữ".
         </p>
-        <div className="guide__cards">
+        <div className={guide.cards}>
           {LEVEL_ORDER.map((id) => (
-            <article key={id} className={`guide-card guide-card--${id}`}>
+            <GuideCard key={id} accent={LEVEL_TONE[id]}>
               <h3>{LEVELS[id].label}</h3>
-              <p className="guide-card__lead">{LEVEL_GUIDE[id].short}</p>
+              <p className={guide.lead}>{LEVEL_GUIDE[id].short}</p>
               <p>
                 <b>Ô từ:</b> {LEVEL_GUIDE[id].hint}
               </p>
               <p>
                 <b>Tốc độ:</b> {LEVEL_GUIDE[id].speed}
               </p>
-              <p className="guide-card__use">
+              <p className={guide.use}>
                 <b>Nên dùng:</b> {LEVEL_GUIDE[id].whenToUse}
               </p>
               {id === 'hard' && (
-                <ul className="guide__list">
+                <ul className={guide.list}>
                   {HARD_TRICKS.map((trick) => (
                     <li key={trick}>{trick}</li>
                   ))}
                 </ul>
               )}
-            </article>
+            </GuideCard>
           ))}
         </div>
-        <p className="guide__note">
+        <p className={guide.note}>
           NORMAL và FAST cần <b>giọng đọc</b>. Nếu máy không đọc được (hoặc đã tắt VOICE ở màn chính), game tự
           hiện từ để bé vẫn chơi được.
         </p>
@@ -179,7 +182,7 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     heading: 'Thời gian mỗi lượt (TIME)',
     content: (
       <>
-        <ul className="guide__list">
+        <ul className={guide.list}>
           <li>{TIME_GUIDE.auto}</li>
           <li>{TIME_GUIDE.presets}</li>
           <li>{TIME_GUIDE.custom}</li>
@@ -192,8 +195,8 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     heading: 'Gợi ý kết hợp cho trẻ 5 tuổi',
     content: (
       <>
-        <div className="guide__table-wrap">
-          <table className="guide__table">
+        <div className={guide.tableWrap}>
+          <table className={guide.table}>
             <thead>
               <tr>
                 <th>Giai đoạn</th>
@@ -219,7 +222,7 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     heading: 'Dành cho giáo viên',
     content: (
       <>
-        <ul className="guide__list">
+        <ul className={guide.list}>
           <li>
             <b>Máy chiếu:</b> mở trên máy tính nối máy chiếu/TV — game tự chuyển bố cục ngang, chữ và nút
             phóng to cho cả lớp nhìn rõ.
@@ -255,7 +258,7 @@ const CONTENT: Record<GuideSectionId, { heading: string; content: GuideSection['
     heading: 'Dành cho phụ huynh',
     content: (
       <>
-        <ul className="guide__list">
+        <ul className={guide.list}>
           <li>
             Bấm <b>PLAY</b>, chọn <b>SOLO MODE</b>, gói <b>EARLY BLENDING</b> hoặc <b>BLENDING WORDS</b>, cấp{' '}
             <b>GENTLE</b> hoặc <b>EASY</b>.

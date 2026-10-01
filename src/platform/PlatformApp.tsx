@@ -11,6 +11,7 @@ import {
   type LazyExoticComponent,
   type ReactNode,
 } from 'react';
+import clsx from 'clsx';
 import { isUnlocked, walletStore } from '@/platform/gems/wallet';
 import HubScreen from '@/platform/hub/HubScreen';
 import { useStore } from '@/platform/hooks/useStore';
@@ -19,6 +20,7 @@ import type { GameManifest, UpcomingGame } from '@/platform/types';
 import Button from '@/platform/ui/Button';
 import { PIP } from '@/platform/ui/icons';
 import RotateHint from '@/platform/ui/RotateHint';
+import styles from '@/platform/PlatformApp.module.scss';
 
 const lazyRoots = new Map<string, LazyExoticComponent<ComponentType>>();
 
@@ -55,8 +57,8 @@ export default function PlatformApp({ games, upcoming }: PlatformAppProps) {
         <LoadErrorBoundary key={activeId}>
           <Suspense
             fallback={
-              <div className="app-loading">
-                <img className="app-loading__pip app-loading__pip--run" src={PIP.loading} alt="" />
+              <div className={styles.loading}>
+                <img className={clsx(styles.pip, styles.running)} src={PIP.loading} alt="" />
                 LOADING…
               </div>
             }
@@ -88,8 +90,8 @@ class LoadErrorBoundary extends Component<{ children: ReactNode }, { failed: boo
   override render(): ReactNode {
     if (!this.state.failed) return this.props.children;
     return (
-      <div className="app-loading">
-        <img className="app-loading__pip" src={PIP.error} alt="" />
+      <div className={styles.loading}>
+        <img className={styles.pip} src={PIP.error} alt="" />
         <p>Oops! The game could not load.</p>
         {/* Tải lại trang: lấy lại file mới (vd sau khi deploy bản mới, file cũ đã bị xoá) */}
         <Button color="green" onClick={() => window.location.reload()}>

@@ -1,0 +1,254 @@
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  @include keyframes-bob($distance: -6px);
+
+  @keyframes star-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.3) rotate(-20deg);
+    }
+  }
+
+  .results {
+    @include screen;
+    gap: 14px;
+  }
+
+  .title {
+    margin: 4px 0 0;
+    color: var(--color-gold);
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.1;
+    text-align: center;
+    text-shadow: var(--outline);
+    animation: bob 1.4s ease-in-out infinite;
+  }
+
+  .subtitle {
+    margin: -8px 0 0;
+    color: var(--color-cream);
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    text-shadow: var(--outline);
+  }
+
+  // Máy chiếu: các khối kết quả không kéo hết chiều ngang
+  .solo,
+  .teams,
+  .words,
+  .actions {
+    @include app-landscape {
+      width: min(100%, 640px);
+      align-self: center;
+    }
+  }
+
+  // ---- Solo ----
+  .solo {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .streamer {
+    height: 120px;
+    animation: bob 1.2s ease-in-out infinite;
+  }
+
+  .level {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .best {
+    margin: 0;
+    color: var(--color-red);
+    font-size: 18px;
+    font-weight: 800;
+    animation: bob 1s ease-in-out infinite;
+  }
+
+  .total {
+    margin: 2px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.8;
+  }
+
+  .stars {
+    display: flex;
+    gap: 8px;
+
+    img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      filter: grayscale(1) opacity(0.35);
+    }
+
+    .earned {
+      filter: none;
+      animation: star-pop 0.5s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+    }
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+    margin: 6px 0 0;
+
+    dt {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      opacity: 0.7;
+    }
+
+    dd {
+      margin: 0;
+      color: var(--color-ink);
+      font-size: 18px;
+      font-weight: 800;
+    }
+  }
+
+  .compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statsItem {
+    padding: 4px 2px;
+    border-radius: 10px;
+    background: #fff;
+    text-align: center;
+  }
+
+  // ---- Classroom: hai đội ----
+  .teams {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Màu đội: --team (TEAM A hồng, TEAM B xanh)
+  .team {
+    --team: var(--color-pink);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 8px;
+    border: 4px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    background: var(--color-cream);
+    color: var(--color-brown);
+    box-shadow: 0 5px 0 var(--team);
+    text-align: center;
+  }
+
+  .teamB {
+    --team: var(--color-blue);
+  }
+
+  .team.winner {
+    background: #fff6d6;
+  }
+
+  .crown {
+    position: absolute;
+    top: -26px;
+    width: 64px;
+    animation: bob 1s ease-in-out infinite;
+  }
+
+  .teamStreamer {
+    height: 96px;
+  }
+
+  .teamName {
+    max-width: 100%;
+    font-size: 18px;
+    font-weight: 800;
+    @include ellipsis;
+  }
+
+  .teamScore {
+    color: var(--team);
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 2px 0 var(--color-ink);
+  }
+
+  // ---- Từ đã học ----
+  .words {
+    @include card;
+
+    h2 {
+      margin: 0 0 8px;
+      color: var(--color-orange-edge);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 10px 2px 4px;
+      border-radius: 999px;
+      background: #fff;
+      font-family: var(--font-learning);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    // Đúng ngay lần đầu
+    .firstTry {
+      background: #dff7e6;
+      color: #1f7a45;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: auto;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}

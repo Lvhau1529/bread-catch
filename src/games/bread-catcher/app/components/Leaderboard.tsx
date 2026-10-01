@@ -6,6 +6,7 @@
  * Các hàng đặt tuyệt đối theo chỉ số hạng nên chỉ cần đổi translateY là CSS tự chạy hiệu ứng.
  */
 import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 import { mascotUrl } from '@/games/bread-catcher/app/assets';
 import Button from '@/platform/ui/Button';
 import { SFX } from '@/platform/audio/sfx';
@@ -18,9 +19,12 @@ import {
 } from '@/games/bread-catcher/session/leaderboard';
 import { sessionActions } from '@/games/bread-catcher/session/sessionStore';
 import { UI_TEXT } from '@/games/bread-catcher/session/text';
+import styles from '@/games/bread-catcher/app/components/Leaderboard.module.scss';
 
-/** Chiều cao mỗi hàng + khoảng cách (px) — khớp với .leaderboard__row trong styles.css */
+/** Chiều cao mỗi hàng + khoảng cách (px) — khớp với .row trong Leaderboard.module.scss */
 const ROW_STEP = 66;
+/** Màu theo hạng 1–3 (Class Mode có 3 đội) */
+const PLACE_CLASS = [styles.place1, styles.place2, styles.place3];
 /** Giữ bảng cũ ngần này rồi mới "xếp lại" */
 const REORDER_DELAY_MS = 900;
 const COUNT_UP_MS = 900;
@@ -75,9 +79,9 @@ export default function Leaderboard({ update }: LeaderboardProps) {
   const rows = [...after].sort((a, b) => a.teamId - b.teamId);
 
   return (
-    <section className="leaderboard card" aria-label={UI_TEXT.leaderboard}>
+    <section className={styles.leaderboard} aria-label={UI_TEXT.leaderboard}>
       <LeaderboardHeader />
-      <ol className="leaderboard__list" style={{ height: rows.length * ROW_STEP }}>
+      <ol className={styles.list} style={{ height: rows.length * ROW_STEP }}>
         {rows.map((row) => {
           const index = order.findIndex((entry) => entry.teamId === row.teamId);
           const shown = order[index];
@@ -113,23 +117,23 @@ function LeaderboardItem({ row, from, counting, gained, rankUp, y }: ItemProps) 
   const total = useCountUp(from, row.total, counting);
   return (
     <li
-      className={`leaderboard__row leaderboard__row--place-${Math.min(row.place, 3)} ${rankUp ? 'is-rank-up' : ''}`}
+      className={clsx(styles.row, PLACE_CLASS[Math.min(row.place, 3) - 1], rankUp && styles.rankUp)}
       style={{ transform: `translateY(${y}px)` }}
     >
-      <span className="leaderboard__place">{row.place}</span>
-      <img className="leaderboard__mascot" src={mascotUrl(row.mascot)} alt="" width={36} height={40} />
-      <span className="leaderboard__info">
-        <span className="leaderboard__name" title={row.name}>
+      <span className={styles.place}>{row.place}</span>
+      <img className={styles.mascot} src={mascotUrl(row.mascot)} alt="" width={36} height={40} />
+      <span className={styles.info}>
+        <span className={styles.name} title={row.name}>
           {row.name}
         </span>
         {(rankUp || (counting && gained > 0)) && (
-          <span className="leaderboard__meta">
-            {rankUp && <span className="leaderboard__badge">▲ {UI_TEXT.rankUp}</span>}
-            {counting && gained > 0 && <span className="leaderboard__gained">+{gained}</span>}
+          <span className={styles.meta}>
+            {rankUp && <span className={styles.badge}>▲ {UI_TEXT.rankUp}</span>}
+            {counting && gained > 0 && <span className={styles.gained}>+{gained}</span>}
           </span>
         )}
       </span>
-      <span className="leaderboard__total">{total}</span>
+      <span className={styles.total}>{total}</span>
     </li>
   );
 }
@@ -141,34 +145,25 @@ export function TeamTotalsCard() {
   const totals = useTeamTotals();
   const rows = rankTotals(totals);
   return (
-    <section className="leaderboard card" aria-label={UI_TEXT.leaderboard}>
+    <section className={styles.leaderboard} aria-label={UI_TEXT.leaderboard}>
       <LeaderboardHeader canReset={rows.length > 0} />
       {rows.length === 0 ? (
-        <p className="leaderboard__empty">{UI_TEXT.noScoresYet}</p>
+        <p className={styles.empty}>{UI_TEXT.noScoresYet}</p>
       ) : (
-        <ol className="leaderboard__list leaderboard__list--static">
+        <ol className={clsx(styles.list, styles.stacked)}>
           {rows.map((row) => (
-            <li
-              key={row.teamId}
-              className={`leaderboard__row leaderboard__row--place-${Math.min(row.place, 3)}`}
-            >
-              <span className="leaderboard__place">{row.place}</span>
-              <img
-                className="leaderboard__mascot"
-                src={mascotUrl(row.mascot)}
-                alt=""
-                width={36}
-                height={40}
-              />
-              <span className="leaderboard__info">
-                <span className="leaderboard__name" title={row.name}>
+            <li key={row.teamId} className={clsx(styles.row, PLACE_CLASS[Math.min(row.place, 3) - 1])}>
+              <span className={styles.place}>{row.place}</span>
+              <img className={styles.mascot} src={mascotUrl(row.mascot)} alt="" width={36} height={40} />
+              <span className={styles.info}>
+                <span className={styles.name} title={row.name}>
                   {row.name}
                 </span>
-                <span className="leaderboard__games">
+                <span className={styles.games}>
                   {row.games} {UI_TEXT.games}
                 </span>
               </span>
-              <span className="leaderboard__total">{row.total}</span>
+              <span className={styles.total}>{row.total}</span>
             </li>
           ))}
         </ol>
@@ -179,7 +174,7 @@ export function TeamTotalsCard() {
 
 function LeaderboardHeader({ canReset = true }: { canReset?: boolean }) {
   return (
-    <header className="leaderboard__header">
+    <header className={styles.header}>
       <h2>{UI_TEXT.leaderboard}</h2>
       {canReset && <ResetScoresButton />}
     </header>
@@ -191,13 +186,13 @@ function ResetScoresButton() {
   const [confirming, setConfirming] = useState(false);
   if (!confirming) {
     return (
-      <button type="button" className="text-btn text-btn--danger" onClick={() => setConfirming(true)}>
+      <button type="button" className={styles.reset} onClick={() => setConfirming(true)}>
         {UI_TEXT.resetScores}
       </button>
     );
   }
   return (
-    <div className="reset-confirm" role="alertdialog" aria-label={UI_TEXT.resetScoresQuestion}>
+    <div className={styles.confirm} role="alertdialog" aria-label={UI_TEXT.resetScoresQuestion}>
       <span>{UI_TEXT.resetScoresQuestion}</span>
       <Button color="blue" onClick={() => setConfirming(false)}>
         {UI_TEXT.cancel}

@@ -11,44 +11,45 @@ import AudioToggles from '@/platform/ui/AudioToggles';
 import BackButton from '@/platform/ui/BackButton';
 import Button from '@/platform/ui/Button';
 import Icon from '@/platform/ui/Icon';
-import { openGuide } from '@/platform/ui/guide/guideStore';
+import GuideButton from '@/platform/ui/guide/GuideButton';
+import styles from '@/games/bread-catcher/app/screens/HomeScreen.module.scss';
 
 /** Mỗi chữ của "PHONICS" một màu như concept board */
 const TITLE_LETTERS = 'PHONICS'.split('');
 
 export default function HomeScreen() {
   return (
-    <div className="screen home">
+    <div className={styles.home}>
       <BackButton
-        className="home__exit"
+        className={styles.exit}
         label={UI_TEXT.allGames}
         onClick={() => platformActions.exitToHub()}
       />
-      <h1 className="logo" aria-label={UI_TEXT.title}>
-        <span className="logo__top" aria-hidden="true">
+      <h1 className={styles.logo} aria-label={UI_TEXT.title}>
+        <span className={styles.logoTop} aria-hidden="true">
           {TITLE_LETTERS.map((letter, index) => (
-            <span key={index} className={`logo__letter logo__letter--${index % 5}`}>
+            <span key={index} className={styles.letter}>
               {letter}
             </span>
           ))}
         </span>
-        <span className="logo__bottom" aria-hidden="true">
+        <span className={styles.logoBottom} aria-hidden="true">
           BREAD CATCHER
         </span>
       </h1>
 
-      <div className="home__mascots" aria-hidden="true">
+      <div className={styles.mascots} aria-hidden="true">
         {[...TEAM_MASCOTS, SOLO_MASCOT].map((mascot, index) => (
           <img key={mascot} src={mascotUrl(mascot)} alt="" style={{ animationDelay: `${index * 0.15}s` }} />
         ))}
       </div>
 
-      <div className="home__actions">
+      <div className={styles.actions}>
         {/* Chọn Class / Solo ở GAME MODE trong Setup (nhớ lựa chọn lần trước) */}
         <Button
           color="orange"
           size="lg"
-          className="home__play"
+          className={styles.play}
           sfx={SFX.UI_START}
           onClick={() => sessionActions.openSetup()}
         >
@@ -56,10 +57,8 @@ export default function HomeScreen() {
         </Button>
       </div>
 
-      <AudioToggles />
-      <button type="button" className="guide-link" onClick={() => openGuide()}>
-        ? {UI_TEXT.guide}
-      </button>
+      <AudioToggles className={styles.toggles} />
+      <GuideButton label={UI_TEXT.guide} className={styles.guide} />
     </div>
   );
 }

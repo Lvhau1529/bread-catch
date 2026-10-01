@@ -1,0 +1,81 @@
+// Ô tự nhập thời gian mỗi lượt (giây) kèm nút −/+
+@layer components {
+  .timeInput {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border: 3px solid var(--color-tan);
+    border-radius: 14px;
+    background: #fff;
+
+    input {
+      width: 64px;
+      min-height: 44px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: var(--color-paper);
+      color: var(--color-brown);
+      // ≥ 16px: iOS không tự zoom khi focus
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      user-select: text;
+      -webkit-user-select: text;
+      -moz-appearance: textfield;
+      appearance: textfield;
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 3px var(--color-gold);
+      }
+    }
+  }
+
+  // Đang dùng thời gian tự nhập (không phải AUTO)
+  .custom {
+    border-color: var(--color-orange);
+  }
+
+  .label {
+    color: var(--color-orange-edge);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .step {
+    width: 44px;
+    height: 44px;
+    border: 3px solid var(--color-ink);
+    border-radius: 12px;
+    background: var(--color-orange);
+    box-shadow: 0 3px 0 var(--color-orange-edge);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+
+    &:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--color-orange-edge);
+    }
+  }
+
+  .unit {
+    color: var(--color-brown);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0.8;
+  }
+}

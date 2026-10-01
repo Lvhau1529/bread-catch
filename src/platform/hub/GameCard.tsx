@@ -4,9 +4,11 @@
  *   - UpcomingCard: game sắp ra mắt (ảnh bìa bí ẩn + nhãn COMING SOON)
  */
 import type { CSSProperties } from 'react';
+import clsx from 'clsx';
 import type { GameManifest, UpcomingGame } from '@/platform/types';
 import Icon from '@/platform/ui/Icon';
 import { COMING_SOON_COVER } from '@/platform/ui/icons';
+import styles from '@/platform/hub/GameCard.module.scss';
 
 interface GameCardProps {
   game: GameManifest;
@@ -18,30 +20,30 @@ export function GameCard({ game, locked, onClick }: GameCardProps) {
   return (
     <button
       type="button"
-      className={`game-card ${locked ? 'game-card--locked' : ''}`}
+      className={clsx(styles.card, locked && styles.locked)}
       style={{ '--accent': game.accent } as CSSProperties}
       aria-label={locked ? `${game.title} — locked, ${game.price} gems` : game.title}
       onClick={onClick}
     >
-      <span className="game-card__media">
-        <img className="game-card__cover" src={game.cover} alt="" />
-        {locked && <Icon name="padlock" size={72} className="game-card__lock" />}
+      <span className={styles.media}>
+        <img className={styles.cover} src={game.cover} alt="" />
+        {locked && <Icon name="padlock" size={72} className={styles.lock} />}
       </span>
-      <span className="game-card__body">
-        <span className="game-card__title">{game.title}</span>
-        <span className="game-card__tagline">{game.tagline}</span>
-        <span className="game-card__skills">
+      <span className={styles.body}>
+        <span className={styles.title}>{game.title}</span>
+        <span className={styles.tagline}>{game.tagline}</span>
+        <span className={styles.skills}>
           {game.skills.map((skill) => (
             <span key={skill}>{skill}</span>
           ))}
         </span>
         {locked ? (
-          <span className="game-card__price" aria-hidden="true">
+          <span className={styles.price} aria-hidden="true">
             <Icon name="gemSmall" size={26} />
             {game.price}
           </span>
         ) : (
-          <span className="game-card__play" aria-hidden="true">
+          <span className={styles.play} aria-hidden="true">
             <Icon name="play" size={28} />
           </span>
         )}
@@ -54,19 +56,19 @@ export function UpcomingCard({ game, onClick }: { game: UpcomingGame; onClick: (
   return (
     <button
       type="button"
-      className="game-card game-card--soon"
-      style={{ '--accent': 'var(--purple)' } as CSSProperties}
+      className={clsx(styles.card, styles.upcoming)}
+      style={{ '--accent': 'var(--color-purple)' } as CSSProperties}
       aria-label={`${game.title} — coming soon`}
       onClick={onClick}
     >
-      <span className="game-card__media">
-        <img className="game-card__cover game-card__cover--smooth" src={COMING_SOON_COVER} alt="" />
-        <span className="game-card__ribbon">COMING SOON</span>
+      <span className={styles.media}>
+        <img className={clsx(styles.cover, styles.smooth)} src={COMING_SOON_COVER} alt="" />
+        <span className={styles.ribbon}>COMING SOON</span>
       </span>
-      <span className="game-card__body">
-        <span className="game-card__title">{game.title}</span>
-        <span className="game-card__tagline">{game.tagline}</span>
-        <span className="game-card__soon" aria-hidden="true">
+      <span className={styles.body}>
+        <span className={styles.title}>{game.title}</span>
+        <span className={styles.tagline}>{game.tagline}</span>
+        <span className={styles.soon} aria-hidden="true">
           SOON
         </span>
       </span>

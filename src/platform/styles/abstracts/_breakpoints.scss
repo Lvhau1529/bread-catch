@@ -1,0 +1,41 @@
+// Truy vấn màn hình dùng chung — khớp với biến thể Tailwind trong styles/tailwind.css
+// (cùng giá trị để class Tailwind và SCSS đổi bố cục ở cùng một chỗ).
+
+/// Màn rộng — Tailwind `wide:` (--breakpoint-wide)
+$wide: 760px;
+
+@mixin wide {
+  @media (min-width: $wide) {
+    @content;
+  }
+}
+
+/// Máy tính / máy chiếu đặt ngang (màn chọn game xếp các game cạnh nhau)
+@mixin wide-landscape {
+  @media (min-width: $wide) and (orientation: landscape) {
+    @content;
+  }
+}
+
+/// Máy chiếu / TV: phóng to UI cho cả lớp đọc được — Tailwind `projector:`
+@mixin projector {
+  @media (min-width: 1280px) and (min-height: 700px) {
+    @content;
+  }
+}
+
+/// Bố cục ngang của game — Tailwind `app-landscape:`.
+/// `.app--landscape` do root của từng game gắn (cùng quy tắc với game Phaser, platform/phaser/viewport.ts),
+/// không theo media query: đang chơi dở thì giữ bố cục cũ tới hết phiên.
+@mixin app-landscape {
+  :global(.app--landscape) & {
+    @content;
+  }
+}
+
+/// Điện thoại cầm ngang (nhắc xoay dọc)
+@mixin phone-landscape {
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 540px) {
+    @content;
+  }
+}

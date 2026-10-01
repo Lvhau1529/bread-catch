@@ -1,0 +1,134 @@
+@use '@/platform/styles/abstracts' as *;
+
+@layer components {
+  @include keyframes-bob;
+
+  .home {
+    @include screen;
+    position: relative;
+    justify-content: center;
+    gap: 18px;
+    text-align: center;
+
+    // Máy chiếu / máy tính: logo + linh vật bên trái, nút bên phải
+    @include app-landscape {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'logo actions'
+        'mascots actions'
+        'mascots toggles'
+        'mascots guide';
+      align-content: center;
+      gap: 18px 48px;
+    }
+  }
+
+  // Về màn chọn game
+  .exit {
+    position: absolute;
+    top: max(16px, env(safe-area-inset-top));
+    left: 16px;
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    font-weight: 800;
+    line-height: 0.95;
+    text-shadow: var(--outline-thick);
+
+    @include app-landscape {
+      grid-area: logo;
+      align-self: end;
+    }
+  }
+
+  .logoTop {
+    font-size: clamp(46px, 15vw, 64px);
+    letter-spacing: 1px;
+  }
+
+  // Mỗi chữ của "PHONICS" một màu như concept board
+  .letter {
+    display: inline-block;
+    animation: bob 1.6s ease-in-out infinite;
+
+    &:nth-child(2n) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(5n + 1) {
+      color: var(--color-pink);
+    }
+    &:nth-child(5n + 2) {
+      color: var(--color-orange);
+    }
+    &:nth-child(5n + 3) {
+      color: var(--color-gold);
+    }
+    &:nth-child(5n + 4) {
+      color: var(--color-green);
+    }
+    &:nth-child(5n + 5) {
+      color: #6fb6ff;
+    }
+  }
+
+  .logoBottom {
+    margin-top: 4px;
+    color: var(--color-cream);
+    font-size: clamp(30px, 10vw, 40px);
+  }
+
+  .mascots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+
+    img {
+      width: 64px;
+      height: auto;
+      image-rendering: pixelated;
+      animation: bob 1.2s ease-in-out infinite;
+    }
+
+    @include app-landscape {
+      grid-area: mascots;
+      align-self: start;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @include app-landscape {
+      grid-area: actions;
+      align-self: end;
+    }
+  }
+
+  // Nút chính duy nhất của màn Home — to, dễ bấm cho bé
+  .play {
+    min-height: 80px;
+    font-size: 34px;
+    letter-spacing: 2px;
+  }
+
+  .toggles {
+    @include app-landscape {
+      grid-area: toggles;
+      align-self: start;
+    }
+  }
+
+  .guide {
+    @include app-landscape {
+      grid-area: guide;
+    }
+  }
+}

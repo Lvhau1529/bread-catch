@@ -1,0 +1,47 @@
+@layer components {
+  @keyframes pop-down {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -12px);
+    }
+  }
+
+  // Nổi ở đỉnh màn hình, không đẩy bố cục (màn chọn game đặt lại vào thanh trên qua `className`)
+  .banner {
+    position: fixed;
+    top: max(10px, env(safe-area-inset-top));
+    left: 50%;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: calc(100% - 32px);
+    min-height: 44px;
+    padding: 6px 18px;
+    border: 3px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-green);
+    box-shadow: 0 4px 0 var(--color-green-edge);
+    color: #fff;
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 700;
+    text-shadow: var(--outline);
+    white-space: nowrap;
+    cursor: pointer;
+    transform: translateX(-50%);
+    animation: pop-down 0.35s ease-out;
+
+    b {
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--color-green-edge);
+      font-weight: 800;
+    }
+
+    &:active {
+      box-shadow: 0 1px 0 var(--color-green-edge);
+      transform: translate(-50%, 3px);
+    }
+  }
+}

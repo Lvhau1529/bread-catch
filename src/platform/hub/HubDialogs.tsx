@@ -14,6 +14,7 @@ import Button from '@/platform/ui/Button';
 import Dialog from '@/platform/ui/Dialog';
 import Icon from '@/platform/ui/Icon';
 import { PIP } from '@/platform/ui/icons';
+import styles from '@/platform/hub/HubDialogs.module.scss';
 
 export type HubDialogState =
   { kind: 'gems' } | { kind: 'locked' | 'unlock' | 'unlocked'; game: GameManifest } | { kind: 'soon' };
@@ -54,7 +55,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
           ) : (
             <p>Save your gems — they will unlock new games!</p>
           )}
-          <p className="dialog__note">{EARN_RULE}</p>
+          <p className={styles.note}>{EARN_RULE}</p>
         </Dialog>
       );
     }
@@ -74,7 +75,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
           </p>
           <GemProgress gems={wallet.gems} price={price} />
           <p>Practice hard and get the answers right to earn them!</p>
-          <p className="dialog__note">{EARN_RULE}</p>
+          <p className={styles.note}>{EARN_RULE}</p>
         </Dialog>
       );
     }
@@ -113,7 +114,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
           title="UNLOCKED!"
           image={PIP.celebrate}
           openSfx={SFX.UNLOCK}
-          className="dialog--celebrate"
+          celebrate
           onClose={close}
           actions={
             <Button color="green" sfx={SFX.UI_START} onClick={() => onPlay(dialog.game)}>
@@ -149,7 +150,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
 
 function GemAmount({ amount }: { amount: number }) {
   return (
-    <b className="gem-amount">
+    <b className={styles.amount}>
       <Icon name="gemSmall" size={22} />
       {amount}
     </b>
@@ -158,7 +159,7 @@ function GemAmount({ amount }: { amount: number }) {
 
 function GemTotal({ gems }: { gems: number }) {
   return (
-    <p className="dialog__gems">
+    <p className={styles.gems}>
       YOU HAVE <GemAmount amount={gems} />
     </p>
   );
@@ -167,9 +168,9 @@ function GemTotal({ gems }: { gems: number }) {
 function GemProgress({ gems, price }: { gems: number; price: number }) {
   const percent = price > 0 ? Math.min(100, (gems / price) * 100) : 100;
   return (
-    <div className="gem-progress" role="img" aria-label={`${gems} of ${price} gems`}>
-      <span className="gem-progress__fill" style={{ width: `${percent}%` }} />
-      <span className="gem-progress__label">
+    <div className={styles.progress} role="img" aria-label={`${gems} of ${price} gems`}>
+      <span className={styles.progressFill} style={{ width: `${percent}%` }} />
+      <span className={styles.progressLabel}>
         <Icon name="gemSmall" size={20} />
         {gems} / {price}
       </span>

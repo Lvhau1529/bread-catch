@@ -4,11 +4,12 @@
  * Lựa chọn được nhớ cho lần sau (session/storage.ts).
  */
 import { mascotUrl } from '@/games/bread-catcher/app/assets';
-import BackButton from '@/platform/ui/BackButton';
+import { LEVEL_TONE } from '@/games/bread-catcher/app/levelTone';
 import Button from '@/platform/ui/Button';
-import Field from '@/platform/ui/Field';
+import Field, { FieldHint } from '@/platform/ui/Field';
 import NameInput from '@/platform/ui/NameInput';
 import OptionGroup, { type Option } from '@/platform/ui/OptionGroup';
+import ScreenHeader from '@/platform/ui/ScreenHeader';
 import CustomWordsInput from '@/games/bread-catcher/app/components/CustomWordsInput';
 import TimeInput from '@/games/bread-catcher/app/components/TimeInput';
 import { TeamTotalsCard } from '@/games/bread-catcher/app/components/Leaderboard';
@@ -35,6 +36,7 @@ import {
 import { UI_TEXT } from '@/games/bread-catcher/session/text';
 import type { GameMode, LevelId, PackId, SetupDraft, TimeOption } from '@/games/bread-catcher/session/types';
 import { speech } from '@/shared/speech';
+import styles from '@/games/bread-catcher/app/screens/SetupScreen.module.scss';
 
 const MODE_OPTIONS: Option<GameMode>[] = [
   { value: 'class', label: UI_TEXT.classMode, sub: '3 teams' },
@@ -50,7 +52,7 @@ const PACK_OPTIONS: Option<PackId>[] = PACK_ORDER.map((id) => ({
 const LEVEL_OPTIONS: Option<LevelId>[] = LEVEL_ORDER.map((id) => ({
   value: id,
   label: LEVELS[id].label,
-  tone: id,
+  tone: LEVEL_TONE[id],
 }));
 
 export default function SetupScreen() {
@@ -89,13 +91,14 @@ export default function SetupScreen() {
   };
 
   return (
-    <div className="screen setup">
-      <header className="screen__header">
-        <BackButton label={UI_TEXT.back} onClick={() => sessionActions.goHome()} />
-        <h1>{UI_TEXT.gameSetup}</h1>
-      </header>
+    <div className={styles.setup}>
+      <ScreenHeader
+        title={UI_TEXT.gameSetup}
+        backLabel={UI_TEXT.back}
+        onBack={() => sessionActions.goHome()}
+      />
 
-      <div className="card setup__form">
+      <div className={styles.form}>
         <Field label={UI_TEXT.gameMode} guide="modes">
           <OptionGroup
             label={UI_TEXT.gameMode}
@@ -106,7 +109,7 @@ export default function SetupScreen() {
         </Field>
 
         <Field label={UI_TEXT.phonicsPack} guide="packs">
-          <div className="setup__packs">
+          <div className={styles.packs}>
             <OptionGroup
               label={UI_TEXT.phonicsPack}
               options={packOptions}
@@ -123,7 +126,7 @@ export default function SetupScreen() {
               onChange={(customText) => update({ customText })}
             />
           ) : (
-            <p className="field__hint">{wordsSummary(PACKS[draft.packId].words)}</p>
+            <FieldHint>{wordsSummary(PACKS[draft.packId].words)}</FieldHint>
           )}
         </Field>
 
@@ -135,7 +138,7 @@ export default function SetupScreen() {
             onChange={(levelId) => update({ levelId })}
             columns={3}
           />
-          <p className={`field__hint ${level.troll ? 'field__hint--hard' : ''}`}>{level.hint}</p>
+          <FieldHint hard={level.troll}>{level.hint}</FieldHint>
         </Field>
 
         <Field label={UI_TEXT.time} guide="time">
@@ -155,7 +158,7 @@ export default function SetupScreen() {
 
         {draft.mode === 'class' ? (
           <Field label={UI_TEXT.teams}>
-            <div className="teams">
+            <div className="flex flex-col gap-2">
               {TEAM_MASCOTS.map((mascot, index) => (
                 <NameInput
                   key={mascot}
@@ -190,7 +193,7 @@ export default function SetupScreen() {
         color="green"
         size="lg"
         sfx={null}
-        className="setup__start"
+        className={styles.start}
         disabled={!canStart}
         onClick={start}
       >

@@ -1,0 +1,56 @@
+// Nội dung các hộp thoại ở màn chọn game (khung hộp: platform/ui/Dialog)
+@layer components {
+  .note {
+    font-size: 14px;
+    opacity: 0.75;
+  }
+
+  // "YOU HAVE 💎 12"
+  .gems {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  // Số kèm icon kim cương
+  .amount {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    line-height: 1;
+    white-space: nowrap;
+    // inline-flex lấy baseline của ảnh -> cả cụm bị nâng lên; căn giữa dòng chữ
+    vertical-align: middle;
+  }
+
+  // Thanh tiến độ tới giá mở khoá
+  .progress {
+    position: relative;
+    height: 32px;
+    overflow: hidden;
+    border: 3px solid var(--color-ink);
+    border-radius: 999px;
+    background: #d9cfe6;
+  }
+
+  .progressFill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 999px;
+    background:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0 35%, transparent 35%), var(--color-gem);
+    transition: width 0.6s ease-out;
+  }
+
+  .progressLabel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 100%;
+    color: var(--color-ink);
+    font-size: 16px;
+    font-weight: 800;
+  }
+}

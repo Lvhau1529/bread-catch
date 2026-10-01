@@ -7,6 +7,7 @@
  * React và Phaser chỉ nói chuyện qua `appStore` (session/sessionStore.ts).
  */
 import { useEffect, type ComponentType } from 'react';
+import clsx from 'clsx';
 import { useAppState } from '@/games/bread-catcher/app/hooks';
 import { BREAD_GUIDE_SECTIONS, GUIDE_TITLE } from '@/games/bread-catcher/app/guide/guideSections';
 import HomeScreen from '@/games/bread-catcher/app/screens/HomeScreen';
@@ -17,7 +18,7 @@ import { sessionActions, type Screen } from '@/games/bread-catcher/session/sessi
 import PhaserHost from '@/platform/phaser/PhaserHost';
 import { useGameOrientation } from '@/platform/phaser/useGameOrientation';
 import GuideDialog from '@/platform/ui/guide/GuideDialog';
-import '@/games/bread-catcher/styles.css';
+import ScreenLayer from '@/platform/ui/ScreenLayer';
 
 const REACT_SCREENS: Partial<Record<Screen, ComponentType>> = {
   home: HomeScreen,
@@ -35,12 +36,12 @@ export default function BreadCatcherGame() {
   useEffect(() => () => sessionActions.goHome(), []);
 
   return (
-    <main className={`app app--${orientation} theme-bread`}>
+    <main className={clsx('app', `app--${orientation}`)}>
       <PhaserHost key={orientation} create={createGame} inputLocked={Overlay !== undefined} />
       {Overlay && (
-        <div className="screen-layer" key={screen}>
+        <ScreenLayer key={screen}>
           <Overlay />
-        </div>
+        </ScreenLayer>
       )}
       <GuideDialog title={GUIDE_TITLE} sections={BREAD_GUIDE_SECTIONS} />
     </main>
