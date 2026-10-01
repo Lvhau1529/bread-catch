@@ -64,7 +64,7 @@ export default defineConfig(({ command }) => ({
       // Có bản mới thì hỏi người dùng (nút ở màn Home) thay vì tự reload giữa ván — src/app/pwa
       registerType: 'prompt',
       injectRegister: false,
-      includeAssets: ['icons/favicon.png', 'icons/apple-touch-icon.png'],
+      includeAssets: ['icons/favicon.ico', 'icons/favicon-*.png', 'icons/apple-touch-icon.png'],
       manifest: {
         name: 'Phonics Arcade',
         short_name: 'Phonics Arcade',
@@ -79,7 +79,7 @@ export default defineConfig(({ command }) => ({
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
