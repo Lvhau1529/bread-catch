@@ -18,7 +18,7 @@ import { useStore } from '@/platform/hooks/useStore';
 import { platformActions, platformStore } from '@/platform/platformStore';
 import type { GameManifest, UpcomingGame } from '@/platform/types';
 import Button from '@/platform/ui/Button';
-import { PIP } from '@/platform/ui/icons';
+import { MASCOT } from '@/platform/ui/icons';
 import RotateHint from '@/platform/ui/RotateHint';
 import styles from '@/platform/PlatformApp.module.scss';
 
@@ -58,7 +58,7 @@ export default function PlatformApp({ games, upcoming }: PlatformAppProps) {
           <Suspense
             fallback={
               <div className={styles.loading}>
-                <img className={clsx(styles.pip, styles.running)} src={PIP.loading} alt="" />
+                <img className={clsx(styles.mascot, styles.running)} src={MASCOT.loading} alt="" />
                 LOADING…
               </div>
             }
@@ -91,7 +91,7 @@ class LoadErrorBoundary extends Component<{ children: ReactNode }, { failed: boo
     if (!this.state.failed) return this.props.children;
     return (
       <div className={styles.loading}>
-        <img className={styles.pip} src={PIP.error} alt="" />
+        <img className={styles.mascot} src={MASCOT.error} alt="" />
         <p>Oops! The game could not load.</p>
         {/* Tải lại trang: lấy lại file mới (vd sau khi deploy bản mới, file cũ đã bị xoá) */}
         <Button color="green" onClick={() => window.location.reload()}>

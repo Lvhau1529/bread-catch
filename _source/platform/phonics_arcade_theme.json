@@ -1,8 +1,6 @@
 {
   "palette": {
-    "outline": "#24123F",
-    "purple": "#7A3BB8",
-    "purple_dark": "#3D1C6E",
+    "outline": "#2E1608",
     "gold": "#FFD23F",
     "orange": "#FFA62B",
     "pink": "#FF6F9C",
@@ -12,8 +10,13 @@
     "red": "#FF4D5E",
     "cream": "#FFF4DC",
     "gem": "#3EE6F0",
-    "magenta": "#FF00FF"
+    "wood": "#9A5A26",
+    "wood_dark": "#5E3213",
+    "honey": "#FFC83D",
+    "honey_light": "#FFF3C9",
+    "leaf": "#4CB034",
+    "sheet_background": "#FDCB24"
   },
-  "outline": "#24123F",
+  "outline": "#2E1608",
   "sprite_cell_px": 256
 }

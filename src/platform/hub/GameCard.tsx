@@ -57,7 +57,7 @@ export function UpcomingCard({ game, onClick }: { game: UpcomingGame; onClick: (
     <button
       type="button"
       className={clsx(styles.card, styles.upcoming)}
-      style={{ '--accent': 'var(--color-purple)' } as CSSProperties}
+      style={{ '--accent': 'var(--color-leaf)' } as CSSProperties}
       aria-label={`${game.title} — coming soon`}
       onClick={onClick}
     >

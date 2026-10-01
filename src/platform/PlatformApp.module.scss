@@ -1,7 +1,7 @@
 @use '@/platform/styles/abstracts' as *;
 
 @layer components {
-  @keyframes pip-run {
+  @keyframes mascot-run {
     to {
       transform: translate(6px, -6px) rotate(3deg);
     }
@@ -25,13 +25,11 @@
     text-shadow: var(--outline);
   }
 
-  .pip {
-    width: 140px;
-    height: 140px;
-    object-fit: contain;
+  .mascot {
+    @include mascot-frame(140px);
   }
 
   .running {
-    animation: pip-run 0.35s ease-in-out infinite alternate;
+    animation: mascot-run 0.35s ease-in-out infinite alternate;
   }
 }

@@ -8,7 +8,8 @@
     @include phone-landscape {
       position: fixed;
       inset: 0;
-      z-index: 10;
+      // Trên mọi lớp khác (hộp thoại / Hướng dẫn: 20)
+      z-index: 30;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -24,9 +25,7 @@
 
   .icon {
     @include phone-landscape {
-      width: 150px;
-      height: 150px;
-      object-fit: contain;
+      @include mascot-frame(150px);
     }
   }
 }

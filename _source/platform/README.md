@@ -1,12 +1,20 @@
-# Phonics Arcade Resource Pack
+# Phonics Arcade — Bee Resource Pack
 
-- 9 PNG visual assets.
-- 13 WAV sound effects.
-- `asset_manifest.json` contains sprite order, dimensions, and paths.
-- `phonics_arcade_theme.json` contains the shared palette.
+This package contains the bee-themed version of the Phonics Arcade UI.
 
-Sheets 01-04: 1024x1024, 4x4, each cell 256x256.
-Sheet 05: 1024x1024, 3x3 mascot scenes.
-Cover/board/landscape: 1792x1024.
-Portrait background: 1024x1792.
-No text, letters, numbers, or watermark are baked into the PNG assets.
+## Included
+- 9 main image resources
+- Separate PNG sprites extracted from sheets 1-5
+- Bee mascot scenes with NO gem necklace
+- Garden / flower / hive hub backgrounds
+- 13 UI sound effects in WAV
+- asset_manifest.json
+
+Folders:
+- images/
+- sprites/navigation/
+- sprites/audio_controls/
+- sprites/gems_unlocking/
+- sprites/badges_decor/
+- sprites/bee_mascot/
+- sfx/

@@ -138,7 +138,7 @@ pip install -r tools/requirements.txt
 pnpm assets:bread         # Bread Catcher: cắt sprite + vẽ pixel-art bằng code -> public/assets/bread-catcher
 pnpm assets:food-stream   # Food Stream: cắt art board -> public/assets/food-stream + src/games/food-stream/sprites.json
 pnpm assets:audio         # mọi WAV master -> .ogg + .mp3 (SFX chung -> public/assets/shared/sfx)
-pnpm assets:ui            # giao diện chung (icon, kim cương, linh vật Pip, nền màn chọn game) -> public/assets/shared/ui
+pnpm assets:ui            # giao diện chung (icon, kim cương, linh vật ong, nền màn chọn game) -> public/assets/shared/ui
 pnpm assets:icons         # icon PWA / favicon hoa cúc pixel (_source/platform/app-icon) -> public/icons
 pnpm assets               # chạy tất cả
 ```
@@ -148,8 +148,10 @@ pnpm assets               # chạy tất cả
 - `tools/food_stream/build_sprites.py`: toạ độ cắt nhân vật / món ăn / đạo cụ / tranh, huy hiệu che chữ in sẵn,
   frame cắn, ảnh bìa.
 - `tools/build_audio.py`: bảng nguồn -> đích cho mọi game (đã mix sẵn, không normalize lại).
-- `tools/arcade_ui/build_ui.py`: cắt Phonics Arcade resource pack (`_source/platform/`: sheet lưới 4×4 / 3×3
-  nền magenta, thứ tự ô trong `asset_manifest.json`). Chỉ xuất ảnh đang dùng (bảng `EXPORTS`), ảnh lớn ra WebP.
+- `tools/arcade_ui/build_ui.py`: cắt Phonics Arcade Bee resource pack (`_source/platform/`: sheet lưới 4×4 / 3×3
+  nền vàng gradient không alpha, thứ tự ô trong `asset_manifest.json`). Tách nền bằng flood fill từ mép sheet (giữ
+  phần bao bởi viền mực), gán từng mảnh vào ô theo trọng tâm để icon lấn ô không bị cắt; cảnh linh vật cắt ô vuông
+  (khung bo vẽ bằng CSS — mixin `mascot-frame`). Chỉ xuất ảnh đang dùng (bảng `EXPORTS` / `MASCOTS`), ảnh lớn ra WebP.
 - `tools/build_app_icons.py`: icon app của cả Phonics Arcade từ Daisy Pixel Icon Pack (`_source/platform/app-icon/`):
   cắt góc nền trắng của `master-1024.png`, sinh bản maskable / apple-touch; favicon chép nguyên bản crop của pack.
 - Chỉ dùng khung / icon **không có chữ in sẵn** (hoặc che chữ in sẵn) — chữ cái, tên đội, nhãn nút vẽ live.

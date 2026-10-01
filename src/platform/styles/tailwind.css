@@ -52,10 +52,16 @@
   --color-pink-edge: #d9446f;
   --color-teal: #20b8a6;
   --color-teal-edge: #137e72;
-  /* Phonics Arcade (màn chọn game, kim cương) */
   --color-purple: #7a3bb8;
   --color-purple-edge: #3d1c6e;
-  --color-arcade-ink: #24123f;
+  /* Phonics Arcade — Bee pack (màn chọn game, hộp thoại, kim cương): mực nâu đậm như viền icon,
+     gỗ (bộ đếm kim cương, giá), mật ong, lá */
+  --color-arcade-ink: #2e1608;
+  --color-wood: #9a5a26;
+  --color-wood-edge: #5e3213;
+  --color-honey: #ffc83d;
+  --color-honey-light: #fff3c9;
+  --color-leaf: #4cb034;
   --color-gem: #3ee6f0;
   --color-gem-edge: #1a9fb0;
 

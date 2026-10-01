@@ -1,5 +1,5 @@
 /**
- * Ảnh giao diện dùng chung cho mọi game (Phonics Arcade pack — sinh bởi tools/arcade_ui/build_ui.py
+ * Ảnh giao diện dùng chung cho mọi game (Phonics Arcade Bee pack — sinh bởi tools/arcade_ui/build_ui.py
  * vào `public/assets/shared/ui/`). Một bộ icon cho mọi game để cùng một nút luôn trông giống nhau.
  */
 const UI = 'assets/shared/ui';
@@ -26,20 +26,20 @@ export const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
-/** Linh vật Pip (cú tím) cho hộp thoại / màn chờ */
-export const PIP = {
-  encourage: `${UI}/pip/encourage.png`,
-  celebrate: `${UI}/pip/celebrate.png`,
-  comingSoon: `${UI}/pip/coming_soon.png`,
-  rotate: `${UI}/pip/rotate.png`,
-  loading: `${UI}/pip/loading.png`,
-  error: `${UI}/pip/error.png`,
-  hello: `${UI}/pip/hello.png`,
+/** Linh vật ong cho hộp thoại / màn chờ — ảnh cảnh vuông, khung bo do CSS vẽ (mixin `mascot-frame`) */
+export const MASCOT = {
+  encourage: `${UI}/mascot/encourage.webp`,
+  celebrate: `${UI}/mascot/celebrate.webp`,
+  comingSoon: `${UI}/mascot/coming_soon.webp`,
+  rotate: `${UI}/mascot/rotate.webp`,
+  loading: `${UI}/mascot/loading.webp`,
+  error: `${UI}/mascot/error.webp`,
+  hello: `${UI}/mascot/hello.webp`,
 } as const;
 
 export const COMING_SOON_COVER = `${UI}/coming_soon_cover.webp`;
 
-/** Nền màn chọn game (bầu trời tím, kim cương lấp lánh) */
+/** Nền màn chọn game (vườn hoa, tổ ong) */
 export const HUB_BACKGROUND = {
   portrait: `${UI}/hub_bg_portrait.webp`,
   landscape: `${UI}/hub_bg_landscape.webp`,

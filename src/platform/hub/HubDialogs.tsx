@@ -13,7 +13,7 @@ import type { GameManifest } from '@/platform/types';
 import Button from '@/platform/ui/Button';
 import Dialog from '@/platform/ui/Dialog';
 import Icon from '@/platform/ui/Icon';
-import { PIP } from '@/platform/ui/icons';
+import { MASCOT } from '@/platform/ui/icons';
 import styles from '@/platform/hub/HubDialogs.module.scss';
 
 export type HubDialogState =
@@ -44,7 +44,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
         .filter((game) => !isUnlocked(game, wallet))
         .sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0];
       return (
-        <Dialog title="KEEP GOING!" image={PIP.encourage} onClose={close} actions={practice}>
+        <Dialog title="KEEP GOING!" image={MASCOT.encourage} onClose={close} actions={practice}>
           <GemTotal gems={wallet.gems} />
           <p>Practice hard and get the answers right to earn more gems!</p>
           {next ? (
@@ -65,7 +65,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
       return (
         <Dialog
           title="KEEP GOING!"
-          image={PIP.encourage}
+          image={MASCOT.encourage}
           openSfx={SFX.NOT_ENOUGH_GEMS}
           onClose={close}
           actions={practice}
@@ -84,7 +84,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
       return (
         <Dialog
           title={`UNLOCK ${dialog.game.title}?`}
-          image={PIP.hello}
+          image={MASCOT.hello}
           onClose={close}
           actions={
             <>
@@ -112,7 +112,7 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
       return (
         <Dialog
           title="UNLOCKED!"
-          image={PIP.celebrate}
+          image={MASCOT.celebrate}
           openSfx={SFX.UNLOCK}
           celebrate
           onClose={close}
@@ -132,11 +132,11 @@ export default function HubDialogs({ dialog, games, onChange, onPlay }: HubDialo
       return (
         <Dialog
           title="COMING SOON!"
-          image={PIP.comingSoon}
+          image={MASCOT.comingSoon}
           openSfx={SFX.COMING_SOON}
           onClose={close}
           actions={
-            <Button color="purple" onClick={close}>
+            <Button color="orange" onClick={close}>
               OK!
             </Button>
           }

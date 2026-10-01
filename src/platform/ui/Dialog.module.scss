@@ -19,7 +19,7 @@
     align-items: center;
     justify-content: center;
     padding: 16px;
-    background: rgba(20, 8, 40, 0.72);
+    background: rgba(38, 20, 6, 0.7);
     animation: backdrop-in 0.2s ease-out;
 
     // Lớp nền phủ kín màn hình: không phóng to (màn chọn game phóng các phần tử con khi ở máy chiếu)
@@ -52,19 +52,17 @@
     }
   }
 
-  // Có Pip: chừa chỗ cho ảnh nhô lên trên mép hộp
+  // Có linh vật: chừa chỗ cho ảnh nhô lên trên mép hộp
   .withImage {
-    margin-top: 70px;
+    margin-top: 64px;
     padding-top: 0;
     overflow: visible;
   }
 
   .image {
-    width: 150px;
-    height: 150px;
-    margin: -84px 0 -6px;
-    object-fit: contain;
-    filter: drop-shadow(0 5px 0 rgba(0, 0, 0, 0.3));
+    @include mascot-frame(128px);
+    flex: none;
+    margin: -66px 0 4px;
     animation: bob 1.6s ease-in-out infinite;
 
     .celebrate & {
@@ -72,16 +70,17 @@
     }
   }
 
+  // Nhô ra ngoài góc hộp — ít hơn lề của lớp nền (16px) để không chạm / tràn mép màn hình hẹp
   .close {
     position: absolute;
-    top: -18px;
-    right: -18px;
+    top: -16px;
+    right: -12px;
     z-index: 1;
   }
 
   .title {
     margin: 0;
-    color: var(--color-purple);
+    color: var(--color-orange-edge);
     font-size: 26px;
     font-weight: 800;
     line-height: 1.1;

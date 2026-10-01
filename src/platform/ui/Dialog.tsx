@@ -1,6 +1,6 @@
 /**
  * Hộp thoại dùng chung của Phonics Arcade: nền tối, khung kem viền mực, nút đóng tròn đỏ,
- * (tuỳ chọn) ảnh linh vật Pip phía trên tiêu đề. Esc hoặc bấm ra ngoài để đóng.
+ * (tuỳ chọn) ảnh linh vật ong phía trên tiêu đề. Esc hoặc bấm ra ngoài để đóng.
  * Mở thì phát tiếng `openSfx` (mặc định UI_OPEN), đóng phát UI_CLOSE.
  */
 import { useEffect, useId, type ReactNode } from 'react';
@@ -14,11 +14,11 @@ import styles from '@/platform/ui/Dialog.module.scss';
 interface DialogProps {
   title: string;
   onClose: () => void;
-  /** Ảnh minh hoạ (thường là Pip) */
+  /** Ảnh minh hoạ (thường là linh vật ong — MASCOT) */
   image?: string;
   /** Tiếng khi mở; `null` = im lặng */
   openSfx?: SfxKey | null;
-  /** Pip nhảy ăn mừng thay vì nhún nhẹ (vd vừa mở khoá game) */
+  /** Linh vật nhảy ăn mừng thay vì nhún nhẹ (vd vừa mở khoá game) */
   celebrate?: boolean;
   className?: string;
   children: ReactNode;
