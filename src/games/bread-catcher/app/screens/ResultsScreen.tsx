@@ -4,6 +4,7 @@
  */
 import { ICONS, mascotUrl } from '@/games/bread-catcher/app/assets';
 import Button from '@/platform/ui/Button';
+import GemReward from '@/platform/ui/GemReward';
 import Leaderboard, { TeamTotalsCard } from '@/games/bread-catcher/app/components/Leaderboard';
 import { useAppState, useTeamTotals } from '@/games/bread-catcher/app/hooks';
 import { SFX } from '@/platform/audio/sfx';
@@ -54,6 +55,8 @@ function ClassResults({ session }: { session: ActiveSession }) {
 
       {/* Bảng tổng điểm nhiều buổi; vừa reset thì hiện bảng tĩnh (trống) */}
       {session.leaderboard && hasTotals ? <Leaderboard update={session.leaderboard} /> : <TeamTotalsCard />}
+
+      <GemReward amount={session.gemsEarned ?? 0} />
 
       <div className="results__actions">
         <Button color="orange" size="lg" onClick={() => sessionActions.openGift()}>
@@ -127,6 +130,8 @@ function SoloResults({ session }: { session: ActiveSession }) {
           ))}
         </ul>
       </div>
+
+      <GemReward amount={session.gemsEarned ?? 0} />
 
       <div className="results__row">
         <Button color="green" size="lg" sfx={SFX.UI_START} onClick={() => sessionActions.playAgain()}>

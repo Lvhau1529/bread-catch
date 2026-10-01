@@ -1,0 +1,19 @@
+{
+  "palette": {
+    "outline": "#24123F",
+    "purple": "#7A3BB8",
+    "purple_dark": "#3D1C6E",
+    "gold": "#FFD23F",
+    "orange": "#FFA62B",
+    "pink": "#FF6F9C",
+    "blue": "#3F8CFF",
+    "green": "#5CCF4A",
+    "teal": "#20B8A6",
+    "red": "#FF4D5E",
+    "cream": "#FFF4DC",
+    "gem": "#3EE6F0",
+    "magenta": "#FF00FF"
+  },
+  "outline": "#24123F",
+  "sprite_cell_px": 256
+}

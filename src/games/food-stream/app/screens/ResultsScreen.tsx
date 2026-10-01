@@ -16,6 +16,8 @@ import {
 import type { QuestionRecord, TeamScore } from '@/games/food-stream/session/types';
 import { TEXT } from '@/games/food-stream/text';
 import Button from '@/platform/ui/Button';
+import GemReward from '@/platform/ui/GemReward';
+import Icon from '@/platform/ui/Icon';
 import { compactNumber } from '@/shared/format';
 
 export default function ResultsScreen() {
@@ -30,6 +32,7 @@ export default function ResultsScreen() {
         <ClassroomResults outcome={outcome} />
       )}
       <WordsLearned records={outcome.result.records} />
+      <GemReward amount={outcome.gemsEarned} />
       <Actions session={session} />
     </div>
   );
@@ -133,7 +136,7 @@ function Actions({ session }: { session: ActiveSession }) {
     <div className="fs-results__actions">
       {next && (
         <Button color="pink" size="lg" onClick={() => foodStreamActions.playNextLevel()}>
-          {TEXT.nextLevel} ▶
+          {TEXT.nextLevel} <Icon name="next" size={24} />
         </Button>
       )}
       <div className="fs-results__row">

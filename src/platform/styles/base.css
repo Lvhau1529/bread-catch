@@ -24,6 +24,12 @@
   --pink-edge: #d9446f;
   --teal: #20b8a6;
   --teal-edge: #137e72;
+  /* Phonics Arcade (màn chọn game, kim cương) — _source/platform/phonics_arcade_theme.json */
+  --purple: #7a3bb8;
+  --purple-edge: #3d1c6e;
+  --arcade-ink: #24123f;
+  --gem: #3ee6f0;
+  --gem-edge: #1a9fb0;
   --font-ui: 'Baloo 2', 'Arial Rounded MT Bold', sans-serif;
   --font-learning: 'Andika', 'Comic Sans MS', sans-serif;
   --radius: 18px;
@@ -262,6 +268,22 @@ input {
   text-shadow: var(--outline);
 }
 
+.app-loading__pip {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+}
+
+.app-loading__pip--run {
+  animation: pip-run 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes pip-run {
+  to {
+    transform: translate(6px, -6px) rotate(3deg);
+  }
+}
+
 /* =========================================================================
    Bố cục ngang (máy chiếu lớp học / máy tính / tablet nằm ngang)
    .app--landscape do root của từng game gắn theo cùng quy tắc với game Phaser
@@ -302,19 +324,9 @@ input {
   }
 
   .rotate-hint__icon {
-    font-size: 48px;
-    animation: rotate-hint 1.6s ease-in-out infinite;
-  }
-}
-
-@keyframes rotate-hint {
-  0%,
-  30% {
-    transform: rotate(-90deg);
-  }
-  60%,
-  100% {
-    transform: rotate(0deg);
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
   }
 }
 

@@ -4,6 +4,7 @@
  * Lựa chọn được nhớ cho lần sau (session/storage.ts).
  */
 import { mascotUrl } from '@/games/bread-catcher/app/assets';
+import BackButton from '@/platform/ui/BackButton';
 import Button from '@/platform/ui/Button';
 import Field from '@/platform/ui/Field';
 import NameInput from '@/platform/ui/NameInput';
@@ -90,14 +91,7 @@ export default function SetupScreen() {
   return (
     <div className="screen setup">
       <header className="screen__header">
-        <button
-          type="button"
-          className="icon-btn"
-          aria-label={UI_TEXT.back}
-          onClick={() => sessionActions.goHome()}
-        >
-          ←
-        </button>
+        <BackButton label={UI_TEXT.back} onClick={() => sessionActions.goHome()} />
         <h1>{UI_TEXT.gameSetup}</h1>
       </header>
 

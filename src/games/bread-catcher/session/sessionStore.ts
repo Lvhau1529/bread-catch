@@ -8,6 +8,7 @@
  * React vẽ các màn home / setup / results; Phaser (SceneDirector) chạy play / gift.
  * Hai bên chỉ giao tiếp qua store này.
  */
+import { awardGems } from '@/platform/gems/wallet';
 import { createStore } from '@/shared/createStore';
 import { shuffle } from '@/shared/random';
 import { PACKS, parseCustomWords, sessionWords } from '@/games/bread-catcher/session/content';
@@ -52,6 +53,8 @@ export interface ActiveSession {
   soloBest?: { best: number; isNewBest: boolean };
   /** Chỉ có ở Class Mode khi chơi đủ lượt: bảng tổng điểm trước / sau buổi này */
   leaderboard?: LeaderboardUpdate;
+  /** Kim cương nhận được khi chơi xong buổi (1 viên / từ đúng, ví chung của Phonics Arcade) */
+  gemsEarned?: number;
 }
 
 export interface AppState {
@@ -114,6 +117,13 @@ function recordLeaderboard(session: ActiveSession): ActiveSession {
   saveTeamTotals(next);
   const gained = Object.fromEntries(session.results.map((result) => [result.teamId, result.score]));
   return { ...session, leaderboard: { before: rankTotals(previous), after: rankTotals(next), gained } };
+}
+
+/** Chơi xong buổi: cộng kim cương theo số từ đúng của mọi đội (một lần cho mỗi buổi) */
+function recordGems(session: ActiveSession): ActiveSession {
+  if (session.gemsEarned !== undefined) return session;
+  const correctWords = session.results.reduce((sum, result) => sum + result.correctWords, 0);
+  return { ...session, gemsEarned: awardGems(correctWords) };
 }
 
 // ---------------------------------------------------------------------------
@@ -192,7 +202,7 @@ export const sessionActions = {
       sessionActions.abortSession();
       return;
     }
-    update({ screen: 'results', session: recordLeaderboard(session) });
+    update({ screen: 'results', session: recordGems(recordLeaderboard(session)) });
   },
 
   /** Xoá bảng tổng điểm các đội (nút RESET SCORES) */

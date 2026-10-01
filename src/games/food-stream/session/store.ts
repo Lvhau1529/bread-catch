@@ -19,6 +19,7 @@ import {
 } from '@/games/food-stream/session/storage';
 import { buildTeams } from '@/games/food-stream/session/teams';
 import type { RoundResult, SetupDraft, Team, TeamId } from '@/games/food-stream/session/types';
+import { awardGems } from '@/platform/gems/wallet';
 import { createStore } from '@/shared/createStore';
 
 export type Screen = 'home' | 'setup' | 'play' | 'results';
@@ -39,6 +40,8 @@ export interface SessionOutcome {
   /** Solo: sao / điểm cao trước lượt này (để biết kỷ lục mới) */
   previous?: LevelProgress;
   totalViewers: number;
+  /** Kim cương nhận được (1 viên / câu đúng của mọi đội, ví chung của Phonics Arcade) */
+  gemsEarned: number;
 }
 
 export interface FoodStreamState {
@@ -160,7 +163,8 @@ export const foodStreamActions = {
         ? recordProgress(settings.packId, settings.levelId, result.stars, result.teams[0]?.score ?? 0)
         : undefined;
     const totalViewers = addViewers(result.viewers);
-    update({ screen: 'results', outcome: { result, previous, totalViewers } });
+    const gemsEarned = awardGems(result.teams.reduce((sum, team) => sum + team.correct, 0));
+    update({ screen: 'results', outcome: { result, previous, totalViewers, gemsEarned } });
   },
 
   /** Thoát giữa lượt (nút QUIT) -> về Setup, không lưu kết quả */

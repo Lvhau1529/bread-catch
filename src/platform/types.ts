@@ -20,5 +20,14 @@ export interface GameManifest {
   accent: string;
   /** Kỹ năng luyện tập, hiện dạng nhãn nhỏ trên thẻ */
   skills: readonly string[];
+  /** Số kim cương để mở khoá (platform/gems/wallet.ts); bỏ trống = miễn phí, luôn chơi được */
+  price?: number;
   load: () => Promise<{ default: ComponentType }>;
+}
+
+/** Game sắp ra mắt: thẻ COMING SOON ở màn chọn game (chưa có code, không mở được) */
+export interface UpcomingGame {
+  id: string;
+  title: string;
+  tagline: string;
 }

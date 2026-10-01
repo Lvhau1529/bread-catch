@@ -24,6 +24,8 @@ from common.paths import PUBLIC_ASSETS, SOURCE  # noqa: E402
 JOBS = [
     # SFX dùng chung cho mọi game (từ resource pack của Bread Catcher)
     ("bread-catcher/audio/sfx", "shared/sfx"),
+    # SFX giao diện chung: nút back, bật/tắt, mở/đóng hộp thoại, kim cương, mở khoá (Phonics Arcade pack)
+    ("platform/audio/sfx", "shared/sfx"),
     ("bread-catcher/audio/bgm", "bread-catcher/music"),
     ("food-stream/audio/bgm", "food-stream/music"),
 ]

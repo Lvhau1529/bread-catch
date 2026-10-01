@@ -2,8 +2,6 @@
  * Một mục trong form Setup: nhãn + (tuỳ chọn) nút "?" mở đúng phần Hướng dẫn của game.
  */
 import type { ReactNode } from 'react';
-import { SFX } from '@/platform/audio/sfx';
-import { playSfx } from '@/platform/audio/sfxPlayer';
 import { openGuide } from '@/platform/ui/guide/guideStore';
 
 interface FieldProps {
@@ -23,10 +21,7 @@ export default function Field({ label, guide, children }: FieldProps) {
             type="button"
             className="field__help"
             aria-label={`GUIDE: ${label}`}
-            onClick={() => {
-              playSfx(SFX.UI_CLICK);
-              openGuide(guide);
-            }}
+            onClick={() => openGuide(guide)}
           >
             ?
           </button>

@@ -17,6 +17,7 @@ import { DEFAULT_TEAM_NAMES, MAX_NAME_LENGTH, TEAM_STREAMERS } from '@/games/foo
 import type { GameMode, SetupDraft, StreamerId } from '@/games/food-stream/session/types';
 import { TEXT } from '@/games/food-stream/text';
 import { SFX } from '@/platform/audio/sfx';
+import BackButton from '@/platform/ui/BackButton';
 import Button from '@/platform/ui/Button';
 import Field from '@/platform/ui/Field';
 import NameInput from '@/platform/ui/NameInput';
@@ -86,14 +87,7 @@ export default function SetupScreen() {
   return (
     <div className="screen fs-setup">
       <header className="screen__header">
-        <button
-          type="button"
-          className="icon-btn"
-          aria-label={TEXT.back}
-          onClick={() => foodStreamActions.goHome()}
-        >
-          ←
-        </button>
+        <BackButton label={TEXT.back} onClick={() => foodStreamActions.goHome()} />
         <h1>{TEXT.setup}</h1>
       </header>
 

@@ -1,6 +1,6 @@
 """
 Bread Catcher: cắt sprite sheet gốc trong `_source/bread-catcher/art/` thành từng PNG riêng
-trong `public/assets/bread-catcher/` (icon âm thanh dùng chung -> `public/assets/shared/ui/`).
+trong `public/assets/bread-catcher/` (icon giao diện chung: tools/arcade_ui/build_ui.py).
 
 Chạy:  pnpm assets:bread   (= python tools/bread_catcher/build_sprites.py)
 
@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from common.imaging import (  # noqa: E402
     add_outline, clean_alpha, drop_fragments, load_rgba, resize_rgba, save_png, target_size, tight_bbox,
 )
-from common.paths import PUBLIC_ASSETS, SHARED_ASSETS, SOURCE  # noqa: E402
+from common.paths import PUBLIC_ASSETS, SOURCE  # noqa: E402
 
 from brainrot_art import build_brainrot_sprites  # noqa: E402
 from phonics_art import build_phonics_sprites  # noqa: E402
@@ -84,12 +84,6 @@ GAME_SPRITES = {
 UI_SPRITES = {
     "ui/panel_large": dict(box=(20, 972, 384, 1224), width=320),
     "ui/panel_small": dict(box=(384, 1000, 640, 1228), width=220),
-}
-
-# Icon bật/tắt âm thanh của màn React — dùng chung cho mọi game (public/assets/shared/ui/)
-SHARED_UI_SPRITES = {
-    "ui/icon_sound": dict(box=(28, 408, 196, 576), max_side=48),
-    "ui/icon_sound_off": dict(box=(200, 408, 368, 576), max_side=48),
 }
 
 # Background: (tên file, tâm crop theo tỉ lệ ngang của panel 0..1)
@@ -206,8 +200,6 @@ def main() -> None:
 
     for name, spec in UI_SPRITES.items():
         meta[name] = build_sprite(ui, name, spec)
-    for name, spec in SHARED_UI_SPRITES.items():
-        build_sprite(ui, name, spec, SHARED_ASSETS)
 
     meta.update(build_backgrounds())
     procedural = {**build_brainrot_sprites(), **build_phonics_sprites()}

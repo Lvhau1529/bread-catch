@@ -5,7 +5,7 @@ import type { ButtonHTMLAttributes } from 'react';
 import { SFX, type SfxKey } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 
-export type ButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'cream' | 'pink';
+export type ButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'cream' | 'pink' | 'purple';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: ButtonColor;

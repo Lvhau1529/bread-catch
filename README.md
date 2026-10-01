@@ -9,6 +9,10 @@ là một module độc lập, thêm game mới không phải sửa game cũ.
 | 🍞 **Bread Catcher** | Di chuyển rổ hứng bánh chữ theo đúng thứ tự để ghép từ. Class 3 đội / Solo. | [docs/bread-catcher](docs/bread-catcher/README.md) |
 | 🍩 **Food Stream** | Livestream ăn uống: nghe âm / từ, cho streamer ăn đúng món chữ cái / tranh. Classroom 2 đội / Solo, 7 kiểu câu hỏi. | [docs/food-stream](docs/food-stream/README.md) |
 
+Màn chọn game có **kim cương**: bé nhận 1 viên cho mỗi câu / từ đúng (tối đa 10 viên mỗi ván, ở mọi game),
+dùng để **mở khoá game mới** (game có `price` trong manifest); game sắp ra mắt hiện thẻ **COMING SOON**.
+Bấm bộ đếm kim cương hiện lời động viên bé chăm chỉ luyện tập để có kim cương mở game.
+
 Giao diện trong game hoàn toàn bằng tiếng Anh; riêng phần **Hướng dẫn** (nút GUIDE ở màn chính của mỗi game,
 nút "?" cạnh từng mục ở Setup) viết bằng tiếng Việt cho giáo viên / phụ huynh.
 
@@ -24,7 +28,7 @@ nút "?" cạnh từng mục ở Setup) viết bằng tiếng Việt cho giáo v
 | Nội dung      | JSON + Zod (kiểm tra gói nội dung của Food Stream)                     |
 | Giọng đọc     | Web Speech API (đọc âm / từ, không cần file ghi âm)                    |
 | Format code   | Prettier + EditorConfig                                                |
-| Lưu dữ liệu   | localStorage (`phonics-arcade:prefs`, `phonics-arcade:<game-id>`)       |
+| Lưu dữ liệu   | localStorage (`phonics-arcade:prefs`, `phonics-arcade:wallet`, `phonics-arcade:<game-id>`) |
 | Asset         | PNG (hình), OGG + MP3 fallback (audio) — sinh bằng script Python        |
 | Font          | Baloo 2 (giao diện), Andika (chữ cái / từ vựng — font cho trẻ tập đọc) |
 
@@ -52,12 +56,14 @@ src/
 │   ├── PlatformApp.tsx      #   màn chọn game ↔ game đang mở (React.lazy, báo lỗi khi tải hỏng)
 │   ├── platformStore.ts     #   game đang mở, đồng bộ URL hash
 │   ├── types.ts             #   GameManifest: hợp đồng giữa platform và một game
-│   ├── hub/                 #   màn chọn game
+│   ├── hub/                 #   màn chọn game: thẻ game (khoá / COMING SOON), bộ đếm kim cương, hộp thoại
+│   ├── gems/wallet.ts       #   ví kim cương chung: nhận sau ván (awardGems), mở khoá game (unlockGame)
 │   ├── prefs.ts, storage.ts #   cài đặt âm thanh chung, localStorage an toàn theo từng game
 │   ├── audio/               #   1 AudioContext cho cả app, thư viện SFX chung, phát SFX từ React
 │   ├── phaser/              #   PhaserHost (mount / khoá input), createPhaserGame, viewport + view
 │   │                        #   (toạ độ logic, render ×2), AudioSystem (nhạc + duck), font, chữ sắc nét
-│   ├── ui/                  #   Button, OptionGroup, Field, NameInput, AudioToggles, RotateHint, GuideDialog
+│   ├── ui/                  #   Button, BackButton, Icon (+ icons.ts), Dialog, GemReward, OptionGroup, Field,
+│   │                        #   NameInput, AudioToggles, RotateHint, GuideDialog
 │   ├── pwa/                 #   nút cập nhật khi có bản deploy mới
 │   └── styles/              #   CSS chung (theme bằng biến CSS, game ghi đè trên class gốc)
 └── games/
@@ -81,9 +87,12 @@ của game), nội dung, dữ liệu lưu riêng. React và Phaser của một g
 
 1. Tạo `src/games/<id>/` với root component (dùng `PhaserHost` + `createPhaserGame`, `useGameOrientation`,
    `GuideDialog`...) và `manifest.ts` (`id` dùng cho URL và key lưu trữ — không đổi sau khi phát hành).
-2. Thêm manifest vào `src/games/index.ts`.
+2. Thêm manifest vào `src/games/index.ts` (bỏ thẻ COMING SOON tương ứng trong `UPCOMING`). Muốn bé dùng
+   kim cương mở khoá thì đặt `price` trong manifest; bỏ trống = miễn phí.
 3. Asset vào `public/assets/<id>/` (script sinh ở `tools/<id>/`), ảnh bìa 16:9 `public/assets/<id>/cover.png`.
 4. Lưu dữ liệu bằng `gameStorageKey('<id>')`; âm thanh / giọng đọc theo `prefsStore` chung.
+5. Chơi xong ván gọi `awardGems(sốCâuĐúng)` (platform/gems/wallet.ts) và hiện `<GemReward amount={…} />`
+   ở màn kết quả. Nút / icon dùng bộ chung (`BackButton`, `Icon`, `Dialog`) cho thống nhất.
 
 ## Asset pipeline
 
@@ -95,8 +104,9 @@ pip install -r tools/requirements.txt
 pnpm assets:bread         # Bread Catcher: cắt sprite + vẽ pixel-art bằng code -> public/assets/bread-catcher
 pnpm assets:food-stream   # Food Stream: cắt art board -> public/assets/food-stream + src/games/food-stream/sprites.json
 pnpm assets:audio         # mọi WAV master -> .ogg + .mp3 (SFX chung -> public/assets/shared/sfx)
+pnpm assets:ui            # giao diện chung (icon, kim cương, linh vật Pip, nền màn chọn game) -> public/assets/shared/ui
 pnpm assets:icons         # icon PWA / favicon "Ab" (font Baloo 2, màu màn chọn game) -> public/icons
-pnpm assets               # chạy cả bốn
+pnpm assets               # chạy tất cả
 ```
 
 - `tools/common/`: xử lý ảnh dùng chung (làm sạch alpha, cắt sát, resize, viền sticker), đường dẫn.
@@ -104,6 +114,8 @@ pnpm assets               # chạy cả bốn
 - `tools/food_stream/build_sprites.py`: toạ độ cắt nhân vật / món ăn / đạo cụ / tranh, huy hiệu che chữ in sẵn,
   frame cắn, ảnh bìa.
 - `tools/build_audio.py`: bảng nguồn -> đích cho mọi game (đã mix sẵn, không normalize lại).
+- `tools/arcade_ui/build_ui.py`: cắt Phonics Arcade resource pack (`_source/platform/`: sheet lưới 4×4 / 3×3
+  nền magenta, thứ tự ô trong `asset_manifest.json`). Chỉ xuất ảnh đang dùng (bảng `EXPORTS`), ảnh lớn ra WebP.
 - `tools/build_app_icons.py`: icon app của cả Phonics Arcade (cần `pnpm install` trước để có font Baloo 2).
 - Chỉ dùng khung / icon **không có chữ in sẵn** (hoặc che chữ in sẵn) — chữ cái, tên đội, nhãn nút vẽ live.
 

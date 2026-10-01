@@ -3,13 +3,14 @@
  * Mở bằng `openGuide(sectionId)` (guideStore) — tự cuộn tới đúng phần.
  * Mục lục tự sáng theo phần đang đọc (scroll-spy) và KHÔNG phải cuộn ngang:
  *   - màn rộng: cột mục lục bên trái
- *   - điện thoại: thanh [◀] Tên phần ▾ [▶], bấm tên mở bảng chọn 3 cột
+ *   - điện thoại: thanh [‹] Tên phần ▾ [›], bấm tên mở bảng chọn 3 cột
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { SFX } from '@/platform/audio/sfx';
 import { playSfx } from '@/platform/audio/sfxPlayer';
 import { useStore } from '@/platform/hooks/useStore';
 import { closeGuide, guideStore } from '@/platform/ui/guide/guideStore';
+import Icon from '@/platform/ui/Icon';
 
 export interface GuideSection {
   id: string;
@@ -40,6 +41,11 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const lockUntil = useRef(0);
 
+  const close = useCallback(() => {
+    playSfx(SFX.UI_CLOSE);
+    closeGuide();
+  }, []);
+
   const scrollToSection = useCallback((id: string, behavior: ScrollBehavior) => {
     setMenuOpen(false);
     const body = bodyRef.current;
@@ -63,6 +69,11 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
     return () => body.removeEventListener('scrollend', onScrollEnd);
   }, [open]);
 
+  // Tiếng mở hộp (mọi nút "?" / GUIDE đều đi qua đây)
+  useEffect(() => {
+    if (open) playSfx(SFX.UI_OPEN);
+  }, [open]);
+
   // Mở tới đúng phần được yêu cầu
   useEffect(() => {
     if (open) scrollToSection(section ?? firstId, 'auto');
@@ -74,11 +85,11 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
       if (menuOpen) setMenuOpen(false);
-      else closeGuide();
+      else close();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, menuOpen]);
+  }, [open, menuOpen, close]);
 
   if (!open) return null;
 
@@ -104,12 +115,12 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
   const goTo = (index: number) => {
     const target = sections[index];
     if (!target) return;
-    playSfx(SFX.UI_CLICK);
+    playSfx(SFX.UI_TAB);
     scrollToSection(target.id, 'smooth');
   };
 
   return (
-    <div className="guide-backdrop" onClick={closeGuide}>
+    <div className="guide-backdrop" onClick={close}>
       <div
         className="guide"
         role="dialog"
@@ -120,16 +131,8 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
       >
         <header className="guide__header">
           <h1>{title}</h1>
-          <button
-            type="button"
-            className="icon-btn icon-btn--close"
-            aria-label="Đóng"
-            onClick={() => {
-              playSfx(SFX.UI_CLICK);
-              closeGuide();
-            }}
-          >
-            ✕
+          <button type="button" className="icon-btn icon-btn--close" aria-label="Đóng" onClick={close}>
+            <Icon name="close" size={22} />
           </button>
         </header>
 
@@ -158,7 +161,7 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
             disabled={activeIndex <= 0}
             onClick={() => goTo(activeIndex - 1)}
           >
-            ◀
+            <Icon name="previous" size={22} />
           </button>
           <button
             type="button"
@@ -182,7 +185,7 @@ export default function GuideDialog({ title, sections }: GuideDialogProps) {
             disabled={activeIndex >= sections.length - 1}
             onClick={() => goTo(activeIndex + 1)}
           >
-            ▶
+            <Icon name="next" size={22} />
           </button>
 
           {menuOpen && (

@@ -60,7 +60,7 @@ export default defineConfig({
         // Chuyển một lần từ bản 'autoUpdate' cũ sang bản có nút UPDATE (xem public/sw-migrate.js)
         importScripts: ['sw-migrate.js'],
         // Precache mọi thứ cần để chơi offline mọi game (nhạc của các resource pack nhỏ nên cache luôn)
-        globPatterns: ['**/*.{js,css,html,png,json,woff2}', 'assets/**/*.{ogg,mp3}'],
+        globPatterns: ['**/*.{js,css,html,png,webp,json,woff2}', 'assets/**/*.{ogg,mp3}'],
         // Ảnh nền bản ngang (máy chiếu) chỉ cache khi thực sự dùng — điện thoại không phải tải
         globIgnores: ['**/*_wide.png'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,

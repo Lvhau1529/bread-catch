@@ -6,15 +6,18 @@ import {
   Component,
   lazy,
   Suspense,
+  useEffect,
   type ComponentType,
   type LazyExoticComponent,
   type ReactNode,
 } from 'react';
+import { isUnlocked, walletStore } from '@/platform/gems/wallet';
 import HubScreen from '@/platform/hub/HubScreen';
 import { useStore } from '@/platform/hooks/useStore';
 import { platformActions, platformStore } from '@/platform/platformStore';
-import type { GameManifest } from '@/platform/types';
+import type { GameManifest, UpcomingGame } from '@/platform/types';
 import Button from '@/platform/ui/Button';
+import { PIP } from '@/platform/ui/icons';
 import RotateHint from '@/platform/ui/RotateHint';
 
 const lazyRoots = new Map<string, LazyExoticComponent<ComponentType>>();
@@ -29,21 +32,40 @@ function rootOf(game: GameManifest): LazyExoticComponent<ComponentType> {
   return root;
 }
 
-export default function PlatformApp({ games }: { games: readonly GameManifest[] }) {
+interface PlatformAppProps {
+  games: readonly GameManifest[];
+  upcoming: readonly UpcomingGame[];
+}
+
+export default function PlatformApp({ games, upcoming }: PlatformAppProps) {
   const activeId = useStore(platformStore, (state) => state.activeGameId);
-  const game = games.find((item) => item.id === activeId);
+  const wallet = useStore(walletStore, (state) => state);
+  // Link mở thẳng game đang khoá (#/<id>) -> về màn chọn game
+  const game = games.find((item) => item.id === activeId && isUnlocked(item, wallet));
   const GameRoot = game ? rootOf(game) : null;
+
+  // Game không tồn tại / đang khoá: bỏ hash để lần bấm thẻ game sau vẫn mở được
+  useEffect(() => {
+    if (activeId && !game) platformActions.exitToHub();
+  }, [activeId, game]);
 
   return (
     <>
       {GameRoot ? (
         <LoadErrorBoundary key={activeId}>
-          <Suspense fallback={<div className="app-loading">LOADING…</div>}>
+          <Suspense
+            fallback={
+              <div className="app-loading">
+                <img className="app-loading__pip app-loading__pip--run" src={PIP.loading} alt="" />
+                LOADING…
+              </div>
+            }
+          >
             <GameRoot />
           </Suspense>
         </LoadErrorBoundary>
       ) : (
-        <HubScreen games={games} />
+        <HubScreen games={games} upcoming={upcoming} />
       )}
       <RotateHint />
     </>
@@ -67,6 +89,7 @@ class LoadErrorBoundary extends Component<{ children: ReactNode }, { failed: boo
     if (!this.state.failed) return this.props.children;
     return (
       <div className="app-loading">
+        <img className="app-loading__pip" src={PIP.error} alt="" />
         <p>Oops! The game could not load.</p>
         {/* Tải lại trang: lấy lại file mới (vd sau khi deploy bản mới, file cũ đã bị xoá) */}
         <Button color="green" onClick={() => window.location.reload()}>

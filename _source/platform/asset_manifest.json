@@ -1,0 +1,188 @@
+{
+  "kit": "Phonics Arcade",
+  "age": "4-6",
+  "image_assets": [
+    {
+      "file": "images/01_navigation_icons.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": "4x4",
+      "cell": [
+        256,
+        256
+      ],
+      "order": [
+        "back",
+        "home",
+        "close",
+        "play",
+        "pause",
+        "stop",
+        "replay",
+        "next",
+        "previous",
+        "settings",
+        "guide_book",
+        "check",
+        "refresh_update_sparkle",
+        "fullscreen",
+        "menu",
+        "speaker_replay_word"
+      ]
+    },
+    {
+      "file": "images/02_audio_controls.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": "4x4",
+      "cell": [
+        256,
+        256
+      ],
+      "order": [
+        "speaker_on",
+        "speaker_muted",
+        "music_on",
+        "music_off",
+        "voice_on",
+        "voice_off",
+        "microphone",
+        "toggle_on",
+        "toggle_off",
+        "checkbox_empty",
+        "checkbox_checked",
+        "radio_off",
+        "radio_on",
+        "minus",
+        "plus",
+        "star_filled"
+      ]
+    },
+    {
+      "file": "images/03_gems_unlocking.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": "4x4",
+      "cell": [
+        256,
+        256
+      ],
+      "order": [
+        "gem_big",
+        "gem_small",
+        "gem_pile",
+        "treasure_chest",
+        "counter_bar",
+        "gem_burst",
+        "piggy_bank",
+        "gem_price_tag",
+        "padlock_closed",
+        "padlock_open",
+        "golden_key",
+        "unlock_burst",
+        "chains_locked_overlay",
+        "progress_track",
+        "progress_fill",
+        "crown"
+      ]
+    },
+    {
+      "file": "images/04_badges_decor.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": "4x4",
+      "cell": [
+        256,
+        256
+      ],
+      "order": [
+        "corner_ribbon",
+        "title_ribbon",
+        "starburst_sticker",
+        "rounded_tag",
+        "hanging_sign",
+        "notification_dot",
+        "trophy",
+        "medal",
+        "star_outline",
+        "half_star",
+        "confetti",
+        "sparkle_burst",
+        "heart",
+        "thumbs_up",
+        "balloons",
+        "party_popper"
+      ]
+    },
+    {
+      "file": "images/05_mascot_scenes.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": "3x3",
+      "order": [
+        "encouraging_not_enough_gems",
+        "celebrate_unlock",
+        "coming_soon_builder",
+        "update_gift",
+        "rotate_device",
+        "loading_run",
+        "error_unplugged",
+        "wave_hello",
+        "empty_state_sleep"
+      ]
+    },
+    {
+      "file": "images/06_coming_soon_cover.png",
+      "size": [
+        1792,
+        1024
+      ]
+    },
+    {
+      "file": "images/07_ui_kit_reference_board.png",
+      "size": [
+        1792,
+        1024
+      ]
+    },
+    {
+      "file": "images/08_hub_background_landscape.png",
+      "size": [
+        1792,
+        1024
+      ]
+    },
+    {
+      "file": "images/09_hub_background_portrait.png",
+      "size": [
+        1024,
+        1792
+      ]
+    }
+  ],
+  "sfx": [
+    "sfx/ui_back.wav",
+    "sfx/ui_toggle_on.wav",
+    "sfx/ui_toggle_off.wav",
+    "sfx/ui_open.wav",
+    "sfx/ui_close.wav",
+    "sfx/ui_tab.wav",
+    "sfx/gem_collect.wav",
+    "sfx/gem_count.wav",
+    "sfx/unlock.wav",
+    "sfx/locked.wav",
+    "sfx/not_enough_gems.wav",
+    "sfx/coming_soon.wav",
+    "sfx/update_ready.wav"
+  ]
+}
